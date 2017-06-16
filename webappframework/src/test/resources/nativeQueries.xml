@@ -1,0 +1,3 @@
+<Author queryName="findBooks">
+	select * from books where author = ?
+</Author>

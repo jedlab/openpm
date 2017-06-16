@@ -1,0 +1,33 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	xmlns:sec="http://www.springframework.org/security/tags"	
+	xmlns:jedlab="http://java.sun.com/jsf/composite/comp">
+
+	<div class="col col-6">
+
+
+		<div class="form-item">
+			<label><ui:insert name="label"></ui:insert> <ui:fragment
+					rendered="#{required}">
+					<span class="req">*</span>
+				</ui:fragment> <ui:fragment rendered="#{facesContext.validationFailed}">
+					<ui:insert name="msg"></ui:insert>
+				</ui:fragment> </label>
+			<ui:insert></ui:insert>
+			<div class="desc">
+				<ui:insert name="desc"></ui:insert>
+			</div>
+		</div>
+
+	</div>
+
+
+
+</ui:composition>
+

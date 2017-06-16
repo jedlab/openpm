@@ -1,0 +1,29 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/security
+http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<http use-expressions="true">
+		<intercept-url pattern="/login" access="permitAll" />
+		<intercept-url pattern="/app/secure/**" access="hasRole('ROLE_USER')" />
+		<form-login login-page="/app/login"
+		    default-target-url="/app/home"		    
+			authentication-failure-url="/app/login?login_error=1"
+			login-processing-url="/app/loginProcess"					
+			username-parameter="username"
+			password-parameter="password" />
+		<logout logout-success-url="/app/home" logout-url="/app/logout"/>
+		
+		<csrf disabled="true"/>
+		<request-cache ref="reqCache"/>
+	</http>
+	<beans:bean class="org.springframework.security.web.savedrequest.HttpSessionRequestCache" id="reqCache"></beans:bean>
+	<authentication-manager >
+      <authentication-provider  user-service-ref="udetail">
+      <password-encoder hash="bcrypt"></password-encoder>         
+      </authentication-provider>
+   </authentication-manager>
+	<beans:bean class="com.jedlab.pm.service.UserDetailService" id="udetail"></beans:bean>
+</beans:beans>

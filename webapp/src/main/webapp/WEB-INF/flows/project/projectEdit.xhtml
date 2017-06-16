@@ -1,0 +1,42 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	    		xmlns:ui="http://java.sun.com/jsf/facelets"
+	  			xmlns:h="http://java.sun.com/jsf/html"
+	  			xmlns:f="http://java.sun.com/jsf/core"
+	  			xmlns:p="http://primefaces.org/ui"
+				template="/WEB-INF/templates/layout.xhtml">
+
+<ui:define name="content">
+	this is webflow
+	<br />
+	
+	<h:form id="saleAgentEditForm" styleClass="form">
+
+			<ui:decorate template="/WEB-INF/templates/sameLineEdit.xhtml">
+				<ui:define name="label">Name</ui:define>
+				<ui:define name="msg">
+					<p:message for="inp" display="text"></p:message>
+				</ui:define>
+				<p:inputText required="true" id="inp" value="#{usersHome.instance.name}"></p:inputText>
+				<ui:param name="required" value="true"></ui:param>
+			</ui:decorate>
+
+			<ui:decorate template="/WEB-INF/templates/sameLineEdit.xhtml">
+				<ui:define name="label">Family</ui:define>
+				<ui:define name="msg">
+					<p:message for="tt" display="text"></p:message>
+				</ui:define>
+				<p:inputText id="tt" value="#{usersHome.instance.family}"></p:inputText>
+
+			</ui:decorate>
+			
+			
+			<p:commandButton value="#{msgs['Save']}" action="#{usersHome.save()}" update="@form" rendered="#{!usersHome.idDefined}"></p:commandButton>
+			<p:commandButton value="#{msgs['Update']}" action="#{usersHome.update()}" update="@form" rendered="#{usersHome.idDefined}"></p:commandButton>
+			<p:commandButton value="#{msgs['Delete']}" styleClass="button red" action="#{usersHome.delete()}"  rendered="#{usersHome.idDefined}"></p:commandButton>
+			<p:commandButton action="cancel" value="#{msgs['Back']}" immediate="true"></p:commandButton>
+
+		</h:form>
+	
+</ui:define>
+</ui:composition>

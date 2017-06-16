@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config version="2.2" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
+	<application>
+		
+		<locale-config>
+			<default-locale>fa</default-locale>
+			<supported-locale>en</supported-locale>
+			<supported-locale>fa</supported-locale>
+		</locale-config>
+		<resource-bundle>
+			<base-name>i18n.messages</base-name>
+			<var>msgs</var>
+		</resource-bundle>
+		<action-listener>org.primefaces.application.DialogActionListener</action-listener>
+		<navigation-handler>
+			org.primefaces.application.DialogNavigationHandler</navigation-handler>
+		<view-handler>org.primefaces.application.DialogViewHandler</view-handler>
+	</application>
+
+	<navigation-rule>
+		<from-view-id>register.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>cancel</from-outcome>
+			<to-view-id>/home.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>thankyou</from-outcome>
+			<to-view-id>/thankyou.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+
+
+</faces-config>

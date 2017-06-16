@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<fontFamilies>
+
+
+	<fontFamily name="ZTitr">
+		<normal>fonts/ZTitr/ZTitrB.ttf</normal>
+		<bold>fonts/ZTitr/ZTitrB.ttf</bold>
+		<italic>fonts/ZTitr/ZTitrB.ttf</italic>
+		<boldItalic>fonts/ZTitr/ZTitrB.ttf</boldItalic>
+		<pdfEncoding>Identity-H</pdfEncoding>
+		<pdfEmbedded>true</pdfEmbedded>
+		<exportFonts>
+			<export key="net.sf.jasperreports.html">'ZTitrB', ZTitrB, ZTitrB, ZTitrB</export>
+			<export key="net.sf.jasperreports.xhtml">'ZTitrB', ZTitrB, ZTitrB, ZTitrB</export>
+		</exportFonts>
+	</fontFamily>
+
+</fontFamilies>

@@ -1,0 +1,77 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:jedlab="http://java.sun.com/jsf/composite/comp">
+
+
+
+	<!-- Sidebar/menu -->
+	<nav class="w3-sidebar w3-red w3-collapse w3-top w3-large w3-padding"
+		style="z-index: 3; width: 300px; right: 0; font-weight: bold;"
+		id="mySidebar">
+		<br /> <a href="javascript:void(0)" onclick="w3_close()"
+			class="w3-button w3-hide-large w3-display-topleft"
+			style="width: 100%; font-size: 22px">Close Menu</a>
+		<div class="w3-container">
+			<h3 class="w3-padding-64">
+				<b>JEDLab<br />Project Management
+				</b>
+			</h3>
+		</div>
+		<div class="w3-bar-block">
+			<a href="#{_ctx}/app/home" onclick="w3_close()"
+				class="w3-bar-item w3-button w3-hover-white">#{msgs['Home']}</a> <a
+				href="#{_ctx}/app/register" onclick="w3_close()"
+				class="w3-bar-item w3-button w3-hover-white">#{msgs['Register']}</a>
+			<a href="#{_ctx}/app/project" onclick="w3_close()"
+				class="w3-bar-item w3-button w3-hover-white">#{msgs['Project_List']}</a>
+			<sec:authorize ifAnyGranted="ROLE_USER">			
+				<a href="${request.contextPath}/app/logout" onclick="w3_close()"
+					class="w3-bar-item w3-button w3-hover-white"> Welcome,
+					${currentUser.name} | #{msgs['Logout']} </a>
+			</sec:authorize>
+			<sec:authorize ifNotGranted="ROLE_USER">
+				<a class="w3-bar-item w3-button w3-hover-white"
+					href="${request.contextPath}/app/login">#{msgs['Login']}</a>
+			</sec:authorize>
+		</div>
+	</nav>
+
+	<!-- Top menu on small screens -->
+	<header
+		class="w3-container w3-top w3-hide-large w3-red w3-xlarge w3-padding">
+		<a href="javascript:void(0)" class="w3-button w3-red w3-margin-right"
+			onclick="w3_open()">☰</a> <span>JEDLab</span>
+	</header>
+
+	<!-- Overlay effect when opening sidebar on small screens -->
+	<div class="w3-overlay w3-hide-large" onclick="w3_close()"
+		style="cursor: pointer" title="close side menu" id="myOverlay"></div>
+
+	<script>
+// Script to open and close sidebar
+function w3_open() {
+    document.getElementById("mySidebar").style.display = "block";
+    document.getElementById("myOverlay").style.display = "block";
+}
+ 
+function w3_close() {
+    document.getElementById("mySidebar").style.display = "none";
+    document.getElementById("myOverlay").style.display = "none";
+}
+
+// Modal Image Gallery
+function onClick(element) {
+  document.getElementById("img01").src = element.src;
+  document.getElementById("modal01").style.display = "block";
+  var captionText = document.getElementById("caption");
+  captionText.innerHTML = element.alt;
+}
+</script>
+</ui:composition>
+

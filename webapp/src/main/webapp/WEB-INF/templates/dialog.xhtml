@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	lang="fa">
+<f:view contentType="text/html" encoding="UTF-8" locale="fa">
+	<c:set var="_ctx" value="#{request.contextPath}" />
+
+	<ui:insert name="metadata" />
+
+	<h:head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title><h:outputText value="#{msgs['Applicatoin_Name']}" /></title>
+		<link rel="stylesheet" href="#{_ctx}/resources/css/primefaces-omega.css" />		
+		<link rel="stylesheet" href="#{_ctx}/resources/css/w3.css" />
+		<link rel="stylesheet" href="#{_ctx}/resources/css/w3-blue-grey.css" />
+		
+		<link rel="stylesheet" href="#{_ctx}/resources/css/semantic.min.css" />
+		<link rel="stylesheet" href="#{_ctx}/resources/css/kube.css" />
+		<link rel="stylesheet" href="#{_ctx}/resources/css/webapp.css" />
+
+		<h:outputScript library="primefaces" name="jquery/jquery.js"
+			target="head" />
+		<h:outputScript library="primefaces" name="jquery/jquery-plugins.js"
+			target="head" />
+		<script type="text/javascript"
+			src="${_ctx}/resources/js/semantic.min.js" />
+
+
+		<ui:insert name="head" />
+
+	</h:head>
+	<h:body>
+
+		<p:growl id="globalGrowl" widgetVar="globalGrowlWidget"
+			showDetail="true" sticky="true" globalOnly="true" />
+
+		<div class="wrapper">
+		
+			
+			<div class="w3-margin">
+				<ui:insert name="content"></ui:insert>
+			</div>
+			<div class="push">
+			</div>
+		</div>
+		<div style="clear:both;"></div>
+
+
+	</h:body>
+
+</f:view>
+</html>

@@ -1,0 +1,42 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<composite:interface>
+		<composite:attribute name="onOpen"
+			method-signature="java.lang.Void action()" required="true" />
+		<composite:attribute name="handleReturn"
+			method-signature="java.lang.Void action(org.primefaces.event.SelectEvent)"
+			required="true" />
+		<composite:attribute name="onClear"
+			method-signature="java.lang.Void action()" required="true" />
+		<composite:attribute name="update" required="false" />
+		<composite:attribute name="inputValue" required="false" />
+	</composite:interface>
+	<composite:implementation>
+
+		<div id="#{cc.clientId}">
+
+			<div class="append w50">
+
+				<p:inputText value="#{cc.attrs.inputValue}" styleClass="w50"></p:inputText>
+				<p:commandButton icon="fa fa-list-alt" styleClass="btn-icon" value="#{''}"
+					actionListener="#{cc.attrs.onOpen}">
+					<p:ajax event="dialogReturn" listener="#{cc.attrs.handleReturn}"
+						update="#{cc.attrs.update}" />
+				</p:commandButton> 
+
+				<p:commandButton icon="fa fa-remove" styleClass="btn-icon" value="#{''}"
+					actionListener="#{cc.attrs.onClear}">
+				</p:commandButton>
+
+			</div>
+
+		</div>
+
+
+	</composite:implementation>
+
+</ui:composition>

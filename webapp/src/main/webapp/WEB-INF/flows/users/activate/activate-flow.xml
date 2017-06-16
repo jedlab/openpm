@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="
+      	http://www.springframework.org/schema/webflow
+      	http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd">
+
+	
+	<var name="userActionBean" class="com.jedlab.pm.controller.UserActionBean"/>
+	
+	<view-state id="activate">
+		<on-entry>
+			<set name="requestScope.userId" value="requestParameters.c" type="long" />
+			<evaluate expression="userActionBean.loadUser(userId)" result="viewScope.user"></evaluate>
+		</on-entry>
+		<on-render>
+			<evaluate expression="userActionBean.activate(user)"></evaluate>
+		</on-render>
+			
+	</view-state>
+	
+		
+</flow>
