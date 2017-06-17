@@ -12,7 +12,7 @@
 
 	<context:annotation-config  />
 	<tx:annotation-driven transaction-manager="transactionManager"/>
-	<context:component-scan base-package="com.jedlab.pm.service, com.jedlab.pm.controller" />
+	<context:component-scan base-package="com.jedlab.pm.service" />
 	
 	
 

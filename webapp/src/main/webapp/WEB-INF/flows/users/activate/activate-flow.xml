@@ -6,15 +6,14 @@
       	http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd">
 
 	
-	<var name="userActionBean" class="com.jedlab.pm.controller.UserActionBean"/>
 	
 	<view-state id="activate">
 		<on-entry>
 			<set name="requestScope.userId" value="requestParameters.c" type="long" />
-			<evaluate expression="userActionBean.loadUser(userId)" result="viewScope.user"></evaluate>
+			<evaluate expression="userController.loadUser(userId)" result="viewScope.user"></evaluate>
 		</on-entry>
 		<on-render>
-			<evaluate expression="userActionBean.activate(user)"></evaluate>
+			<evaluate expression="userController.activate(user)"></evaluate>
 		</on-render>
 			
 	</view-state>

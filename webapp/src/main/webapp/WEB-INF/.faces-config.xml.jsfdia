@@ -1,18 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<PROCESS model-entity="JSFProcess">
- <PROCESS-ITEM NAME="rules:register.xhtml" PATH="register.xhtml"
-  SHAPE="32,17,0,0" model-entity="JSFProcessGroup">
-  <PROCESS-ITEM ID="rules:register.xhtml:0" NAME="item"
-   PATH="register.xhtml" model-entity="JSFProcessItem">
-   <PROCESS-ITEM-OUTPUT ID="cancel::#home.xhtml" NAME="output"
-    PATH="/home.xhtml" TARGET="rules:#home.xhtml" TITLE="cancel" model-entity="JSFProcessItemOutput"/>
-   <PROCESS-ITEM-OUTPUT ID="thankyou::#thankyou.xhtml" NAME="output1"
-    PATH="/thankyou.xhtml" TARGET="rules:#thankyou.xhtml"
-    TITLE="thankyou" model-entity="JSFProcessItemOutput"/>
-  </PROCESS-ITEM>
- </PROCESS-ITEM>
- <PROCESS-ITEM NAME="rules:#home.xhtml" PATH="/home.xhtml"
-  SHAPE="256,33,0,0" model-entity="JSFProcessGroup"/>
- <PROCESS-ITEM NAME="rules:#thankyou.xhtml" PATH="/thankyou.xhtml"
-  SHAPE="256,177,0,0" model-entity="JSFProcessGroup"/>
-</PROCESS>
+<PROCESS model-entity="JSFProcess"/>

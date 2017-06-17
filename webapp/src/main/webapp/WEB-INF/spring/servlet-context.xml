@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xmlns:faces="http://www.springframework.org/schema/faces"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
@@ -9,54 +8,49 @@
 		http://www.springframework.org/schema/faces http://www.springframework.org/schema/faces/spring-faces.xsd
 		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-	<!--
-		DispatcherServlet Context: defines this servlet's request-processing infrastructure
-	-->
+	<!-- DispatcherServlet Context: defines this servlet's request-processing 
+		infrastructure -->
 
 	<!-- Imports user-defined @Controller beans that process client requests -->
 	<import resource="controllers.xml" />
 	<import resource="webflow.xml" />
-	
+
 
 	<!-- Scan for Spring beans declared via annotations. -->
-	<context:component-scan base-package="com.project.webflow"/>
+	<context:component-scan
+		base-package="com.jedlab.pm.webflow, com.jedlab.pm.controller" />
 
 	<!-- Enables the Spring MVC @Controller programming model -->
 	<mvc:annotation-driven />
 
-	<!-- 
-		Enable serving of classpath with Spring 3 resource serving mechanism. For example:
-		/webflow-primefaces-showcase/app/resources/styles/blueprint/print.css
-	-->
+	<!-- Enable serving of classpath with Spring 3 resource serving mechanism. 
+		For example: /webflow-primefaces-showcase/app/resources/styles/blueprint/print.css -->
 	<mvc:resources location="/" mapping="/resources/**" />
 
-
-	<!--
-		Maps request paths to flows in the flowRegistry; e.g. a path of
-		/hotels/booking looks for a flow with id "hotels/booking"
-	-->
-	<bean class="org.springframework.webflow.mvc.servlet.FlowHandlerMapping">
-		<property name="order" value="1"></property>
-		<property name="flowRegistry" ref="flowRegistry" />
-		<property name="defaultHandler">
-			<bean class="org.springframework.web.servlet.mvc.UrlFilenameViewController"></bean>
-		</property>
-	</bean>
-	
+	<!-- Enables FlowHandler URL mapping -->
 	<bean class="org.springframework.webflow.mvc.servlet.FlowHandlerAdapter">
 		<property name="flowExecutor" ref="flowExecutor" />
+		<property name="flowUrlHandler" ref="defaultFlowUrlHandler" />
 	</bean>
 
-	<!--
-		Resolves views selected for rendering by @Controllers to .xhtml
-		resources in the /WEB-INF/views directory
-	-->
-	<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+	<!-- Maps request paths to flows in the flowRegistry; e.g. a path of /hotels/booking 
+		looks for a flow with id "hotels/booking" -->
+	<bean class="org.springframework.webflow.mvc.servlet.FlowHandlerMapping">
+		<property name="order" value="0"></property>
+		<property name="flowRegistry" ref="flowRegistry" />
+		<property name="flowUrlHandler" ref="defaultFlowUrlHandler" />
+	</bean>
+
+	<!-- Resolves views selected for rendering by @Controllers to .xhtml resources 
+		in the /WEB-INF/views directory -->
+	<bean id="mvcJsfViewResolver"
+		class="org.springframework.web.servlet.view.UrlBasedViewResolver">
 		<property name="viewClass" value="org.springframework.faces.mvc.JsfView" />
-		<property name="prefix" value="/WEB-INF/" />
-		<property name="suffix" value=".xhtml" />		
+		<property name="prefix" value="/WEB-INF/views/" />
+		<property name="suffix" value=".xhtml" />
+		<property name="order" value="1"></property>
 	</bean>
 
-	
+
 
 </beans>

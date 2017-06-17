@@ -17,6 +17,8 @@
 
 	<mvc:view-controller path="/home" />
 	
+	<mvc:view-controller path="/thankyou" />
+	
 	
 	
 	

@@ -22,8 +22,8 @@ import com.jedlab.framework.spring.web.SpringViewScope;
 import com.jedlab.pm.model.User;
 import com.jedlab.pm.service.UserService;
 
-
-public class UserActionBean implements Serializable
+@Controller
+public class UserController implements Serializable
 {
 
     @Autowired

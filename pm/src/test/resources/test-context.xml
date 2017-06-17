@@ -14,18 +14,18 @@
 	<context:component-scan base-package="com.jedlab.pm.service" />
 	<tx:annotation-driven transaction-manager="transactionManager" />
 	
-	<context:property-placeholder location="classpath:database.properties"/>
+	<context:property-placeholder location="classpath*:database.properties"/>
 	
 	<bean id="mainDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
 		destroy-method="close">
-		<property name="driverClass" value="${jdbc.driverClassName}" />
-		<property name="jdbcUrl" value="${jdbc.db_url}" />
-		<property name="user" value="${jdbc.username}" />
-		<property name="password" value="${jdbc.password}" />
-		<property name="maxPoolSize" value="${jdbc.maxPoolSize}" />
-		<property name="minPoolSize" value="${jdbc.minPoolSize}" />
-		<property name="maxStatements" value="${jdbc.maxStatements}" />
-		<property name="testConnectionOnCheckout" value="${jdbc.testConnection}" />
+		<property name="driverClass" value="${profile.db.driver}" />
+		<property name="jdbcUrl" value="${profile.db.url}" />
+		<property name="user" value="${profile.db.username}" />
+		<property name="password" value="${profile.db.password}" />
+		<property name="maxPoolSize" value="50" />
+		<property name="minPoolSize" value="3" />
+		<property name="maxStatements" value="150" />
+		
 	</bean>
 	
 	
@@ -51,9 +51,9 @@
 		<property name="jpaVendorAdapter">
 			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
 				<property name="generateDdl" value="true" />
-				<property name="showSql" value="true" />
-				<property name="databasePlatform" value="org.hibernate.dialect.PostgreSQLDialect" />
-				<property name="database" value="POSTGRESQL" />
+				<property name="showSql" value="${profile.db.show_sql}" />
+				<property name="databasePlatform" value="${profile.db.dialect}" />
+				<property name="database" value="${profile.db.database}" />
 			</bean>
 		</property>
 

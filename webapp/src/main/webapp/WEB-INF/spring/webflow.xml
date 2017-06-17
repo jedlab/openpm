@@ -31,8 +31,10 @@
 	</flow-registry>
 
 	<!-- Configures the Spring Web Flow JSF integration -->
-	
-	<faces:flow-builder-services id="flowBuilderServices" development="true" validator="validator"/>
+	<beans:bean class="org.springframework.webflow.mvc.builder.MvcViewFactoryCreator" id="mvcViewFactory">
+		<beans:property name="viewResolvers" ref="mvcJsfViewResolver"></beans:property>
+	</beans:bean>
+	<faces:flow-builder-services id="flowBuilderServices"  development="true" validator="validator" />
 
 	<!-- A listener to create and release a FacesContext -->
 	<beans:bean id="facesContextListener" class="org.springframework.faces.webflow.FlowFacesContextLifecycleListener"/>
@@ -49,8 +51,10 @@
 	<!--
 		Dispatches requests mapped to flows to FlowHandler implementations
 	-->
-	<beans:bean class="org.springframework.faces.webflow.JsfFlowHandlerAdapter">		
+	<beans:bean class="org.springframework.webflow.context.servlet.DefaultFlowUrlHandler" id="defaultFlowUrlHandler"></beans:bean>
+	<beans:bean class="org.springframework.faces.webflow.JsfFlowHandlerAdapter" >		
 		<beans:property name="flowExecutor" ref="flowExecutor" />
+		<beans:property name="flowUrlHandler" ref="defaultFlowUrlHandler" />
 	</beans:bean>
 
 </beans:beans>

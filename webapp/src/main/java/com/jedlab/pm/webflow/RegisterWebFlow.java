@@ -1,4 +1,4 @@
-package com.jedlab.pm.controller;
+package com.jedlab.pm.webflow;
 
 import java.io.Serializable;
 import java.lang.Thread.UncaughtExceptionHandler;
@@ -22,8 +22,7 @@ import com.jedlab.framework.spring.web.SpringViewScope;
 import com.jedlab.pm.model.User;
 import com.jedlab.pm.service.UserService;
 
-
-public class RegisterController implements Serializable
+public class RegisterWebFlow implements Serializable
 {
 
     @Autowired

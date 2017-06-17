@@ -25,9 +25,12 @@
 		</div>
 		<div class="w3-bar-block">
 			<a href="#{_ctx}/app/home" onclick="w3_close()"
-				class="w3-bar-item w3-button w3-hover-white">#{msgs['Home']}</a> <a
-				href="#{_ctx}/app/register" onclick="w3_close()"
-				class="w3-bar-item w3-button w3-hover-white">#{msgs['Register']}</a>
+				class="w3-bar-item w3-button w3-hover-white">#{msgs['Home']}</a>
+			<sec:authorize ifNotGranted="ROLE_USER">	 
+				<a
+					href="#{_ctx}/app/register" onclick="w3_close()"
+					class="w3-bar-item w3-button w3-hover-white">#{msgs['Register']}</a>
+			</sec:authorize>
 			<a href="#{_ctx}/app/project" onclick="w3_close()"
 				class="w3-bar-item w3-button w3-hover-white">#{msgs['Project_List']}</a>
 			<sec:authorize ifAnyGranted="ROLE_USER">			
