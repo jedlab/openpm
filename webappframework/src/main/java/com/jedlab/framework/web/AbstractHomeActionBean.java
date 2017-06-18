@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jedlab.framework.spring.service.AbstractCrudService;
@@ -154,19 +153,22 @@ public abstract class AbstractHomeActionBean<E> extends AbstractActionBean
     public abstract AbstractCrudService<E> getService();
 
 
-    public void save()
+    public String save()
     {
         getService().insert(getInstance());
+        return "saved";
     }
 
-    public void update()
+    public String update()
     {
         getService().update(getInstance());
+        return "updated";
     }
 
-    public void delete()
+    public String delete()
     {
         getService().deleteSoft((Long)getId());
+        return "deleted";
     }
 
     public void load()

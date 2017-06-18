@@ -1,7 +1,5 @@
 package com.jedlab.framework.report;
 
-import java.util.Date;
-
 /**
  * @author omidp
  *

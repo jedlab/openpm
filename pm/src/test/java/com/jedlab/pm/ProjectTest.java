@@ -22,7 +22,7 @@ public class ProjectTest
     {
         Project p = new Project();
         p.setName("my proj");
-        projectService.persist(p);
+        projectService.insert(p);
     }
     
 }

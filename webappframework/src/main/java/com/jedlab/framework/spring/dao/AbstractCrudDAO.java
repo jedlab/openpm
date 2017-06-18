@@ -7,15 +7,13 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.NoRepositoryBean;
 
-import com.jedlab.framework.db.BasePO;
-
 /**
  * @author omidp
  *
  * @param <T>
  */
 @NoRepositoryBean
-public interface AbstractCrudDAO<T extends BasePO> extends AbstractDAO<T>
+public interface AbstractCrudDAO<T extends PO> extends AbstractDAO<T>
 {
 
     //implements Custom behaviour

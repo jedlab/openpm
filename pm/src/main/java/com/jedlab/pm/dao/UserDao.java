@@ -12,7 +12,7 @@ public interface UserDao extends CrudRepository<User, Long>, JpaSpecificationExe
 {
 
     @Modifying
-    @Query("update User u set u.activated = true where u.id = :uid")
+    @Query("update User u set u.enabled = true where u.id = :uid")
     public void activateUserById(@Param("uid") Long userId); 
     
 }

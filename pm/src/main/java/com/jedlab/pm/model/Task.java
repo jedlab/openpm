@@ -7,6 +7,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.jedlab.framework.spring.dao.PO;
+
 @Entity
 @Table(name = "task")
 public class Task extends PO

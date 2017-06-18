@@ -1,12 +1,9 @@
 package com.jedlab.framework.spring.security;
 
-import java.util.Collection;
-
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.jedlab.framework.db.BasePO;
@@ -59,24 +56,25 @@ public abstract class SecurityUser extends BasePO implements UserDetails
     @Transient
     public boolean isAccountNonExpired()
     {
-        return false;
+        return true;
     }
 
     @Override
     @Transient
     public boolean isAccountNonLocked()
     {
-        return false;
+        return true;
     }
 
     @Override
     @Transient
     public boolean isCredentialsNonExpired()
     {
-        return false;
+        return true;
     }
 
     @Override
+    @Column(name="is_activate")
     public boolean isEnabled()
     {
         return enabled;

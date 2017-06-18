@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.metamodel.IdentifiableType;
 import javax.persistence.metamodel.ManagedType;
 import javax.persistence.metamodel.Metamodel;
 import javax.persistence.metamodel.SingularAttribute;
 
 import org.primefaces.model.SortOrder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -31,7 +31,7 @@ import com.jedlab.framework.web.ExtendedLazyDataModel.SortProperty;
 public abstract class AbstractService<E>
 {
 
-    @Autowired
+    @PersistenceContext
     protected EntityManager entityManager;
 
     public abstract AbstractDAO<E> getDao();
@@ -140,6 +140,16 @@ public abstract class AbstractService<E>
     public E findById(Class<E> clz, Object id)
     {
         return entityManager.find(clz, id);
+    }
+    
+    public Iterable<E> findAll()
+    {
+        return getDao().findAll();
+    }
+    
+    public Iterable<E> findAll(Specification<E> spec)
+    {
+        return getDao().findAll(spec);
     }
 
 }

@@ -23,6 +23,9 @@
 			<listener ref="securityListener"/>
 			<listener ref="jpaFlowExecutionListener"/>
 		</flow-execution-listeners>
+		<flow-execution-attributes>
+			<redirect-in-same-state value="false"/>
+		</flow-execution-attributes>
 	</flow-executor>
 
 	<!-- The registry of executable flow definitions -->

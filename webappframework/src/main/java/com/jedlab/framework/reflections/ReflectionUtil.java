@@ -3,7 +3,6 @@ package com.jedlab.framework.reflections;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -11,7 +10,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -19,16 +17,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.Transient;
-
 import org.apache.commons.beanutils.PropertyUtils;
 
-import com.jedlab.framework.db.EntityModel;
-import com.jedlab.framework.util.CollectionUtil;
 import com.jedlab.framework.util.StringUtil;
 
 /**

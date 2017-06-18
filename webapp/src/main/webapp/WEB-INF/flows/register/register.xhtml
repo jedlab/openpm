@@ -40,7 +40,7 @@
 
 					<ui:decorate template="/WEB-INF/templates/edit.xhtml">
 						<ui:define name="label">رمز عبور</ui:define>
-						<h:inputSecret value="#{registerActionBean.userModel.passwd}"
+						<h:inputSecret value="#{registerActionBean.userModel.password}"
 							required="true" id="passwd"/>
 						<ui:param name="required" value="true" />
 						<ui:define name="msg"><p:message for="passwd"></p:message> </ui:define>

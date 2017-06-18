@@ -7,8 +7,28 @@
 
 	<secured attributes="ROLE_USER"/>
 	
-	<view-state id="projectList"></view-state>
+	<persistence-context />
+	
+	<view-state id="projectList">
+		<var name="projectQuery" class="com.jedlab.pm.webflow.ProjectQueryWebFlow"/>
+		<transition on="create" bind="false" to="projectEdit"></transition>
+	</view-state>
 
+	<view-state id="projectEdit">
+		<var name="projectHome" class="com.jedlab.pm.webflow.ProjectHomeWebFlow"/>
+		<on-entry>
+			<set name="requestScope.projectId" value="requestParameters.id" type="long" />
+			<evaluate expression="projectHome.setProjectId(projectId)"></evaluate>
+		</on-entry>
+		<transition on="saved" to="end"></transition>
+		<transition on="updated" to="end"></transition>
+		<transition on="deleted" to="end"></transition>
+		<transition on="cancel" to="end"></transition>
+	</view-state>
+	
+	
+	<end-state id="end" commit="true" view="externalRedirect:servletRelative:/project"></end-state>
+	
 	
 		
 </flow>

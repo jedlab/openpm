@@ -1,56 +1,28 @@
 package com.omidp.oframework.test.model;
 
-import javax.persistence.Column;
+import java.util.Arrays;
+import java.util.Collection;
+
 import javax.persistence.Transient;
 
-import com.jedlab.framework.db.EntityModel;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-public class User implements EntityModel<Long>
+import com.jedlab.framework.spring.security.SecurityUser;
+
+public class User extends SecurityUser
 {
 
-    private Long id;
-
-    private String name;
-
-    private String userName;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities()
+    {        
+        return Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
+    }
 
     @Transient
     public String getFullName()
     {
-        return getUserName() + " " + getName();
-    }
-
-    @Column(name = "user_name")
-    public String getUserName()
-    {
-        return userName;
-    }
-
-    public void setUserName(String userName)
-    {
-        this.userName = userName;
-    }
-
-    @Column(name = "name")
-    public String getName()
-    {
-        return name;
-    }
-
-    public void setName(String name)
-    {
-        this.name = name;
-    }
-
-    @Column(name = "id")
-    public Long getId()
-    {
-        return id;
-    }
-
-    public void setId(Long id)
-    {
-        this.id = id;
+        return getUsername();
     }
 
 }

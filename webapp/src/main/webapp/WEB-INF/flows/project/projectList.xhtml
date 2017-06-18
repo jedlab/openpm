@@ -12,7 +12,7 @@
 	
 	<h:form id="projectListForm">
 			<p:dataTable var="_item" 
-				value="#{usersBean.resultList}"
+				value="#{projectQuery.resultList}"
 				paginatorPosition="bottom" 
 				rowsPerPageTemplate="5,10" 
 				dir="rtl"
@@ -29,28 +29,28 @@
 				rowKey="#{_item.id}">
 				
 				<f:facet name="header">
-					<p:commandButton id="cancel" value="Create" action="create" immediate="true" />
+					<p:commandButton id="btnCreate" value="Create" action="create" immediate="true" />
 				</f:facet>
 				
 				
 				<p:column selectionMode="multiple" style="width:50px;text-align:center"/>
 				
-				<p:column headerText="id">
-					<p:outputLabel value="#{_item.id}"></p:outputLabel>
-				</p:column>
+				
 				
 				<p:column headerText="Name">
 					<p:commandLink value="#{_item.name}" action="create"
 						>
-						<f:param value="#{_item.id}" name="projectId"></f:param>
+						<f:param value="#{_item.id}" name="id"></f:param>
 					</p:commandLink>	
 					
 				</p:column>
 				
-				<p:column headerText="Identifier">
-					<p:outputLabel value="#{_item.family}"></p:outputLabel>
+				<p:column headerText="User">
+					<p:outputLabel value="#{_item.owner.username}"></p:outputLabel>	
+					
 				</p:column>
 				
+								
 			</p:dataTable>
 		</h:form>
 	

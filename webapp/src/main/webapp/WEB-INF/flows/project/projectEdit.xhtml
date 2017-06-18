@@ -7,7 +7,7 @@
 				template="/WEB-INF/templates/layout.xhtml">
 
 <ui:define name="content">
-	this is webflow
+	Project Edit
 	<br />
 	
 	<h:form id="saleAgentEditForm" styleClass="form">
@@ -17,23 +17,14 @@
 				<ui:define name="msg">
 					<p:message for="inp" display="text"></p:message>
 				</ui:define>
-				<p:inputText required="true" id="inp" value="#{usersHome.instance.name}"></p:inputText>
+				<p:inputText required="true" id="inp" value="#{projectHome.instance.name}"></p:inputText>
 				<ui:param name="required" value="true"></ui:param>
 			</ui:decorate>
 
-			<ui:decorate template="/WEB-INF/templates/sameLineEdit.xhtml">
-				<ui:define name="label">Family</ui:define>
-				<ui:define name="msg">
-					<p:message for="tt" display="text"></p:message>
-				</ui:define>
-				<p:inputText id="tt" value="#{usersHome.instance.family}"></p:inputText>
-
-			</ui:decorate>
 			
-			
-			<p:commandButton value="#{msgs['Save']}" action="#{usersHome.save()}" update="@form" rendered="#{!usersHome.idDefined}"></p:commandButton>
-			<p:commandButton value="#{msgs['Update']}" action="#{usersHome.update()}" update="@form" rendered="#{usersHome.idDefined}"></p:commandButton>
-			<p:commandButton value="#{msgs['Delete']}" styleClass="button red" action="#{usersHome.delete()}"  rendered="#{usersHome.idDefined}"></p:commandButton>
+			<p:commandButton value="#{msgs['Save']}" action="#{projectHome.save()}" update="@form" rendered="#{!projectHome.idDefined}"></p:commandButton>
+			<p:commandButton value="#{msgs['Update']}" action="#{projectHome.update()}" update="@form" rendered="#{projectHome.idDefined}"></p:commandButton>
+			<p:commandButton value="#{msgs['Delete']}" styleClass="button red" action="#{projectHome.delete()}"  rendered="#{projectHome.idDefined}"></p:commandButton>
 			<p:commandButton action="cancel" value="#{msgs['Back']}" immediate="true"></p:commandButton>
 
 		</h:form>

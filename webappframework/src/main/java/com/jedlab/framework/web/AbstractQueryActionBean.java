@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -17,7 +16,6 @@ import org.primefaces.event.UnselectEvent;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.jedlab.framework.db.EntityModel;
-import com.jedlab.framework.db.QueryMapper;
 import com.jedlab.framework.report.JasperDataExporter;
 import com.jedlab.framework.report.JasperPaginationHandler;
 import com.jedlab.framework.report.ReportHeader;

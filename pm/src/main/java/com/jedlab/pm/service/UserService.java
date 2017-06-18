@@ -1,6 +1,7 @@
 package com.jedlab.pm.service;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -9,10 +10,11 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.collect.Lists;
+import com.jedlab.framework.util.CollectionUtil;
 import com.jedlab.pm.dao.UserDao;
 import com.jedlab.pm.model.User;
 
@@ -41,7 +43,10 @@ public class UserService
 
     public User findByUsername(String username)
     {
-        return userDao.findAll(new UsernameSpec(username)).iterator().next();
+        ArrayList<User> userList = Lists.newArrayList(userDao.findAll(new UsernameSpec(username)).iterator());
+        if(CollectionUtil.isEmpty(userList))
+            return null;
+        return userList.iterator().next();
     }
 
     public static class UsernameSpec implements Specification<User>

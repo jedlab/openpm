@@ -1,59 +1,74 @@
-package com.jedlab.pm.model;
+package com.jedlab.framework.spring.dao;
 
-import java.io.Serializable;
+import java.util.Date;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Version;
 
 /**
  * @author jedlab Persistence Object
  */
 @MappedSuperclass
-public abstract class PO implements Serializable
+public abstract class PO extends BasePO
 {
 
-    @Id
-    @GeneratedValue
-    private Long id;
+    @Column(name = "deleted_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date deletedDate;
 
-    public Long getId()
+    @Column(name = "created_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdDate;
+
+    @Column(name = "updated_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedDate;
+
+    @Column(name = "version", columnDefinition=" integer DEFAULT 0 ")
+    @Version
+    private int version;
+
+    public int getVersion()
     {
-        return id;
+        return version;
     }
 
-    public void setId(Long id)
+    public void setVersion(int version)
     {
-        this.id = id;
+        this.version = version;
     }
 
-    @Override
-    public int hashCode()
+    public Date getUpdatedDate()
     {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        return result;
+        return updatedDate;
     }
 
-    @Override
-    public boolean equals(Object obj)
+    public void setUpdatedDate(Date updatedDate)
     {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        PO other = (PO) obj;
-        if (id == null)
-        {
-            if (other.id != null)
-                return false;
-        }
-        else if (!id.equals(other.id))
-            return false;
-        return true;
+        this.updatedDate = updatedDate;
+    }
+
+    public Date getDeletedDate()
+    {
+        return deletedDate;
+    }
+
+    public void setDeletedDate(Date deletedDate)
+    {
+        this.deletedDate = deletedDate;
+    }
+
+    public Date getCreatedDate()
+    {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate)
+    {
+        this.createdDate = createdDate;
     }
 
 }
