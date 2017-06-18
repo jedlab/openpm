@@ -1,27 +1,38 @@
 package com.jedlab.pm.webflow;
 
-import java.util.Map;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
+import org.hibernate.sql.JoinType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 
+import com.jedlab.framework.db.QueryMapper;
 import com.jedlab.framework.spring.service.AbstractCrudService;
+import com.jedlab.framework.spring.service.Restriction;
+import com.jedlab.framework.spring.web.Filter;
 import com.jedlab.framework.web.AbstractQueryActionBean;
 import com.jedlab.pm.model.Project;
 import com.jedlab.pm.service.ProjectService;
 
+/**
+ * @author Omid Pourhadi
+ *
+ */
 public class ProjectQueryWebFlow extends AbstractQueryActionBean<Project>
 {
 
     @Autowired
     transient ProjectService projectService;
-    
+
+    private ProjectFilter filter = new ProjectFilter();
+
+    public ProjectFilter getFilter()
+    {
+        return filter;
+    }
+
+    public void setFilter(ProjectFilter filter)
+    {
+        this.filter = filter;
+    }
+
     @Override
     public AbstractCrudService<Project> getService()
     {
@@ -29,24 +40,12 @@ public class ProjectQueryWebFlow extends AbstractQueryActionBean<Project>
     }
 
     @Override
-    public Specification<Project> getQueryFilter(Map<String, Object> dataTableFilterMap)
+    protected Restriction getRestriction()
     {
-        return new ProjectSpecification();
+        return criteria -> {
+            criteria.createAlias("owner", "o", JoinType.LEFT_OUTER_JOIN);
+            QueryMapper.filterMap(getFilter(), criteria);
+        };
     }
-    
-    public static class ProjectSpecification implements Specification<Project>
-    {
-
-        @Override
-        public Predicate toPredicate(Root<Project> root, CriteriaQuery<?> query, CriteriaBuilder cb)
-        {
-            root.join("owner", JoinType.LEFT);
-            return null;
-        }
-
-       
-        
-    }
-
 
 }

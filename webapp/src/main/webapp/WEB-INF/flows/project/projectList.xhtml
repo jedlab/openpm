@@ -7,6 +7,15 @@
 				template="/WEB-INF/templates/layout.xhtml">
 
 <ui:define name="content">
+
+	<h:form>
+		<ui:decorate template="/WEB-INF/templates/sameLineEdit.xhtml">
+				<ui:define name="label">Project Name</ui:define>
+				<p:inputText id="inp" value="#{projectQuery.filter.projectName}"></p:inputText>
+		</ui:decorate>
+		<p:commandButton value="#{msgs['Search']}" update=":projectListForm:projectListTable"></p:commandButton>
+	</h:form>
+
 	Project List
 	<br />
 	

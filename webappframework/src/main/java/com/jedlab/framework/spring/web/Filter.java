@@ -1,17 +1,16 @@
 package com.jedlab.framework.spring.web;
 
 import java.io.Serializable;
-import java.util.Map;
+import java.util.List;
+
+import org.hibernate.Criteria;
 
 import com.jedlab.framework.db.QueryMapper;
+import com.jedlab.framework.util.CollectionUtil;
 
 public interface Filter extends Serializable
 {
 
-    default public boolean hasFilter()
-    {
-        Map<String, Object> filterMap = QueryMapper.filterMap(this);
-        return filterMap.size() > 0;
-    }
+    
 
 }

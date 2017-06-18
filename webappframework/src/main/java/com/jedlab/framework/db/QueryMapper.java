@@ -18,11 +18,17 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Transient;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 
 import com.jedlab.framework.reflections.Property;
 import com.jedlab.framework.reflections.ReflectionUtil;
 import com.jedlab.framework.spring.web.Filter;
+import com.jedlab.framework.spring.web.ParamOperator;
+import com.jedlab.framework.spring.web.ParameterItem;
+import com.jedlab.framework.spring.web.QParam;
 import com.jedlab.framework.util.CollectionUtil;
+import com.jedlab.framework.util.StringUtil;
 
 /**
  * @author omidp
@@ -134,8 +140,7 @@ public class QueryMapper
         }
         return maps;
     }
-    
-    
+
     /**
      * used for getting Column name and filed name from entity
      * 
@@ -168,27 +173,62 @@ public class QueryMapper
         return props;
     }
 
-    public static Map<String, Object> filterMap(Filter filter)
+    public static void filterMap(Filter filter, Criteria criteria)
     {
-        Map<String, Object> filters = new WeakHashMap<String, Object>();
+        List<ParameterItem> filterItems = new ArrayList<>();
         Class<? extends Filter> clz = filter.getClass();
         PropertyDescriptor[] pds = PropertyUtils.getPropertyDescriptors(clz);
         for (PropertyDescriptor pd : pds)
         {
-            if(pd.getPropertyType().equals(Class.class))
+            if (pd.getPropertyType().equals(Class.class))
                 continue;
             try
             {
-                Object invoke = pd.getReadMethod().invoke(filter, null);
-                filters.put(pd.getName(), invoke);
+                Method getter = pd.getReadMethod();
+                if (getter != null && getter.isAnnotationPresent(QParam.class))
+                {
+                    QParam annotation = getter.getAnnotation(QParam.class);
+                    Object invoke = pd.getReadMethod().invoke(filter, null);
+                    String propertyName = pd.getName();
+                    if(StringUtil.isNotEmpty(annotation.propertyName()))
+                        propertyName = annotation.propertyName();
+                    filterItems.add(new ParameterItem(propertyName, annotation.operator(), invoke));
+                }
             }
             catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
             {
                 e.printStackTrace();
             }
         }
-        filters.values().removeIf(Objects::isNull);
-        return filters;
+        filterItems.forEach(item -> {
+            if (item.getValue() != null)
+            {
+                if (ParamOperator.LIKE.equals(item.getOperator()))
+                {
+                    criteria.add(Restrictions.like(item.getPropertyName(), "%" + item.getValue() + "%"));
+                }
+                if (ParamOperator.EQ.equals(item.getOperator()))
+                {
+                    criteria.add(Restrictions.eq(item.getPropertyName(), item.getValue()));
+                }
+                if (ParamOperator.NEQ.equals(item.getOperator()))
+                {
+                    criteria.add(Restrictions.ne(item.getPropertyName(), item.getValue()));
+                }
+                if (ParamOperator.GT.equals(item.getOperator()))
+                {
+                    criteria.add(Restrictions.gt(item.getPropertyName(), item.getValue()));
+                }
+                if (ParamOperator.LT.equals(item.getOperator()))
+                {
+                    criteria.add(Restrictions.lt(item.getPropertyName(), item.getValue()));
+                }
+                if (ParamOperator.SQLQUERY.equals(item.getOperator()))
+                {
+                    criteria.add(Restrictions.sqlRestriction(String.valueOf(item.getValue())));
+                }
+            }
+        });
     }
 
 }

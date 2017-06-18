@@ -11,6 +11,9 @@ import javax.persistence.metamodel.ManagedType;
 import javax.persistence.metamodel.Metamodel;
 import javax.persistence.metamodel.SingularAttribute;
 
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Projections;
 import org.primefaces.model.SortOrder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,29 +40,33 @@ public abstract class AbstractService<E>
     public abstract AbstractDAO<E> getDao();
 
     public List<E> load(int first, int pageSize, List<com.jedlab.framework.web.ExtendedLazyDataModel.SortProperty> sortFields,
-            Map<String, Object> filters, Specification<E> spec)
+            Map<String, Object> filters, Class<E> clz, Restriction restriction)
     {
-        // TODO : apply filters
-        Page<E> result = null;
-        Sort sort = applySort(sortFields);
-        if (spec != null)
+        // The JPA spec does not allow a alias to be given to a fetch join, so
+        // we use hibernate seesion to ignore the spec
+        List<E> result = new ArrayList<>();
+        Session hibernateSession = (Session) entityManager.getDelegate();
+        Criteria criteria = hibernateSession.createCriteria(clz);
+        if(restriction != null)
+            restriction.applyFilter(criteria);
+        if (CollectionUtil.isNotEmpty(sortFields))
         {
-            if (sort != null)
-                result = getDao().findAll(spec, new PageRequest(first / pageSize, pageSize, sort));
-            else
-                result = getDao().findAll(spec, new PageRequest(first / pageSize, pageSize));
+            sortFields.forEach(item -> {
+                if (SortOrder.ASCENDING.equals(item.getSortOrder()))
+                    criteria.addOrder(org.hibernate.criterion.Order.asc(item.getName()));
+                else
+                    criteria.addOrder(org.hibernate.criterion.Order.desc(item.getName()));
+            });
         }
-        else
-        {
-            if (sort != null)
-                result = getDao().findAll(new PageRequest(first / pageSize, pageSize, sort));
-            else
-                result = getDao().findAll(new PageRequest(first / pageSize, pageSize));
-        }
-        return result.getContent();
+        criteria.setFirstResult(first);
+        criteria.setMaxResults(pageSize);
+        result = criteria.list();
+        return result;
     }
+    
+    
 
-    private Sort applySort(List<SortProperty> sortFields)
+    protected Sort applySort(List<SortProperty> sortFields)
     {
         if (CollectionUtil.isEmpty(sortFields))
             return null;
@@ -76,12 +83,14 @@ public abstract class AbstractService<E>
         return new Sort(orders);
     }
 
-    public Long count(Specification<E> spec)
+    public Long count(Class<E> clz, Restriction restriction)
     {
-        if (spec != null)
-            return getDao().count(spec);
-        else
-            return getDao().count();
+        Session hibernateSession = (Session) entityManager.getDelegate();
+        Criteria criteria = hibernateSession.createCriteria(clz);
+        if(restriction != null)
+            restriction.applyFilter(criteria);
+        criteria.setProjection(Projections.rowCount());
+        return (Long) criteria.uniqueResult();
     }
 
     public void insert(E entity)
@@ -141,12 +150,12 @@ public abstract class AbstractService<E>
     {
         return entityManager.find(clz, id);
     }
-    
+
     public Iterable<E> findAll()
     {
         return getDao().findAll();
     }
-    
+
     public Iterable<E> findAll(Specification<E> spec)
     {
         return getDao().findAll(spec);

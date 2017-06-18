@@ -10,7 +10,11 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
+import org.hibernate.Criteria;
+import org.hibernate.Session;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 import org.springframework.data.jpa.domain.Specification;
@@ -20,6 +24,7 @@ import com.jedlab.framework.report.JasperDataExporter;
 import com.jedlab.framework.report.JasperPaginationHandler;
 import com.jedlab.framework.report.ReportHeader;
 import com.jedlab.framework.spring.service.AbstractCrudService;
+import com.jedlab.framework.spring.service.Restriction;
 
 public abstract class AbstractQueryActionBean<E extends EntityModel> extends AbstractActionBean
 {
@@ -82,6 +87,9 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
         logger.info("load");
     }
 
+    @PersistenceContext
+    EntityManager em;
+    
     @PostConstruct
     public void init()
     {
@@ -93,19 +101,19 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
             protected List<E> lazyLoad(int first, int pageSize,
                     List<com.jedlab.framework.web.ExtendedLazyDataModel.SortProperty> sortFields, Map<String, Object> filters)
             {
-                return getService().load(first, pageSize, sortFields, filters, getQueryFilter(filters));
+                return getService().load(first, pageSize, sortFields, filters, getEntityClass(), getRestriction());                
             }
 
             @Override
             protected Number rowCount(Map<String, Object> filters)
             {
-                resultCount = getService().count(getQueryFilter(filters));
+                resultCount = getService().count(getEntityClass(), getRestriction());
                 return resultCount;
             }
 
         };
     }
-
+    
     public ExtendedLazyDataModel<E> getResultList()
     {
         return resultList;
@@ -167,13 +175,13 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
                 @Override
                 public Collection<?> getResultList(Integer firstResult, Integer maxResult)
                 {
-                    return getService().load(firstResult, maxResult, null, null, getQueryFilter(null));
+                    return getService().load(firstResult, maxResult, null, null, clz, getRestriction());
                 }
 
                 @Override
                 public long getResultCount()
                 {
-                    return getService().count(getQueryFilter(null));
+                    return getService().count(clz, getRestriction());
                 }
             };
         }
@@ -224,7 +232,10 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
         return entityClass;
     }
 
-    public abstract Specification<E> getQueryFilter(Map<String, Object> dataTableFilterMap);
+    protected Restriction getRestriction()
+    {
+        return null;
+    }
 
 
 }
