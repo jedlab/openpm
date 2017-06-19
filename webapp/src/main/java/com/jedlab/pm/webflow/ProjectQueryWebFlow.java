@@ -28,11 +28,6 @@ public class ProjectQueryWebFlow extends AbstractQueryActionBean<Project>
         return filter;
     }
 
-    public void setFilter(ProjectFilter filter)
-    {
-        this.filter = filter;
-    }
-
     @Override
     public AbstractCrudService<Project> getService()
     {

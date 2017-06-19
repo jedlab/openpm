@@ -14,6 +14,19 @@
 	<tx:annotation-driven transaction-manager="transactionManager"/>
 	<context:component-scan base-package="com.jedlab.pm.service" />
 	
+		
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="defaultEncoding" value="utf-8"></property>
+		<property name="fallbackToSystemLocale" value="false"></property>
+		<property name="useCodeAsDefaultMessage" value="true"></property>
+		<property name="basenames">
+			<list>
+				<value>i18n/messages</value>
+				
+			</list>
+		</property>
+	</bean>
+	
 	
 
 
