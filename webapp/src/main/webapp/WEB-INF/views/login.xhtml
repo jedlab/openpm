@@ -17,8 +17,8 @@
 		<div class="span-10 append-2 last"> 
 		
 			<c:if test="${not empty param.login_error}">
-				<div class="error">
-					Your login attempt was not successful, try again.<br /> Reason:
+				<div class="error dir-rtl">
+					#{msgs['Login_Failed']}<br /> 
 					#{sessionScope.SPRING_SECURITY_LAST_EXCEPTION.message}
 				</div>
 			</c:if>

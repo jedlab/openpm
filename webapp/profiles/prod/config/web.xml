@@ -116,10 +116,6 @@
 		</param-value>
 	</context-param>
 
-	<listener>
-		<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
-	</listener>
-
 
 
 	<listener>
@@ -252,6 +248,19 @@
 	</filter>
 	<filter-mapping>
 		<filter-name>FarsiTypeFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<filter>
+		<filter-name>FarsiLocaleFilter</filter-name>
+		<filter-class>com.jedlab.framework.web.FarsiLocaleFilter</filter-class>
+		<init-param>
+			<param-name>locale</param-name>
+			<param-value>fa</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>FarsiLocaleFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
