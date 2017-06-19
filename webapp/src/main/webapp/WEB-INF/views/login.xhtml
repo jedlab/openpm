@@ -25,9 +25,9 @@
 			<form name="f" action="${request.contextPath}/app/loginProcess"
 				method="post">
 				<fieldset>
-					<legend>Login Information</legend>
+					<legend>#{msgs['Login']}</legend>
 					<p>
-						User: <br />
+						#{msgs['Username']}: <br />
 						<c:if test="${not empty param.login_error}">
 							<c:set var="username"
 								value="${sessionScope.SPRING_SECURITY_LAST_USERNAME}" />
@@ -35,13 +35,13 @@
 						<input type="text" name="username" value="#{username}" />
 					</p>
 					<p>
-						Password: <br /> <input type="password" name="password" />
+						#{msgs['Password']}: <br /> <input type="password" name="password" />
 					</p>
 					<p>
 						
 					</p>
 					<p>
-						<input name="submit" type="submit" value="Login" />
+						<input name="submit" type="submit" value="#{msgs['Submit']}" />
 					</p>
 				</fieldset>
 			</form>

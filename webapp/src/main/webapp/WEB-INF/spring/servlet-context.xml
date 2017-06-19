@@ -18,7 +18,7 @@
 
 	<!-- Scan for Spring beans declared via annotations. -->
 	<context:component-scan
-		base-package="com.jedlab.pm.webflow, com.jedlab.pm.controller" />
+		base-package="com.jedlab.pm.webflow, com.jedlab.pm.controller, com.jedlab.pm.validators" />
 
 	<!-- Enables the Spring MVC @Controller programming model -->
 	<mvc:annotation-driven />

@@ -14,11 +14,12 @@
 		<transition on="create" bind="false" to="projectEdit"></transition>
 	</view-state>
 
-	<view-state id="projectEdit">
+	<view-state id="projectEdit" model="project">
 		<var name="projectHome" class="com.jedlab.pm.webflow.ProjectHomeWebFlow"/>
 		<on-entry>
 			<set name="requestScope.projectId" value="requestParameters.id" type="long" />
 			<evaluate expression="projectHome.setProjectId(projectId)"></evaluate>
+			<evaluate expression="projectHome.instance" result="viewScope.project"></evaluate>
 		</on-entry>
 		<transition on="saved" to="end"></transition>
 		<transition on="updated" to="end"></transition>
