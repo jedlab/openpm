@@ -36,6 +36,10 @@
 
 
 	<!-- SPRING MVC -->
+	<context-param>
+	    <param-name>spring.profiles.active</param-name>
+	    <param-value>dev</param-value>
+	</context-param>
 
 	<servlet>
 		<servlet-name>Spring MVC Servlet</servlet-name>
