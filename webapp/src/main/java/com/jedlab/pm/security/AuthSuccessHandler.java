@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 import com.jedlab.pm.model.User;
@@ -16,7 +17,7 @@ import com.jedlab.pm.model.User;
  * @author omidp
  *
  */
-public class AuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler
+public class AuthSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler
 {
 
     public static final String CURRENT_USERNAME = "currentUsername";
@@ -36,8 +37,7 @@ public class AuthSuccessHandler extends SimpleUrlAuthenticationSuccessHandler
                     session.setAttribute(CURRENT_USERNAME, ((User)principal).getUsername());
             }
         }
-        handle(request, response, authentication);
-        clearAuthenticationAttributes(request);
+        super.onAuthenticationSuccess(request, response, authentication);
     }
 
 }

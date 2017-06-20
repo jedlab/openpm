@@ -11,7 +11,8 @@ http://www.springframework.org/schema/security/spring-security.xsd">
 		</session-management>
 		<intercept-url pattern="/login" access="permitAll" />
 		<intercept-url pattern="/app/secure/**" access="hasRole('ROLE_USER')" />
-		<form-login login-page="/app/login"
+		<form-login login-page="/app/login"			
+			always-use-default-target="false"
 		    default-target-url="/app/home"		    
 		    authentication-success-handler-ref="sucHandler"		    
 			authentication-failure-url="/app/login?login_error=1"
@@ -32,10 +33,13 @@ http://www.springframework.org/schema/security/spring-security.xsd">
    <beans:bean class="com.jedlab.pm.service.UserDetailService" id="udetail"></beans:bean>
    <beans:bean class="com.jedlab.pm.security.AuthSuccessHandler" id="sucHandler">
    	<beans:property name="defaultTargetUrl" value="/app/home"></beans:property>
+   	<beans:property name="alwaysUseDefaultTargetUrl" value="false"></beans:property>
+   	<beans:property name="targetUrlParameter" value="url"></beans:property>
    </beans:bean>
    <beans:bean class="com.jedlab.pm.security.AuthLogoutSuccessHandler" id="authLogoutHandler">
    		<beans:property name="defaultTargetUrl" value="/app/home"></beans:property>
    		<beans:property name="alwaysUseDefaultTargetUrl" value="true"></beans:property>
+   		<beans:property name="targetUrlParameter" value="url"></beans:property>
    		<beans:property name="redirectStrategy">
    			<beans:bean class="com.jedlab.pm.security.JsfRedirectStrategy"></beans:bean>
    		</beans:property>

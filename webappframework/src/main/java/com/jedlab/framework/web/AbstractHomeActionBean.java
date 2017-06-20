@@ -6,7 +6,12 @@ import java.lang.reflect.TypeVariable;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
+import javax.faces.application.FacesMessage.Severity;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.MessageSourceAware;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jedlab.framework.spring.service.AbstractCrudService;
@@ -19,6 +24,9 @@ public abstract class AbstractHomeActionBean<E> extends AbstractActionBean
     private Class<E> entityClass;
     protected E instance;
     private Object id;
+
+    @Autowired
+    protected transient MessageSource messageSource;
 
     protected E createInstance()
     {
@@ -152,10 +160,35 @@ public abstract class AbstractHomeActionBean<E> extends AbstractActionBean
 
     public abstract AbstractCrudService<E> getService();
 
-
     public void save()
     {
         getService().insert(getInstance());
+        getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", createdMessage()));
+        getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+    }
+
+    protected String createdMessage()
+    {
+        String code = getMessageKeyPrefix() + "created";
+        return messageSource.getMessage(code, null, getCurrentLocale());
+    }
+    
+    protected String updatedMessage()
+    {
+        String code = getMessageKeyPrefix() + "updated";
+        return messageSource.getMessage(code, null, getCurrentLocale());
+    }
+    
+    protected String deletedMessage()
+    {
+        String code = getMessageKeyPrefix() + "deleted";
+        return messageSource.getMessage(code, null, getCurrentLocale());
+    }
+
+    protected String getMessageKeyPrefix()
+    {
+        String className = getEntityClass().getName();
+        return className.substring(className.lastIndexOf('.') + 1) + '_';
     }
 
     public void update()
@@ -165,7 +198,7 @@ public abstract class AbstractHomeActionBean<E> extends AbstractActionBean
 
     public void delete()
     {
-        getService().deleteSoft((Long)getId());
+        getService().deleteSoft((Long) getId());
     }
 
     public void load()

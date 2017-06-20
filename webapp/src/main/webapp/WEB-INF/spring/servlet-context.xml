@@ -40,6 +40,7 @@
 	<bean class="org.springframework.webflow.mvc.servlet.FlowHandlerAdapter">
 		<property name="flowExecutor" ref="flowExecutor" />
 		<property name="flowUrlHandler" ref="defaultFlowUrlHandler" />
+		<property name="saveOutputToFlashScopeOnRedirect" value="true"></property>
 	</bean>
 
 	<!-- Maps request paths to flows in the flowRegistry; e.g. a path of /hotels/booking 
