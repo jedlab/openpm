@@ -210,3 +210,12 @@ form, .form-item {
 .w3-bar-block .w3-bar-item{
 	color: #fff;
 }
+#uiMessages{
+	direction: rtl;
+}
+.ui-messages-error-icon{
+	display: none;
+}
+fieldset{
+	direction: rtl;
+}

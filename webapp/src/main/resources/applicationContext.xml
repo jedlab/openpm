@@ -22,7 +22,7 @@
 		<property name="basenames">
 			<list>
 				<value>i18n/messages</value>
-				
+				<value>i18n/ValidationMessages</value>
 			</list>
 		</property>
 	</bean>
@@ -35,7 +35,7 @@
 	<!-- SPRING - JPA -->
 	<import resource="classpath:framework-spring.xml" />
 	<import resource="classpath:datasource.xml" />
-	<jpa:repositories base-package="com.jedlab.pm.dao" entity-manager-factory-ref="entityManagerFactory" transaction-manager-ref="transactionManager" />
+	<jpa:repositories base-package="com.jedlab.pm.dao" query-lookup-strategy="use-declared-query" entity-manager-factory-ref="entityManagerFactory" transaction-manager-ref="transactionManager" />
 
 	<bean class="org.springframework.orm.jpa.JpaTransactionManager"
 		id="transactionManager">

@@ -7,17 +7,19 @@
 				template="/WEB-INF/templates/layout.xhtml">
 
 <ui:define name="content">
+	
+	<fieldset>
+		<legend>#{msgs['Project_List']}</legend>
+		<h:form>
+			<ui:decorate template="/WEB-INF/templates/sameLineEdit.xhtml">
+					<ui:define name="label">#{msgs['Project_Name']}</ui:define>
+					<p:inputText id="inp" value="#{projectQuery.filter.projectName}"></p:inputText>
+			</ui:decorate>
+			<p:commandButton value="#{msgs['Search']}" update=":projectListForm:projectListTable"></p:commandButton>
+		</h:form>
+	
+	</fieldset>
 
-	<h:form>
-		<ui:decorate template="/WEB-INF/templates/sameLineEdit.xhtml">
-				<ui:define name="label">Project Name</ui:define>
-				<p:inputText id="inp" value="#{projectQuery.filter.projectName}"></p:inputText>
-		</ui:decorate>
-		<p:commandButton value="#{msgs['Search']}" update=":projectListForm:projectListTable"></p:commandButton>
-	</h:form>
-
-	Project List
-	<br />
 	
 	<h:form id="projectListForm">
 			<p:dataTable var="_item" 
@@ -38,7 +40,7 @@
 				rowKey="#{_item.id}">
 				
 				<f:facet name="header">
-					<p:commandButton id="btnCreate" value="Create" action="create" immediate="true" />
+					<p:commandButton id="btnCreate" value="#{msgs['Create']}" action="create" immediate="true" />
 				</f:facet>
 				
 				

@@ -35,8 +35,11 @@
 				class="w3-bar-item w3-button w3-hover-white">#{msgs['Project_List']}</a>
 			<sec:authorize ifAnyGranted="ROLE_USER">			
 				<a href="${request.contextPath}/app/logout" onclick="w3_close()"
-					class="w3-bar-item w3-button w3-hover-white"> Welcome,
-					${currentUser.name} | #{msgs['Logout']} </a>
+					class="w3-bar-item w3-button w3-hover-white">  
+					#{sessionScope.currentUsername}	
+				</a>
+				<a href="${request.contextPath}/app/logout" onclick="w3_close()"
+					class="w3-bar-item w3-button w3-hover-white"> #{msgs['Logout']} </a>	
 			</sec:authorize>
 			<sec:authorize ifNotGranted="ROLE_USER">
 				<a class="w3-bar-item w3-button w3-hover-white"

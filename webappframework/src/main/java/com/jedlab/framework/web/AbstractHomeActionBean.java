@@ -153,22 +153,19 @@ public abstract class AbstractHomeActionBean<E> extends AbstractActionBean
     public abstract AbstractCrudService<E> getService();
 
 
-    public String save()
+    public void save()
     {
         getService().insert(getInstance());
-        return "saved";
     }
 
-    public String update()
+    public void update()
     {
         getService().update(getInstance());
-        return "updated";
     }
 
-    public String delete()
+    public void delete()
     {
         getService().deleteSoft((Long)getId());
-        return "deleted";
     }
 
     public void load()

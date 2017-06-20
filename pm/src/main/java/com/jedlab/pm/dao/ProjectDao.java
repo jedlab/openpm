@@ -7,7 +7,9 @@ import com.jedlab.pm.model.Project;
  * @author Omid Pourhadi
  *
  */
-public interface ProjectDao extends AbstractCrudDAO<Project>
+public interface ProjectDao extends AbstractCrudDAO<Project>, ProjectDaoCustom
 {
+
+    
 
 }

@@ -7,27 +7,32 @@
 				template="/WEB-INF/templates/layout.xhtml">
 
 <ui:define name="content">
-	Project Edit
-	<br />
+
+	<h:form id="projectEditForm" styleClass="form">
+		<fieldset>
+			<legend>#{msgs['Project_Edit']}</legend>
 	
-	<h:form id="saleAgentEditForm" styleClass="form">
-
-			<ui:decorate template="/WEB-INF/templates/sameLineEdit.xhtml">
-				<ui:define name="label">Name</ui:define>
-				<ui:define name="msg">
-					<p:message for="inp" display="text"></p:message>
-				</ui:define>
-				<p:inputText required="true" id="inp" value="#{project.name}"></p:inputText>
-				<ui:param name="required" value="true"></ui:param>
-			</ui:decorate>
-
+	
+				<ui:decorate template="/WEB-INF/templates/sameLineEdit.xhtml">
+					<ui:define name="label">Name</ui:define>
+					<ui:define name="msg">
+						<p:message for="inp" display="text"></p:message>
+					</ui:define>
+					<p:inputText required="true" id="inp" value="#{project.name}"></p:inputText>
+					<ui:param name="required" value="true"></ui:param>
+				</ui:decorate>
+	
+				
 			
-			<p:commandButton value="#{msgs['Save']}" action="#{projectHome.save()}" update="@form" rendered="#{!projectHome.idDefined}"></p:commandButton>
-			<p:commandButton value="#{msgs['Update']}" action="#{projectHome.update()}" update="@form" rendered="#{projectHome.idDefined}"></p:commandButton>
-			<p:commandButton value="#{msgs['Delete']}" styleClass="button red" action="#{projectHome.delete()}"  rendered="#{projectHome.idDefined}"></p:commandButton>
-			<p:commandButton action="cancel" value="#{msgs['Back']}" immediate="true"></p:commandButton>
+		</fieldset>
 
-		</h:form>
+		<p:commandButton value="#{msgs['Save']}" action="save" update="@form :uiMessages" rendered="#{!projectHome.idDefined}" styleClass="button blue"></p:commandButton>
+		<p:commandButton value="#{msgs['Update']}" action="update" update="@form :uiMessages" rendered="#{projectHome.idDefined}" styleClass="button green"></p:commandButton>
+		<p:commandButton value="#{msgs['Delete']}" action="delete"  rendered="#{projectHome.idDefined}" styleClass="button red"></p:commandButton>
+		<p:commandButton action="cancel" value="#{msgs['Back']}" immediate="true" styleClass="button outline"></p:commandButton>
+	
+	</h:form>	
+	
 	
 </ui:define>
 </ui:composition>

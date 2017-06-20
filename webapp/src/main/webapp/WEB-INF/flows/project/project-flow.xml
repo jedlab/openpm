@@ -21,9 +21,15 @@
 			<evaluate expression="projectHome.setProjectId(projectId)"></evaluate>
 			<evaluate expression="projectHome.instance" result="viewScope.project"></evaluate>
 		</on-entry>
-		<transition on="saved" to="end"></transition>
-		<transition on="updated" to="end"></transition>
-		<transition on="deleted" to="end"></transition>
+		<transition on="save" to="end">
+			<evaluate expression="projectHome.save()"></evaluate>
+		</transition>
+		<transition on="update" to="end">
+			<evaluate expression="projectHome.update()"></evaluate>
+		</transition>
+		<transition on="delete" to="end">
+			<evaluate expression="projectHome.delete()"></evaluate>
+		</transition>
 		<transition on="cancel" to="end"></transition>
 	</view-state>
 	

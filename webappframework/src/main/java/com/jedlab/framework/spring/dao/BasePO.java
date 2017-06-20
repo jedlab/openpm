@@ -3,6 +3,7 @@ package com.jedlab.framework.spring.dao;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 
 import com.jedlab.framework.db.EntityModel;
 
@@ -24,6 +25,13 @@ public abstract class BasePO implements EntityModel<Long>
         this.id = id;
     }
 
+    @Transient
+    // DATAJPA-622
+    public boolean isNew()
+    {
+        return null == getId();
+    }
+
     @Override
     public int hashCode()
     {
@@ -36,20 +44,15 @@ public abstract class BasePO implements EntityModel<Long>
     @Override
     public boolean equals(Object obj)
     {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
         BasePO other = (BasePO) obj;
         if (id == null)
         {
-            if (other.id != null)
-                return false;
+            if (other.id != null) return false;
         }
-        else if (!id.equals(other.id))
-            return false;
+        else if (!id.equals(other.id)) return false;
         return true;
     }
 

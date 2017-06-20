@@ -8,16 +8,25 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.jedlab.framework.spring.dao.PO;
 
+/**
+ * @author omidp
+ *
+ */
+@NamedQueries({@NamedQuery(name=Project.FIND_BY_NAME, query="select p from Project p where p.name = :name")})
 @Entity
 @Table(name = "project")
 public class Project extends PO
 {
 
+    public static final String FIND_BY_NAME = "project.findByName";
+    
     @Column(name = "proj_name")
     private String name;
 

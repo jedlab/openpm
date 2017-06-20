@@ -8,7 +8,17 @@
 		http://www.springframework.org/schema/faces http://www.springframework.org/schema/faces/spring-faces.xsd">
 
 	<!-- JSR Hibernate Bean validation -->
-	<beans:bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+	<beans:bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+		<beans:property name="messageInterpolator">
+			<beans:bean class="org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator">
+				<beans:constructor-arg index="0" type="org.hibernate.validator.spi.resourceloading.ResourceBundleLocator">
+					<beans:bean class="org.springframework.validation.beanvalidation.MessageSourceResourceBundleLocator">
+						<beans:constructor-arg type="org.springframework.context.MessageSource" index="0" ref="messageSource"></beans:constructor-arg>
+					</beans:bean>
+				</beans:constructor-arg>
+			</beans:bean>
+		</beans:property>
+	</beans:bean>
 	
 	<beans:bean id="jpaFlowExecutionListener"
       class="org.springframework.webflow.persistence.JpaFlowExecutionListener">
