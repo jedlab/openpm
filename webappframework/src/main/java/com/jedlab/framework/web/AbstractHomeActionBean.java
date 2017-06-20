@@ -194,11 +194,15 @@ public abstract class AbstractHomeActionBean<E> extends AbstractActionBean
     public void update()
     {
         getService().update(getInstance());
+        getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", updatedMessage()));
+        getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
     }
 
     public void delete()
     {
         getService().deleteSoft((Long) getId());
+        getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "", deletedMessage()));
+        getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
     }
 
     public void load()

@@ -1,37 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<flow xmlns="http://www.springframework.org/schema/webflow"
+<flow  xmlns="http://www.springframework.org/schema/webflow"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="
       	http://www.springframework.org/schema/webflow
-      	http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd">
+      	http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd"
+      	parent="parent-flow">
+
+	
 
 	<secured attributes="ROLE_USER"/>
 	
 	<persistence-context />
 	
 	<view-state id="projectList">
+		<attribute name="commit" value="true" type="java.lang.Boolean"></attribute>
 		<var name="projectQuery" class="com.jedlab.pm.webflow.ProjectQueryWebFlow"/>
 		<transition on="create" bind="false" to="projectEdit"></transition>
 	</view-state>
 
 	<view-state id="projectEdit" model="project">
+		<attribute name="commit" value="true" type="java.lang.Boolean"></attribute>
 		<var name="projectHome" class="com.jedlab.pm.webflow.ProjectHomeWebFlow"/>
 		<on-entry>
 			<set name="requestScope.projectId" value="requestParameters.id" type="long" />
 			<evaluate expression="projectHome.setProjectId(projectId)"></evaluate>
 			<evaluate expression="projectHome.instance" result="viewScope.project"></evaluate>
 		</on-entry>
-		<transition on="save" to="end">
+		<transition on="save" to="projectList">
 			<evaluate expression="projectHome.save()"></evaluate>
 		</transition>
-		<transition on="update" to="end">
+		<transition on="update" to="projectList">
 			<evaluate expression="projectHome.update()"></evaluate>
 		</transition>
-		<transition on="delete" to="end">
+		<transition on="delete" to="projectList">
 			<evaluate expression="projectHome.delete()"></evaluate>
 		</transition>
 		<transition on="cancel" to="end"></transition>
 	</view-state>
+	
+	
 	
 	
 	<end-state id="end" commit="true" view="externalRedirect:servletRelative:/project"></end-state>

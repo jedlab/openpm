@@ -10,15 +10,13 @@
 	
 	<fieldset>
 		<legend>#{msgs['Project_List']}</legend>
-		test is : #{confirmationNumber} <br />
-		#{test}
-		#{param['cid']}
 		<h:form>
 			<ui:decorate template="/WEB-INF/templates/sameLineEdit.xhtml">
 					<ui:define name="label">#{msgs['Project_Name']}</ui:define>
 					<p:inputText id="inp" value="#{projectQuery.filter.projectName}"></p:inputText>
 			</ui:decorate>
-			<p:commandButton value="#{msgs['Search']}" update=":projectListForm:projectListTable"></p:commandButton>
+			<p:commandButton value="#{msgs['Search']}" styleClass="button" update=":projectListForm:projectListTable"></p:commandButton>
+			<p:commandButton value="#{msgs['Reset']}" ajax="false" styleClass="button secondary" action="exit"></p:commandButton>
 		</h:form>
 	
 	</fieldset>
