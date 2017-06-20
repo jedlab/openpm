@@ -41,14 +41,14 @@
 	<h:body>
 
 		<p:growl id="globalGrowl" widgetVar="globalGrowlWidget"
-			showDetail="true" sticky="true" globalOnly="true" />
+			showDetail="true" showSummary="true" sticky="true" globalOnly="true" />
 
 		<div class="wrapper">
 		
 			<ui:include src="/WEB-INF/templates/sidebar.xhtml" />
 			
 			<div style="margin-right: 350px;margin-left: 50px;margin-top: 60px;">
-				<p:messages id="uiMessages" closable="true" styleClass="msgclz"></p:messages>
+				<p:messages id="uiMessages" closable="true" styleClass="msgclz" globalOnly="false"></p:messages>
 				<ui:insert name="content"></ui:insert>
 			</div>
 			<div class="push">
@@ -63,6 +63,10 @@
 			jQuery(document).ready(function(){
 				
 				jQuery(".ui-chkbox-all").hide();
+
+				var msg = jQuery(".ui-messages-info-summary").html();
+				if(msg == "")
+					jQuery("#uiMessages").hide();
 				
 			});
 		</script>

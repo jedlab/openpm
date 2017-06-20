@@ -10,6 +10,9 @@
 	
 	<fieldset>
 		<legend>#{msgs['Project_List']}</legend>
+		test is : #{confirmationNumber} <br />
+		#{test}
+		#{param['cid']}
 		<h:form>
 			<ui:decorate template="/WEB-INF/templates/sameLineEdit.xhtml">
 					<ui:define name="label">#{msgs['Project_Name']}</ui:define>
@@ -40,7 +43,7 @@
 				rowKey="#{_item.id}">
 				
 				<f:facet name="header">
-					<p:commandButton id="btnCreate" value="#{msgs['Create']}" action="create" immediate="true" />
+					<p:commandButton id="btnCreate" value="#{msgs['Create']}" action="create" ajax="false" immediate="true" />
 				</f:facet>
 				
 				

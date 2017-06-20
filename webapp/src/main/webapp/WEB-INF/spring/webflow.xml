@@ -21,8 +21,20 @@
 	</beans:bean>
 	
 	<beans:bean id="jpaFlowExecutionListener"
-      class="org.springframework.webflow.persistence.JpaFlowExecutionListener">
+      class="com.jedlab.pm.dataaccess.webflow.JpaManagedFlowExecutionListener">
 	    <beans:constructor-arg ref="entityManagerFactory" />
+	    <beans:constructor-arg ref="transactionManager" />
+	</beans:bean>
+	
+	<beans:bean class="com.jedlab.pm.dataaccess.webflow.HibernateSessionFactoryBuilder" id="hemf">
+		<beans:property name="entityManagerFactory" ref="entityManagerFactory"></beans:property>
+	</beans:bean>
+	
+	<beans:bean id="hibernateFlowExecutionListener"
+      class="org.springframework.webflow.persistence.HibernateFlowExecutionListener">
+	    <beans:constructor-arg >
+	    	<beans:bean factory-method="createSessionFactory" factory-bean="hemf"></beans:bean>
+	    </beans:constructor-arg>	
 	    <beans:constructor-arg ref="transactionManager" />
 	</beans:bean>
 
@@ -31,8 +43,11 @@
 		<flow-execution-listeners>
 			<listener ref="facesContextListener"/>
 			<listener ref="securityListener"/>
-			<listener ref="jpaFlowExecutionListener"/>
+			<listener ref="jpaFlowExecutionListener"/>			
 		</flow-execution-listeners>
+		<flow-execution-attributes>
+			<always-redirect-on-pause value="true"/>
+		</flow-execution-attributes>
 		<flow-execution-attributes>
 			<redirect-in-same-state value="false"/>
 		</flow-execution-attributes>

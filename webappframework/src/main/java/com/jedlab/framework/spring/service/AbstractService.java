@@ -21,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.jedlab.framework.exceptions.ServiceException;
 import com.jedlab.framework.spring.dao.AbstractDAO;
@@ -39,6 +40,7 @@ public abstract class AbstractService<E>
 
     public abstract AbstractDAO<E> getDao();
 
+    @Transactional(readOnly=true)
     public List<E> load(int first, int pageSize, List<com.jedlab.framework.web.ExtendedLazyDataModel.SortProperty> sortFields,
             Map<String, Object> filters, Class<E> clz, Restriction restriction)
     {
@@ -83,6 +85,7 @@ public abstract class AbstractService<E>
         return new Sort(orders);
     }
 
+    @Transactional(readOnly=true)
     public Long count(Class<E> clz, Restriction restriction)
     {
         Session hibernateSession = (Session) entityManager.getDelegate();
@@ -93,6 +96,7 @@ public abstract class AbstractService<E>
         return (Long) criteria.uniqueResult();
     }
 
+    @Transactional
     public void insert(E entity)
     {
         beforeInsert(entity);
@@ -100,11 +104,13 @@ public abstract class AbstractService<E>
         afterInsert(entity);
     }
 
+    @Transactional
     public void update(E entity)
     {
         beforeUpdate(entity);
         getDao().save(entity);
         afterUpdate(entity);
+        
     }
 
     protected void afterUpdate(E entity)
@@ -146,6 +152,7 @@ public abstract class AbstractService<E>
 
     }
 
+    @Transactional(readOnly=true)
     public E findById(Class<E> clz, Object id)
     {
         return entityManager.find(clz, id);
