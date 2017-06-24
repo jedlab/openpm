@@ -20,6 +20,8 @@ This project contains following technologies and frameworks :
 * Spring AOP
 * velocity
 * jstl
+* logging ( log4j, slf4j)
+
 ## Database
 
 the database we have chosen is postgresql
@@ -37,3 +39,10 @@ mvn clean install -DskipTests=true
 ```
 http://localhost:8080/webapp
 ```
+
+# What you will learn 
+
+* maven profiling
+* spring framework
+* building CRUD web application
+* database
