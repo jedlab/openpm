@@ -13,6 +13,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.jedlab.framework.report.ReportField;
 import com.jedlab.framework.spring.dao.PO;
 
 /**
@@ -28,6 +29,7 @@ public class Project extends PO
     public static final String FIND_BY_NAME = "project.findByName";
     
     @Column(name = "proj_name")
+    @ReportField(msg="Project_Name")
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)

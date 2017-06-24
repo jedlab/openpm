@@ -193,7 +193,7 @@
 
 	<context-param>
 		<param-name>primefaces.FONT_AWESOME</param-name>
-		<param-value>false</param-value>
+		<param-value>true</param-value>
 	</context-param>
 
 	<!-- OmniFaces specific settings. -->

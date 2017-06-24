@@ -4,6 +4,7 @@
 	  			xmlns:h="http://java.sun.com/jsf/html"
 	  			xmlns:f="http://java.sun.com/jsf/core"
 	  			xmlns:p="http://primefaces.org/ui"
+	  			xmlns:jedlab="http://java.sun.com/jsf/composite/comp"
 				template="/WEB-INF/templates/layout.xhtml">
 
 <ui:define name="content">
@@ -41,7 +42,26 @@
 				rowKey="#{_item.id}">
 				
 				<f:facet name="header">
-					<p:commandButton id="btnCreate" value="#{msgs['Create']}" action="create" ajax="false" immediate="true" />
+				
+					<div class="row around">
+					    <div class="col col-3">
+					    	<jedlab:exportButtons pdfAction="#{projectQuery.exportAsPdf()}"
+								xlsAction="#{projectQuery.exportAsXls()}" 
+								inlinePdfAction="#{projectQuery.exportAsInlinePdf()}">
+							</jedlab:exportButtons>
+						</div>
+					    <div class="col col-3">
+					    	<p:commandButton id="btnCreate" value="#{msgs['Create']}" action="create" ajax="false" immediate="true" />
+					    </div>
+					    <div class="col col-3">
+					    	<p:commandButton id="toggler" type="button" value="#{msgs['Columns']}" style="float:right" icon="ui-icon-calculator" />
+        					<p:columnToggler datasource="projectListTable" trigger="toggler" />
+					    </div>
+					</div>
+					
+					
+					
+					
 				</f:facet>
 				
 				
@@ -49,7 +69,7 @@
 				
 				
 				
-				<p:column headerText="Name">
+				<p:column headerText="Name" sortBy="#{_item.name}">
 					<p:commandLink value="#{_item.name}" action="create"
 						>
 						<f:param value="#{_item.id}" name="id"></f:param>

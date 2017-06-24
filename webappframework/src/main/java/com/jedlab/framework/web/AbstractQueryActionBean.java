@@ -189,7 +189,7 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
         @Override
         protected ReportHeader getReportHeader()
         {
-            return null;
+            return getFormReportHeader();
         }
 
         @Override
@@ -198,6 +198,11 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
             return clz;
         }
 
+    }
+    
+    protected ReportHeader getFormReportHeader()
+    {
+        return null;
     }
 
     public Class<E> getEntityClass()

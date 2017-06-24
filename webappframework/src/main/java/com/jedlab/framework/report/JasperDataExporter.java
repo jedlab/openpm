@@ -229,11 +229,11 @@ public abstract class JasperDataExporter<E> implements Serializable
         if(header != null)
         {
             parameters.put("Report_Logo", header.logoPath());
-            parameters.put("Report_Name_Label", msg.getMessage("cardTransactionReport.reportName", null, locale));
+            parameters.put("Report_Name_Label", msg.getMessage("form.reportName", null, locale));
             parameters.put("Report_Name", header.title());
-            parameters.put("Report_User_Label", msg.getMessage("cardTransactionReport.reportUsername", null, locale));
+            parameters.put("Report_User_Label", msg.getMessage("form.reportUsername", null, locale));
             parameters.put("Report_User", header.username());
-            parameters.put("Report_Date_Label", msg.getMessage("cardTransactionReport.reportDate", null, locale));
+            parameters.put("Report_Date_Label", msg.getMessage("form.reportDate", null, locale));
             parameters.put("Report_Date", header.persianDate());
         }
     }

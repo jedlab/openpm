@@ -9,6 +9,7 @@ import com.jedlab.framework.spring.dao.AbstractDAO;
 import com.jedlab.framework.spring.security.AuthenticationUtil;
 import com.jedlab.framework.spring.service.AbstractCrudService;
 import com.jedlab.pm.dao.ProjectDao;
+import com.jedlab.pm.dao.UserDao;
 import com.jedlab.pm.model.Project;
 import com.jedlab.pm.model.User;
 
@@ -19,6 +20,9 @@ public class ProjectService extends AbstractCrudService<Project>
 
     @Autowired
     ProjectDao projectDao;
+    
+    @Autowired
+    UserDao userDao;
 
     @Override
     public AbstractDAO<Project> getDao()
@@ -31,8 +35,7 @@ public class ProjectService extends AbstractCrudService<Project>
     {
         if(AuthenticationUtil.isLoggedIn() == false)
             throw new ServiceException("user is not loggedin");
-        User u = new User();
-        u.setId(AuthenticationUtil.getUserId());
+        User u = userDao.findOne(AuthenticationUtil.getUserId());
         entity.setOwner(u);
     }
     
