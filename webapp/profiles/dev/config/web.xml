@@ -48,6 +48,10 @@
 			<param-name>contextConfigLocation</param-name>
 			<param-value>/WEB-INF/spring/servlet-context.xml</param-value>
 		</init-param>
+		<init-param>
+			<param-name>detectAllHandlerExceptionResolvers</param-name>
+			<param-value>false</param-value>
+		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
@@ -284,6 +288,34 @@
 		</web-resource-collection>
 		<auth-constraint />
 	</security-constraint>
+	
+	
+	<!-- Error Pages -->
+	<error-page>
+		<error-code>403</error-code>
+		<location>/WEB-INF/views/error.xhtml</location>		
+	</error-page>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/WEB-INF/views/error.xhtml</location>
+	</error-page>
+
+	<error-page>
+		<exception-type>javax.faces.application.ViewExpiredException</exception-type>
+		<location>/WEB-INF/views/error.xhtml</location>
+	</error-page>
+	<error-page>
+		<exception-type>org.springframework.orm.jpa.JpaOptimisticLockingFailureException</exception-type>
+		<location>/WEB-INF/views/error.xhtml</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/WEB-INF/views/error.xhtml</location>
+	</error-page>
+	<error-page>
+		<exception-type>java.lang.RuntimeException</exception-type>
+		<location>/WEB-INF/views/error.xhtml</location>
+	</error-page>
 
 
 

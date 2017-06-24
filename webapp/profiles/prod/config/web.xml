@@ -273,7 +273,32 @@
 	</security-constraint>
 
 
+	<!-- Error Pages -->
+	<error-page>
+		<error-code>403</error-code>
+		<location>/WEB-INF/views/error.xhtml</location>		
+	</error-page>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/WEB-INF/views/error.xhtml</location>
+	</error-page>
 
+	<error-page>
+		<exception-type>javax.faces.application.ViewExpiredException</exception-type>
+		<location>/WEB-INF/views/error.xhtml</location>
+	</error-page>
+	<error-page>
+		<exception-type>org.springframework.orm.jpa.JpaOptimisticLockingFailureException</exception-type>
+		<location>/WEB-INF/views/error.xhtml</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/WEB-INF/views/error.xhtml</location>
+	</error-page>
+	<error-page>
+		<exception-type>java.lang.RuntimeException</exception-type>
+		<location>/WEB-INF/views/error.xhtml</location>
+	</error-page>
 
 
 
