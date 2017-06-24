@@ -314,6 +314,7 @@
 
 				<filters>
 					<filter>profiles/${build.profile.id}/config/database.properties</filter>
+					<filter>profiles/${build.profile.id}/config/log4j.xml</filter>					
 				</filters>
 				<resources>
 					<resource>
@@ -341,7 +342,7 @@
 			</dependencies>
 			<build>
 				<filters>
-					<filter>profiles/${build.profile.id}/config/database.properties</filter>
+					<filter>profiles/${build.profile.id}/config/database.properties</filter>					
 				</filters>
 				<resources>
 					<resource>
