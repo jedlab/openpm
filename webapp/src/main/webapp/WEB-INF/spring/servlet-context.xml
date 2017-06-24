@@ -10,14 +10,28 @@
 
 	<!-- DispatcherServlet Context: defines this servlet's request-processing 
 		infrastructure -->
-		
+	<bean class="java.util.Locale" id="faLocale">
+		<constructor-arg type="java.lang.String" index="0" value="fa"></constructor-arg>
+	</bean>
+	
 	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.FixedLocaleResolver">
-		<constructor-arg type="java.util.Locale" index="0">
-			<bean class="java.util.Locale">
-				<constructor-arg type="java.lang.String" index="0" value="fa"></constructor-arg>
-			</bean>
-		</constructor-arg>
+		<constructor-arg type="java.util.Locale" index="0" ref="faLocale"/>
+		<property name="defaultLocale" ref="faLocale"></property>
 	</bean>	
+	
+	<!-- JSR Hibernate Bean validation -->
+	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+		<property name="validationMessageSource" ref="messageSource"></property>
+		<property name="messageInterpolator">
+			<bean class="org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator">
+				<constructor-arg index="0" type="org.hibernate.validator.spi.resourceloading.ResourceBundleLocator">
+					<bean class="org.springframework.validation.beanvalidation.MessageSourceResourceBundleLocator">
+						<constructor-arg type="org.springframework.context.MessageSource" index="0" ref="messageSource"></constructor-arg>
+					</bean>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
 
 
 	<!-- Imports user-defined @Controller beans that process client requests -->
@@ -30,7 +44,7 @@
 		base-package="com.jedlab.pm.controller, com.jedlab.pm.validators, com.jedlab.pm.converters, com.jedlab.pm.exceptions" />
 
 	<!-- Enables the Spring MVC @Controller programming model -->
-	<mvc:annotation-driven />
+	<mvc:annotation-driven validator="validator"/>
 	
 	<bean id="handlerExceptionResolver" class="com.jedlab.pm.exceptions.ProjectFlowExceptionHandler" name="projectFlowExceptionHandler"></bean>
 
