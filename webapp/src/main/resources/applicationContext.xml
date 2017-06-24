@@ -12,7 +12,7 @@
 
 	<context:annotation-config  />
 	<tx:annotation-driven transaction-manager="transactionManager"/>
-	<context:component-scan base-package="com.jedlab.pm.service" />
+	<context:component-scan base-package="com.jedlab.pm.service, com.jedlab.pm.rest" />
 	
 		
 	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">

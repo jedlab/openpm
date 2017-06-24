@@ -533,5 +533,14 @@ public class ReflectionUtil
             return String.class;
         return null;
     }
+    
+    public static boolean isCollection(Object value)
+    {
+        if (value instanceof Collection)
+        {
+            return true;
+        }
+        return false;
+    }
 
 }
