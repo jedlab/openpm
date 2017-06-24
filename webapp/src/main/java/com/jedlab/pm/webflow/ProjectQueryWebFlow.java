@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.jedlab.framework.db.QueryMapper;
 import com.jedlab.framework.spring.service.AbstractCrudService;
 import com.jedlab.framework.spring.service.Restriction;
-import com.jedlab.framework.spring.web.Filter;
 import com.jedlab.framework.web.AbstractQueryActionBean;
+import com.jedlab.pm.filters.ProjectFilter;
 import com.jedlab.pm.model.Project;
 import com.jedlab.pm.service.ProjectService;
 
@@ -41,6 +41,11 @@ public class ProjectQueryWebFlow extends AbstractQueryActionBean<Project>
             criteria.createAlias("owner", "o", JoinType.LEFT_OUTER_JOIN);
             QueryMapper.filterMap(getFilter(), criteria);
         };
+    }
+    
+    public void resetSearch()
+    {
+        this.filter = new ProjectFilter();        
     }
 
 }

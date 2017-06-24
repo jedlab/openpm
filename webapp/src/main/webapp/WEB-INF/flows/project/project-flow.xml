@@ -16,10 +16,17 @@
 		<attribute name="commit" value="true" type="java.lang.Boolean"></attribute>
 		<var name="projectQuery" class="com.jedlab.pm.webflow.ProjectQueryWebFlow"/>
 		<transition on="create" bind="false" to="projectEdit"></transition>
+		<transition on="resetSearch">
+			<evaluate expression="projectQuery.resetSearch()"></evaluate>
+			<render fragments="projectSearchForm, projectListForm"></render>
+		</transition>
+		<transition on="search">
+			<evaluate expression="projectQuery.resetPagination('projectListForm:projectListTable')"></evaluate>
+			<render fragments="projectListForm:projectListTable"></render>
+		</transition>
 	</view-state>
 
-	<view-state id="projectEdit" model="project">
-		<attribute name="commit" value="true" type="java.lang.Boolean"></attribute>
+	<view-state id="projectEdit" model="project">		
 		<var name="projectHome" class="com.jedlab.pm.webflow.ProjectHomeWebFlow"/>
 		<on-entry>
 			<set name="requestScope.projectId" value="requestParameters.id" type="long" />
