@@ -25,7 +25,12 @@
 		
 		<link rel="stylesheet" href="#{_ctx}/resources/css/semantic.min.css" />
 		<link rel="stylesheet" href="#{_ctx}/resources/css/kube.css" />
-		<link rel="stylesheet" href="#{_ctx}/resources/css/webapp.css" />
+		
+		<link rel="stylesheet" href="#{_ctx}/app/resources/dijit/themes/tundra/tundra.css" />
+		
+		
+		
+		<h:outputStylesheet library="css" name="webapp.css"  />
 
 		<h:outputScript library="primefaces" name="jquery/jquery.js"
 			target="head" />
@@ -39,6 +44,9 @@
 
 	</h:head>
 	<h:body>
+		<script type="text/javascript" src="#{_ctx}/app/resources/dojo/dojo.js"></script>
+	    <script type="text/javascript" src="#{_ctx}/app/resources/spring/Spring.js"></script>
+	    <script type="text/javascript" src="#{_ctx}/app/resources/spring/Spring-Dojo.js"></script>
 
 		<p:growl id="globalGrowl" widgetVar="globalGrowlWidget"
 			showDetail="true" showSummary="true" sticky="true" globalOnly="true" />
@@ -71,7 +79,7 @@
 			});
 		</script>
 
-
+		
 	</h:body>
 
 </f:view>

@@ -1,4 +1,4 @@
-package com.jedlab.pm.webflow;
+package com.jedlab.pm.filters;
 
 import com.jedlab.framework.spring.web.Filter;
 import com.jedlab.framework.spring.web.ParamOperator;

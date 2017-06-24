@@ -1,10 +1,12 @@
 package com.jedlab.framework.web;
 
 
+import java.io.Serializable;
+
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
-public interface DialogManager<T>
+public interface DialogManager<T> extends Serializable
 {
 
     public void close(SelectEvent event);

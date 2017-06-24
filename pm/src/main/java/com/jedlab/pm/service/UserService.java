@@ -14,18 +14,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.Lists;
+import com.jedlab.framework.spring.dao.AbstractDAO;
+import com.jedlab.framework.spring.service.AbstractCrudService;
 import com.jedlab.framework.util.CollectionUtil;
 import com.jedlab.pm.dao.UserDao;
 import com.jedlab.pm.model.User;
 
 @Service
 @Transactional
-public class UserService
+public class UserService extends AbstractCrudService<User>
 {
 
     @Autowired
     UserDao userDao;
 
+    
     public void save(User user)
     {
         userDao.save(user);
@@ -63,6 +66,12 @@ public class UserService
             return cb.equal(root.get("username"), this.username);
         }
 
+    }
+
+    @Override
+    public AbstractDAO<User> getDao()
+    {
+        return userDao;
     }
 
    

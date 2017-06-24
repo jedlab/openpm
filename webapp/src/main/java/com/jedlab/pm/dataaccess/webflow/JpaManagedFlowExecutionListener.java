@@ -25,20 +25,17 @@ public class JpaManagedFlowExecutionListener extends JpaFlowExecutionListener
     public void paused(RequestContext context)
     {
         super.paused(context);
-        Object commit = context.getCurrentState().getAttributes().get("commit");
-        if(commit != null)
+        EntityManager em = getEntityManager(context.getFlowExecutionContext().getActiveSession());
+        if(em != null)
         {
-            EntityManager em = getEntityManager(context.getFlowExecutionContext().getActiveSession());
-            if(em != null)
+            Session session = em.unwrap(Session.class);
+            if(session != null)
             {
-                Session session = em.unwrap(Session.class);
-                if(session != null)
-                {
-                    if(session.isConnected())
-                        session.disconnect();
-                }
+                if(session.isConnected())
+                    session.disconnect();
             }
         }
+//        Object commit = context.getCurrentState().getAttributes().get("commit");
     }
 
     private EntityManager getEntityManager(FlowSession session) {
