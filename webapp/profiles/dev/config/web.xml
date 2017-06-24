@@ -37,8 +37,8 @@
 
 	<!-- SPRING MVC -->
 	<context-param>
-	    <param-name>spring.profiles.active</param-name>
-	    <param-value>dev</param-value>
+		<param-name>spring.profiles.active</param-name>
+		<param-value>dev</param-value>
 	</context-param>
 
 	<servlet>
@@ -80,26 +80,7 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
-	<filter>
-		<filter-name>noCache</filter-name>
-		<filter-class>org.omnifaces.filter.CacheControlFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>noCache</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
 
-
-	<filter>
-		<filter-name>gzipResponseFilter</filter-name>
-		<filter-class>org.omnifaces.filter.GzipResponseFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>gzipResponseFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-		<dispatcher>REQUEST</dispatcher>
-		<dispatcher>ERROR</dispatcher>
-	</filter-mapping>
 
 
 
@@ -212,7 +193,7 @@
 
 	<context-param>
 		<param-name>primefaces.FONT_AWESOME</param-name>
-		<param-value>true</param-value>
+		<param-value>false</param-value>
 	</context-param>
 
 	<!-- OmniFaces specific settings. -->
@@ -221,6 +202,17 @@
 		<param-name>org.omnifaces.CACHE_SETTING_SESSION_MAX_CAPACITY</param-name>
 		<param-value>6</param-value>
 	</context-param>
+
+	<filter>
+		<filter-name>noCache</filter-name>
+		<filter-class>org.omnifaces.filter.CacheControlFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>noCache</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+
 
 	<!-- log4j2 -->
 
@@ -253,7 +245,7 @@
 		<filter-name>FarsiTypeFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-	
+
 	<filter>
 		<filter-name>FarsiLocaleFilter</filter-name>
 		<filter-class>com.jedlab.framework.web.FarsiLocaleFilter</filter-class>
@@ -278,7 +270,8 @@
 	<security-constraint>
 		<web-resource-collection>
 			<web-resource-name>Allowed
-				resources</web-resource-name>
+				resources
+			</web-resource-name>
 			<url-pattern>/javax.faces.resource/*</url-pattern>
 		</web-resource-collection>
 	</security-constraint>
