@@ -31,3 +31,9 @@ the database we have chosen is postgresql
 ```
 mvn clean install -DskipTests=true
 ```
+
+# How to run
+
+```
+http://localhost:8080/webapp
+```
