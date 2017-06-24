@@ -21,6 +21,7 @@ This project contains following technologies and frameworks :
 * velocity
 * jstl
 * logging ( log4j, slf4j)
+* Jersey + Spring
 
 ## Database
 
