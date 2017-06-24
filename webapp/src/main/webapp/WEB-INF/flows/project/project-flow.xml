@@ -3,7 +3,7 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="
       	http://www.springframework.org/schema/webflow
-      	http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd"
+      	http://www.springframework.org/schema/webflow/spring-webflow-2.4.xsd"
       	parent="parent-flow">
 
 	
@@ -42,13 +42,15 @@
 		<transition on="delete" to="projectList">
 			<evaluate expression="projectHome.delete()"></evaluate>
 		</transition>
-		<transition on="cancel" to="end"></transition>
+		<transition on="cancel" to="end"></transition>	
 	</view-state>
 	
 	
 	
 	
 	<end-state id="end" commit="true" view="externalRedirect:servletRelative:/project"></end-state>
+	
+	
 	
 	
 		

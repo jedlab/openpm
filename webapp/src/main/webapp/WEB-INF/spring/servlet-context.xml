@@ -27,10 +27,12 @@
 
 	<!-- Scan for Spring beans declared via annotations. -->
 	<context:component-scan
-		base-package="com.jedlab.pm.controller, com.jedlab.pm.validators, com.jedlab.pm.converters" />
+		base-package="com.jedlab.pm.controller, com.jedlab.pm.validators, com.jedlab.pm.converters, com.jedlab.pm.exceptions" />
 
 	<!-- Enables the Spring MVC @Controller programming model -->
 	<mvc:annotation-driven />
+	
+	<bean id="handlerExceptionResolver" class="com.jedlab.pm.exceptions.ProjectFlowExceptionHandler" name="projectFlowExceptionHandler"></bean>
 
 	<!-- Enable serving of classpath with Spring 3 resource serving mechanism. 
 		For example: /webflow-primefaces-showcase/app/resources/styles/blueprint/print.css --> 

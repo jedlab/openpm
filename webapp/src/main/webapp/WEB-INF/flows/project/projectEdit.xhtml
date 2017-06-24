@@ -26,7 +26,7 @@
 			
 		</fieldset>
 
-		<p:commandButton value="#{msgs['Save']}" action="save" update="@form :uiMessages :globalGrowl" rendered="#{!projectHome.idDefined}" styleClass="button blue"></p:commandButton>
+		<p:commandButton value="#{msgs['Save']}" action="save" ajax="true" update="@form :uiMessages :globalGrowl" rendered="#{!projectHome.idDefined}" styleClass="button blue"></p:commandButton>
 		<p:commandButton value="#{msgs['Update']}" action="update" update="@form :uiMessages :globalGrowl" rendered="#{projectHome.idDefined}" styleClass="button green"></p:commandButton>
 		<p:commandButton value="#{msgs['Delete']}" action="delete"  rendered="#{projectHome.idDefined}" styleClass="button red"></p:commandButton>
 		<p:commandButton action="cancel" value="#{msgs['Back']}" immediate="true" styleClass="button outline" ajax="false"></p:commandButton>
