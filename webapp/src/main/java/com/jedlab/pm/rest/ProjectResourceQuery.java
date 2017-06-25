@@ -28,6 +28,8 @@ import com.jedlab.framework.exceptions.ServiceException;
 import com.jedlab.framework.spring.rest.RestWriter;
 import com.jedlab.framework.spring.rest.TypeUtil;
 import com.jedlab.framework.spring.security.AuthenticationUtil;
+import com.jedlab.framework.spring.service.AbstractCrudService;
+import com.jedlab.framework.spring.service.Restriction;
 import com.jedlab.framework.util.CollectionUtil;
 import com.jedlab.pm.model.Project;
 import com.jedlab.pm.security.AuthSuccessHandler;
@@ -40,38 +42,37 @@ import com.jedlab.pm.service.ProjectService;
 @Component
 @Path("/projects")
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class ProjectResourceQuery
+public class ProjectResourceQuery extends ResourceQuery<Project>
 {
 
     @Autowired
     ProjectService projectService;
+    
+    @Autowired
+    ProjectEntityResourceQuery subResourceLocator;
 
-    @GET
-    @Produces("application/json")
-    @RestWriter
-    public Response search(@Context HttpServletRequest request,@QueryParam("start") @DefaultValue("0") int start, 
-            @QueryParam("show") @DefaultValue("25") int show)
-            throws ServiceException, UnsupportedEncodingException
+    
+    @Override
+    protected AbstractCrudService<Project> getService()
     {
-        if ((start < 0) || (show < 0))
-        {
-           return Response.status(BAD_REQUEST).build();
-        }
-        
-        Iterable<Project> projects = projectService.load(start, show, null, null, Project.class, criteria ->
+        return projectService;
+    }
+
+    @Override
+    public EntityResourceQuery<Project> getEntityResourceQuery()
+    {
+        return subResourceLocator;
+    }
+    
+    @Override
+    protected Restriction getRestriction()
+    {
+        return criteria ->
         {
             criteria.createAlias("owner", "o", JoinType.LEFT_OUTER_JOIN);
             if(AuthenticationUtil.getUserId() != null)
                 criteria.add(Restrictions.eq("o.id", AuthenticationUtil.getUserId()));
-        });
-        ArrayList<Project> projectList = Lists.newArrayList(projects);
-        if (CollectionUtil.isNotEmpty(projectList))
-        {
-            java.lang.reflect.Type responseType = new TypeUtil(projectList, Project.class);
-            GenericEntity<List<Project>> entityWrapperList = new GenericEntity<List<Project>>(projectList, responseType);
-            return Response.ok(entityWrapperList).build();
-        }
-        return Response.noContent().build();
+        };
     }
 
 }

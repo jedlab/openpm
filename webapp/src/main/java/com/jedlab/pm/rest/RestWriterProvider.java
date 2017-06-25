@@ -1,35 +1,35 @@
 package com.jedlab.pm.rest;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.poi.ss.formula.eval.NotImplementedException;
 import org.omidbiz.core.axon.Axon;
 import org.omidbiz.core.axon.AxonBuilder;
 import org.omidbiz.core.axon.Filter;
 import org.omidbiz.core.axon.Property;
-import org.omidbiz.core.axon.filters.RecursionControlFilter;
 import org.omidbiz.core.axon.internal.BasicElement;
 import org.omidbiz.core.axon.internal.Element;
-import org.omidbiz.core.axon.internal.ObjectElement;
 import org.omidbiz.core.axon.internal.SerializationContext;
 import org.omidbiz.core.axon.internal.TypeConverter;
 
+import com.google.common.io.ByteStreams;
+import com.google.common.io.CharStreams;
 import com.jedlab.framework.reflections.ReflectionUtil;
 import com.jedlab.framework.spring.rest.RestWriter;
-import com.jedlab.framework.util.HibernateUtil;
 import com.jedlab.pm.model.User;
 
 /**
@@ -38,7 +38,7 @@ import com.jedlab.pm.model.User;
  */
 @Provider
 @Produces({ MediaType.APPLICATION_JSON })
-public class RestWriterProvider implements MessageBodyWriter<Object>
+public class RestWriterProvider implements MessageBodyWriter<Object>, MessageBodyReader<Object>
 {
 
     private static final Axon axon = new AxonBuilder().preventRecursion().useWithPrettyWriter().addTypeConverter(new JsonUserTypeConverter()).addFilter(new JsonFilter()).create();
@@ -118,6 +118,45 @@ public class RestWriterProvider implements MessageBodyWriter<Object>
             
         }
         
+    }
+
+    @Override
+    public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType)
+    {
+        for (Annotation annotation : annotations)
+        {
+            if (annotation.annotationType().equals(RestWriter.class))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public Object readFrom(Class<Object> type, Type genericType, Annotation[] annotations, MediaType mediaType,
+            MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException, WebApplicationException
+    {
+        Class<?> entityClass = null;
+        if (genericType instanceof java.lang.reflect.ParameterizedType)
+        {
+            entityClass = (Class<?>) ((java.lang.reflect.ParameterizedType) genericType).getActualTypeArguments()[0];
+
+        }
+        else
+        {
+            entityClass = type;
+        }
+
+        byte[] bs = ByteStreams.toByteArray(entityStream);
+        InputStream beanInputStream = new ByteArrayInputStream(bs);
+        InputStreamReader isr = new InputStreamReader(beanInputStream, "UTF-8");
+        String jsonContent = CharStreams.toString(isr);
+        IOUtils.closeQuietly(isr);
+        IOUtils.closeQuietly(beanInputStream);
+        Axon axon = new AxonBuilder().create();
+        Object bean = axon.toObject(jsonContent, entityClass, null);
+        return bean;
     }
 
 }
