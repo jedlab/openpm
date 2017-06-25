@@ -33,6 +33,14 @@
 		<jasper.version>6.1.0</jasper.version>
 		<springwebflow-version>2.4.4.RELEASE</springwebflow-version>
 	</properties>
+	
+	<repositories>		
+		<repository>
+			<id>omidbiz</id>
+			<name>OMidbiz Maven Repository</name>
+			<url>http://omidbiz.com/nexus/content/sites/omidbiz_repo/</url>			
+		</repository>
+	</repositories>
 
 	<dependencyManagement>
 		<dependencies>
@@ -55,6 +63,11 @@
 
 	<dependencies>
 
+		<dependency>
+			<groupId>org.omidbiz</groupId>
+			<artifactId>axon-core</artifactId>
+			<version>2.0.5</version>
+		</dependency>
 
 
 

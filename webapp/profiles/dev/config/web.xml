@@ -122,6 +122,11 @@
 		<filter-name>springSecurityFilterChain</filter-name>
 		<servlet-name>Spring MVC Servlet</servlet-name>
 	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<servlet-name>jersey-serlvet</servlet-name>
+	</filter-mapping>
 
 	<!-- Spring Security Facelets tag library declaration -->
 	<context-param>

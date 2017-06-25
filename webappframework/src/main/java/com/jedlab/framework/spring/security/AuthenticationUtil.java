@@ -52,7 +52,7 @@ public final class AuthenticationUtil
         {
             Authentication auth = getAuthentication();
             Object principal = auth.getPrincipal();
-            if (principal instanceof String && principal.equals("anonymousUser"))
+            if (principal instanceof String || principal.equals("anonymousUser"))
                 return null;
             SecurityUser applicationUser = ((SecurityUser) principal);
             return applicationUser.getId();
@@ -66,7 +66,7 @@ public final class AuthenticationUtil
         {
             Authentication auth = getAuthentication();
             Object principal = auth.getPrincipal();
-            if (principal instanceof String && principal.equals("anonymousUser"))
+            if (principal instanceof String || principal.equals("anonymousUser"))
                 return null;
             return (SecurityUser) auth.getPrincipal();
         }

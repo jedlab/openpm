@@ -61,7 +61,9 @@ public abstract class AbstractService<E>
             });
         }
         criteria.setFirstResult(first);
-        criteria.setMaxResults(pageSize);
+     // set 0 for unlimited
+        if(pageSize > 0)
+            criteria.setMaxResults(pageSize);
         result = criteria.list();
         return result;
     }

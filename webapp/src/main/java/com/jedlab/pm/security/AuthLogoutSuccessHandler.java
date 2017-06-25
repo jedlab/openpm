@@ -26,6 +26,7 @@ public class AuthLogoutSuccessHandler extends AbstractAuthenticationTargetUrlReq
         if(session != null)
         {
             session.removeAttribute(AuthSuccessHandler.CURRENT_USERNAME);
+            session.removeAttribute(AuthSuccessHandler.CURRENT_USERID);
         }
         super.handle(request, response, authentication);
     }

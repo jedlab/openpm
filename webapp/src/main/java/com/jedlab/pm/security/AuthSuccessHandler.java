@@ -21,6 +21,7 @@ public class AuthSuccessHandler extends SavedRequestAwareAuthenticationSuccessHa
 {
 
     public static final String CURRENT_USERNAME = "currentUsername";
+    public static final String CURRENT_USERID = "currentUserId";
     
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
@@ -34,7 +35,10 @@ public class AuthSuccessHandler extends SavedRequestAwareAuthenticationSuccessHa
             {
                 HttpSession session = request.getSession(false);
                 if(session != null)
+                {
                     session.setAttribute(CURRENT_USERNAME, ((User)principal).getUsername());
+                    session.setAttribute(CURRENT_USERID, ((User)principal).getId());
+                }
             }
         }
         super.onAuthenticationSuccess(request, response, authentication);

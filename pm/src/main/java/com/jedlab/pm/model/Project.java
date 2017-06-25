@@ -13,6 +13,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.omidbiz.core.axon.internal.IgnoreElement;
+
 import com.jedlab.framework.report.ReportField;
 import com.jedlab.framework.spring.dao.PO;
 
@@ -49,6 +51,7 @@ public class Project extends PO
         this.owner = owner;
     }
 
+    @IgnoreElement
     public List<Task> getTasks()
     {
         return tasks;
