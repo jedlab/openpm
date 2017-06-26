@@ -24,6 +24,8 @@
     
     <bean class="com.jedlab.framework.spring.SpringUtil" id="springUtil"></bean>
     
+    <bean class="com.jedlab.framework.spring.logger.LoggerPostProcessor" id="logger" />
+    
     <bean class="com.jedlab.framework.mail.MailClient" id="mailClient">
     	<property name="mailSender" ref="mailSender"></property>
     	<property name="velocityEngine" ref="velocityEngine"></property>
