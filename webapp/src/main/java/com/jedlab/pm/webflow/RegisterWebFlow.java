@@ -1,16 +1,15 @@
 package com.jedlab.pm.webflow;
 
+import com.jedlab.framework.mail.MailClient;
+import com.jedlab.pm.model.User;
+import com.jedlab.pm.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import java.io.Serializable;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import com.jedlab.framework.mail.MailClient;
-import com.jedlab.pm.model.User;
-import com.jedlab.pm.service.UserService;
 
 public class RegisterWebFlow implements Serializable
 {
@@ -37,7 +36,7 @@ public class RegisterWebFlow implements Serializable
         Map<String, Object> maps = new HashMap<String, Object>();
         maps.put("username", userModel.getUsername());
         maps.put("code", userModel.getId());
-        mailClient.send("info@jedlab.ir", userModel.getEmail(), "Verify Account", "/com/jedlab/pm/controller/register.vm", maps,
+        mailClient.send("info@jedlab.ir", userModel.getEmail(), "Verify Account", "register.vm", maps,
                 new UncaughtExceptionHandler() {
 
                     public void uncaughtException(Thread t, Throwable e)

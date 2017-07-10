@@ -257,12 +257,18 @@
 
 
 
-		<dependency>
+		<!--dependency>
 			<groupId>postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>${postgresql.version}</version>
-		</dependency>
+		</dependency-->
 
+		<dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.0.5</version>
+        </dependency>
+		
 		<dependency>
 			<groupId>org.javassist</groupId>
 			<artifactId>javassist</artifactId>
@@ -299,7 +305,11 @@
 			<version>${slf4j.version}</version>
 		</dependency>
 
-
+		<dependency>
+			<groupId>p6spy</groupId>
+			<artifactId>p6spy</artifactId>
+			<version>2.1.4</version>
+		</dependency>
 
 
 
