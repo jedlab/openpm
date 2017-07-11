@@ -33,7 +33,7 @@
     
     <!-- Mail -->
     <context:property-placeholder location="classpath*:mail.properties"
-		ignore-unresolvable="false" />
+		ignore-unresolvable="true" />
 	<bean id="mailSender"
 		class="org.springframework.mail.javamail.JavaMailSenderImpl">
 		<property name="host" value="${mail.host}" />
