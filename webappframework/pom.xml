@@ -119,6 +119,12 @@
 			  <groupId>org.olap4j</groupId>
 			</exclusion>
 		  </exclusions>
+			<exclusions>
+				<exclusion>
+					<artifactId>olap4j</artifactId>
+					<groupId>org.olap4j</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<!-- Persistence -->
 		<dependency>
