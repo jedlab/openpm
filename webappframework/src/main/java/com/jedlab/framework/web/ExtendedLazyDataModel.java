@@ -67,8 +67,16 @@ public abstract class ExtendedLazyDataModel<E extends EntityModel> extends LazyD
         List<E> wrappedData = new ArrayList<>(res);
         for (E e : wrappedData)
         {
-            if (e.getId().equals(Long.valueOf(rowKey)))
-                return e;
+            if(e.getId() instanceof Long)
+            {
+                if (e.getId().equals(Long.valueOf(rowKey)))
+                    return e;
+            }
+            else
+            {
+                if(e.equals(rowKey))
+                    return e;
+            }
         }
         return null;
     }
@@ -76,6 +84,8 @@ public abstract class ExtendedLazyDataModel<E extends EntityModel> extends LazyD
     @Override
     public Object getRowKey(E instance)
     {
+        if(instance == null)
+            return null;
         return instance.getId();
     };
 
