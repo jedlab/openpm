@@ -200,39 +200,40 @@ public class QueryMapper
                 e.printStackTrace();
             }
         }
-        filterItems.forEach(item -> {			
-            if (item.getValue() != null)
-            {
-				if(item.getValue() instanceof String && String.valueOf(item.getValue()).trim().length() > 0)
-				{
-					if (ParamOperator.LIKE.equals(item.getOperator()))
-					{
-						criteria.add(Restrictions.like(item.getPropertyName(), "%" + item.getValue() + "%"));
-					}
-					if (ParamOperator.EQ.equals(item.getOperator()))
-					{
-						criteria.add(Restrictions.eq(item.getPropertyName(), item.getValue()));
-					}
-					if (ParamOperator.NEQ.equals(item.getOperator()))
-					{
-						criteria.add(Restrictions.ne(item.getPropertyName(), item.getValue()));
-					}
-					if (ParamOperator.GT.equals(item.getOperator()))
-					{
-						criteria.add(Restrictions.gt(item.getPropertyName(), item.getValue()));
-					}
-					if (ParamOperator.LT.equals(item.getOperator()))
-					{
-						criteria.add(Restrictions.lt(item.getPropertyName(), item.getValue()));
-					}
-					if (ParamOperator.SQLQUERY.equals(item.getOperator()))
-					{
-						criteria.add(Restrictions.sqlRestriction(String.valueOf(item.getValue())));
-					}
-				}
-                
+        for (ParameterItem item : filterItems)
+        {
+            Object val = item.getValue();
+            if(val == null)
+                continue;
+            if(val instanceof String && StringUtil.isEmpty(String.valueOf(val)))
+            {                   
+                continue;
             }
-        });
+            if (ParamOperator.LIKE.equals(item.getOperator()))
+            {
+                criteria.add(Restrictions.like(item.getPropertyName(), "%" + item.getValue() + "%"));
+            }
+            if (ParamOperator.EQ.equals(item.getOperator()))
+            {
+                criteria.add(Restrictions.eq(item.getPropertyName(), item.getValue()));
+            }
+            if (ParamOperator.NEQ.equals(item.getOperator()))
+            {
+                criteria.add(Restrictions.ne(item.getPropertyName(), item.getValue()));
+            }
+            if (ParamOperator.GT.equals(item.getOperator()))
+            {
+                criteria.add(Restrictions.gt(item.getPropertyName(), item.getValue()));
+            }
+            if (ParamOperator.LT.equals(item.getOperator()))
+            {
+                criteria.add(Restrictions.lt(item.getPropertyName(), item.getValue()));
+            }
+            if (ParamOperator.SQLQUERY.equals(item.getOperator()))
+            {
+                criteria.add(Restrictions.sqlRestriction(String.valueOf(item.getValue())));
+            }
+        }        
     }
 
 }
