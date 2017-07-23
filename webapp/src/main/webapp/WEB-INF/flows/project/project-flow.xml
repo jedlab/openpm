@@ -12,7 +12,7 @@
 	
 	<persistence-context />
 	
-	<view-state id="projectList">
+		<view-state id="projectList">
 		<attribute name="commit" value="true" type="java.lang.Boolean"></attribute>
 		<var name="projectQuery" class="com.jedlab.pm.webflow.ProjectQueryWebFlow"/>
 		<transition on="create" bind="false" to="projectEdit"></transition>
