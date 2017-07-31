@@ -5,6 +5,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -209,6 +211,16 @@ public class QueryMapper
             {                   
                 continue;
             }
+            if(val instanceof Date)
+            {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime((Date)val);
+                cal.set(Calendar.HOUR, 0);
+                cal.set(Calendar.MINUTE, 0);
+                cal.set(Calendar.SECOND, 0);
+                cal.set(Calendar.MILLISECOND, 0);
+                val = cal.getTime();
+            }
             if (ParamOperator.LIKE.equals(item.getOperator()))
             {
                 criteria.add(Restrictions.like(item.getPropertyName(), "%" + item.getValue() + "%"));
@@ -228,6 +240,14 @@ public class QueryMapper
             if (ParamOperator.LT.equals(item.getOperator()))
             {
                 criteria.add(Restrictions.lt(item.getPropertyName(), item.getValue()));
+            }
+            if (ParamOperator.LTE.equals(item.getOperator()))
+            {
+                criteria.add(Restrictions.le(item.getPropertyName(), item.getValue()));
+            }
+            if (ParamOperator.GTE.equals(item.getOperator()))
+            {
+                criteria.add(Restrictions.ge(item.getPropertyName(), item.getValue()));
             }
             if (ParamOperator.SQLQUERY.equals(item.getOperator()))
             {
