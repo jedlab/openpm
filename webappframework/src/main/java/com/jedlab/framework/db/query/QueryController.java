@@ -836,13 +836,19 @@ public class QueryController
         if (hasParam)
         {
             Object[] parameters = bindParameters(this.queryParamValues, paramValues);
-            count = dbUtil.executeScalar(countQuery.getQueryToExecute(), Long.class, parameters);
+            Number scalar = dbUtil.executeScalar(countQuery.getQueryToExecute(), Number.class, parameters);
+            count = scalar == null ? 0 : scalar.longValue();
         }
         else
-            count = dbUtil.executeScalar(countQuery.getQueryToExecute(), Long.class);
+        {
+            Number scalar = dbUtil.executeScalar(countQuery.getQueryToExecute(), Number.class).longValue();
+            count = scalar == null ? 0 : scalar.longValue();
+        }
         resultCount = count == null ? null : count;
         return resultCount;
     }
+    
+    
     
     protected boolean isAnyParameterDirty()
     {
