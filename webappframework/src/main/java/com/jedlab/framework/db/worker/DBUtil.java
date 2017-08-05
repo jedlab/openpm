@@ -37,7 +37,7 @@ public class DBUtil
         return LOGGER;
     }
 
-    private Session getSession()
+    public Session getSession()
     {
         return this.session;
     }

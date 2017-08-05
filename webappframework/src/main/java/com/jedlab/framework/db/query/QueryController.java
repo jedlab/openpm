@@ -1,6 +1,7 @@
 package com.jedlab.framework.db.query;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -9,6 +10,9 @@ import java.util.Map;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.beanutils.PropertyUtils;
+import org.hibernate.SessionFactory;
 
 import com.jedlab.framework.db.query.GroupBy.GroupByProperty;
 import com.jedlab.framework.db.query.Sort.Direction;
@@ -30,11 +34,11 @@ import com.jedlab.framework.util.StringUtil;
  *         <blockquote>
  * 
  *         <pre>
- * QueryController qc = new QueryController();
- * qc.setQuery();
- * qc.addWhereClause();
- * qc.execute();
- * </pre>
+ *         QueryController qc = new QueryController();
+ *         qc.setQuery();
+ *         qc.addWhereClause();
+ *         qc.execute();
+ *         </pre>
  * 
  *         </blockquote>
  *         <p>
@@ -47,7 +51,7 @@ import com.jedlab.framework.util.StringUtil;
  *         5. call createQuery method <br />
  *         6. call execute method <br />
  */
-public class QueryController 
+public class QueryController
 {
 
     private static final Logger logger = Logger.getLogger(QueryController.class.getName());
@@ -86,10 +90,8 @@ public class QueryController
     private String orderDirection;
 
     private SortDecorator sortDecorator;
-    
+
     private DBUtil dbUtil;
-    
-    
 
     public QueryController(DBUtil dbUtil)
     {
@@ -106,7 +108,7 @@ public class QueryController
     public Integer getStartRange()
     {
         int startRange = 0;
-        if(getPageNumber() != null)
+        if (getPageNumber() != null)
             startRange = (int) getPageNumber() / PAGE_INDEX;
         return (PAGE_INDEX * startRange) + 1;
     }
@@ -158,7 +160,6 @@ public class QueryController
     {
         this.queryParamValues = queryParamValues;
     }
-
 
     public void addWhereClause(WhereClause whereClause)
     {
@@ -220,15 +221,57 @@ public class QueryController
         // Sort
         applyOrderBy();
         //
-        if (getMaxResults() != null)
-            queryBuffer.append(" limit ").append(getMaxResults() + 1);
-
-        if (getFirstResult() != null)
+        SessionFactory sessionFactory = dbUtil.getSession().getSessionFactory();
+        boolean isOracle = false;
+        try
         {
-            if (getFirstResult() > 0)
-                queryBuffer.append(" offset ").append(getFirstResult());
+            Object dialect = PropertyUtils.getProperty(sessionFactory, "dialect");
+            if (dialect.toString().contains("Oracle"))
+            {
+                isOracle = true;
+            }
         }
-        return new Query(queryBuffer.toString(), values);
+        catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
+        {
+            // DO NOTHING
+        }
+
+        if (isOracle)
+        {
+            StringBuilder oracleQ = new StringBuilder();
+            oracleQ.append(" SELECT *   FROM (SELECT a.*, rownum rn  FROM ( ");
+            oracleQ.append(queryBuffer.toString());
+            if (getMaxResults() != null)
+            {
+                oracleQ.append(" WHERE rownum <= ").append(getMaxResults() + 1).append("  ) a  ) ");
+            }
+            else
+            {
+                oracleQ.append(" a  ) ");
+            }
+            if (getFirstResult() != null)
+            {
+                if (getFirstResult() > 0)
+                {
+                    oracleQ.append(" WHERE rn >= ").append(getFirstResult());
+                }
+            }
+            return new Query(oracleQ.toString(), values);
+        }
+        else
+        {
+            // not oracle
+            if (getMaxResults() != null)
+                queryBuffer.append(" limit ").append(getMaxResults() + 1);
+
+            if (getFirstResult() != null)
+            {
+                if (getFirstResult() > 0)
+                    queryBuffer.append(" offset ").append(getFirstResult());
+            }
+            return new Query(queryBuffer.toString(), values);
+        }
+
     }
 
     private void applyAppenders(StringBuffer qb)
@@ -339,13 +382,11 @@ public class QueryController
         public String sortExpression();
     }
 
-   
-
     private void applyWhere(StringBuffer queryBuffer)
     {
         values = new ArrayList<Object>(); // must reset values
         int wcCount = 0;
-        queryBuffer.append(" ");        
+        queryBuffer.append(" ");
         for (WhereClause wc : whereClauseList)
         {
             parseWhereClause(wc, queryBuffer, wcCount);
@@ -440,7 +481,7 @@ public class QueryController
             }
 
         }
-        if(useOperandGrouping)
+        if (useOperandGrouping)
         {
             if (RegexUtil.find(mainQuery.toString(), "where"))
             {
@@ -482,9 +523,9 @@ public class QueryController
     {
         if (value == null)
             return true;
-        if(value instanceof String)
+        if (value instanceof String)
         {
-            if(String.valueOf(value).trim().length() == 0)
+            if (String.valueOf(value).trim().length() == 0)
                 return true;
         }
         return false;
@@ -797,7 +838,7 @@ public class QueryController
 
     public Integer getFirstResult()
     {
-        if(firstResult != null)
+        if (firstResult != null)
             return firstResult;
         if (pageNumber != null && getPageCount() != null)
         {
@@ -847,9 +888,7 @@ public class QueryController
         resultCount = count == null ? null : count;
         return resultCount;
     }
-    
-    
-    
+
     protected boolean isAnyParameterDirty()
     {
         return false;
