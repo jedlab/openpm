@@ -95,6 +95,8 @@ public class QueryController
 
     public QueryController(DBUtil dbUtil)
     {
+        if(dbUtil == null)
+            throw new IllegalArgumentException("db util can not be null");
         this.dbUtil = dbUtil;
     }
 
@@ -221,22 +223,7 @@ public class QueryController
         // Sort
         applyOrderBy();
         //
-        SessionFactory sessionFactory = dbUtil.getSession().getSessionFactory();
-        boolean isOracle = false;
-        try
-        {
-            Object dialect = PropertyUtils.getProperty(sessionFactory, "dialect");
-            if (dialect.toString().contains("Oracle"))
-            {
-                isOracle = true;
-            }
-        }
-        catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
-        {
-            // DO NOTHING
-        }
-
-        if (isOracle)
+        if (dbUtil.isDatabaseOracle())
         {
             StringBuilder oracleQ = new StringBuilder();
             oracleQ.append(" SELECT *   FROM (SELECT a.*, rownum rn  FROM ( ");

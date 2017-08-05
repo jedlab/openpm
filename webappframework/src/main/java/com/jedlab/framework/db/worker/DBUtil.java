@@ -1,13 +1,16 @@
 package com.jedlab.framework.db.worker;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,9 +40,28 @@ public class DBUtil
         return LOGGER;
     }
 
-    public Session getSession()
+    private Session getSession()
     {
         return this.session;
+    }
+    
+    public boolean isDatabaseOracle()
+    {
+        boolean isOracle = false;
+        SessionFactory sessionFactory = getSession().getSessionFactory();
+        try
+        {
+            Object dialect = PropertyUtils.getProperty(sessionFactory, "dialect");
+            if (dialect.toString().contains("Oracle"))
+            {
+                isOracle = true;
+            }
+        }
+        catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
+        {
+            // DO NOTHING
+        }
+        return isOracle;
     }
 
     public <T> T executeScalar(String sql, Class<T> type, Object... params)
