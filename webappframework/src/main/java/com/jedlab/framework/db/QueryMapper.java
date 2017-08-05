@@ -172,6 +172,26 @@ public class QueryMapper
                 }
             }
         }
+        if(props.isEmpty())
+        {
+            //check for field
+            List<Field> fields = ReflectionUtil.getFields(clz);
+            for (Field field : fields)
+            {
+                Column annotation = field.getAnnotation(Column.class);
+                if(annotation != null)
+                {
+                    String dbColumnName = annotation.name();
+                    props.add(new Property(dbColumnName, field.getName()));
+                }
+                JoinColumn joinAnnotation = field.getAnnotation(JoinColumn.class);
+                if (joinAnnotation != null)
+                {
+                    String dbColumnName = joinAnnotation.name();
+                    props.add(new Property(dbColumnName, field.getName()));
+                }
+            }
+        }
         return props;
     }
 
