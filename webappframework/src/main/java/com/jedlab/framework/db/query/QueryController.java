@@ -474,7 +474,11 @@ public class QueryController
             {
                 mainQuery.append(" AND ");
             }
-            if (RegexUtil.find(queryBuffer.toString(), "where") == false)
+            if (queryBuffer != null && RegexUtil.find(queryBuffer.toString(), "where") == false)
+            {
+                mainQuery.append(" WHERE ");
+            }
+            if (countQueryBuffer != null && RegexUtil.find(countQueryBuffer.toString(), "where") == false)
             {
                 mainQuery.append(" WHERE ");
             }
