@@ -54,13 +54,13 @@ public final class AuthenticationUtil
             Object principal = auth.getPrincipal();
             if (principal instanceof String || principal.equals("anonymousUser"))
                 return null;
-            SecurityUser applicationUser = ((SecurityUser) principal);
+            SecurityUserContext applicationUser = ((SecurityUserContext) principal);
             return applicationUser.getId();
         }
         return null;
     }
 
-    public static SecurityUser getSecurityUser()
+    public static SecurityUserContext getSecurityUser()
     {
         if (isLoggedIn())
         {
@@ -68,7 +68,7 @@ public final class AuthenticationUtil
             Object principal = auth.getPrincipal();
             if (principal instanceof String || principal.equals("anonymousUser"))
                 return null;
-            return (SecurityUser) auth.getPrincipal();
+            return (SecurityUserContext) auth.getPrincipal();
         }
         return null;
     }
