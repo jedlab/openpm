@@ -33,10 +33,10 @@ public abstract class DefaultDialog<T> implements DialogManager<T>
         Map<String, Object> options = new HashMap<String, Object>();
         options.put("resizable", false);
         options.put("draggable", false);
-        options.put("width", "80%");
+        options.put("width", "85%");
         options.put("contentWidth", "100%");
-        options.put("height", "750");
-        options.put("contentHeight", "85%");
+        options.put("height", "800");
+        options.put("contentHeight", "100%");
         options.put("modal", true);
         options.put("closable", true);
         Map<String, List<String>> params = new HashMap<String, List<String>>();
