@@ -46,11 +46,11 @@ public class JasperPagingDatasource implements JRRewindableDataSource
     @Override
     public boolean next() throws JRException
     {
-        if ((this.totalCount == 0) || (this.totalCount >= 0 && this.currentIndex >= this.totalCount))
+        if ((this.totalCount == 0) || (this.totalCount >= 0 && this.rowCounter > this.totalCount))
         {
             return false;
         }
-        if (this.data == null || this.rowCounter >= MAX_RESULT)
+        if (this.data == null || this.currentIndex >= MAX_RESULT)
         {
             Paging p = new Paging(this.firstResult, MAX_RESULT).getPage();
             this.data = paginationHandler.getResultList(p.getFirstResult(), p.getMaxResult());
