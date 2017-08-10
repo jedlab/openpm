@@ -74,7 +74,7 @@ public class JasperPagingDatasource implements JRRewindableDataSource
             }
         }
         //
-        return false;
+        return this.rowCounter > this.totalCount;
     }
 
     @Override
