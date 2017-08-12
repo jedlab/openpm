@@ -160,8 +160,21 @@ public abstract class JasperDataExporter<E> implements Serializable
         parameters.putAll(reportPramaeters);
         DynamicReport build = frb.build();
         JasperPrint jasperPrint = DynamicJasperHelper.generateJasperPrint(build, new ClassicLayoutManager(), ds, parameters);
-        //
-        FacesContext context = FacesContext.getCurrentInstance();
+        
+        FacesContext context = FacesContext.getCurrentInstance();        
+        OutputStream os = outputstream(e, context);
+        JRPropertiesUtil.getInstance(DefaultJasperReportsContext.getInstance());
+        exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+        exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, os);
+        exporter.exportReport();
+        os.flush();
+        os.close();
+        if(context != null)
+            context.responseComplete();
+    }
+    
+    protected OutputStream outputstream(Exporter e, FacesContext context) throws IOException
+    {
         HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
         response.setContentType(e.getContentType());
         response.setCharacterEncoding("UTF-8");
@@ -173,13 +186,7 @@ public abstract class JasperDataExporter<E> implements Serializable
                 e.getContentDisposition() + "; filename=\"" + MimeUtility.encodeWord(e.getFileName(), "UTF-8", "Q") + "\"");
         //
         OutputStream os = response.getOutputStream();
-        JRPropertiesUtil.getInstance(DefaultJasperReportsContext.getInstance());
-        exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-        exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, os);
-        exporter.exportReport();
-        os.flush();
-        os.close();
-        context.responseComplete();
+        return os;
     }
 
     protected void beforeGenerateReport(FastReportBuilder frb)

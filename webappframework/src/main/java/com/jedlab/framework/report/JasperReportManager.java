@@ -88,11 +88,9 @@ public class JasperReportManager
 
         public Paging getPage()
         {
-            int from = ((firstResult) * maxResult);
-            if(from > 0)
-                from = from +1;
-            int to = (firstResult * maxResult) + maxResult;
-            return new Paging(from, to);
+            int offset = firstResult * maxResult;             
+            int limit =  maxResult;
+            return new Paging(offset, limit);
         }
 
         public int getFirstResult()
