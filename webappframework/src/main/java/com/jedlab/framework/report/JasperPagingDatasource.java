@@ -1,6 +1,7 @@
 package com.jedlab.framework.report;
 
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -33,60 +34,47 @@ public class JasperPagingDatasource implements JRRewindableDataSource
 
     private Iterator<?> iterator;
 
-    private int currentIndex;
-    
     private int rowCounter;
 
     public JasperPagingDatasource(JasperPaginationHandler paginationHandler)
     {
         this.paginationHandler = paginationHandler;
-        this.totalCount = paginationHandler.getResultCount();
+        this.totalCount = paginationHandler.getResultCount();        
     }
 
     @Override
     public boolean next() throws JRException
-    {
-        if ((this.totalCount == 0) || (this.totalCount >= 0 && this.rowCounter > this.totalCount))
-        {
-            return false;
-        }
-        if (this.data == null || this.currentIndex >= MAX_RESULT)
-        {
+    {            
+        if(rowCounter % MAX_RESULT == 0)
+        {            
             Paging p = new Paging(this.firstResult, MAX_RESULT).getPage();
             this.data = paginationHandler.getResultList(p.getFirstResult(), p.getMaxResult());
             if (this.data != null)
             {
                 this.iterator = this.data.iterator();
-            }
-            // reset
+            }           
             this.firstResult++;
-            this.currentIndex = 0;
+            
         }
-        if (this.iterator != null)
+        if (this.iterator != null && this.iterator.hasNext())
         {
-            boolean hasNext = this.iterator.hasNext();
-            if (hasNext)
-            {
-                this.currentBean = this.iterator.next();
-                this.currentIndex++;
-                this.rowCounter++;
-                return true;
-            }
+            this.currentBean = this.iterator.next();            
         }
-        //
-        return this.rowCounter > this.totalCount;
+        rowCounter++;
+        return rowCounter <= totalCount;
     }
 
     @Override
     public Object getFieldValue(JRField jrField) throws JRException
     {
         String reportFieldName = jrField.getName();
-        Object bean = this.currentBean;
+        Object bean = this.currentBean;        
         if (bean != null)
         {
             try
             {
-                return PropertyUtils.getProperty(bean, reportFieldName);
+                Object property = PropertyUtils.getProperty(bean, reportFieldName);                
+                return property;
             }
             catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
             {
@@ -119,5 +107,5 @@ public class JasperPagingDatasource implements JRRewindableDataSource
             this.iterator = this.data.iterator();
         }
     }
-    
+
 }

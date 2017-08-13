@@ -26,6 +26,8 @@ import com.jedlab.framework.report.ReportHeader;
 import com.jedlab.framework.spring.service.AbstractCrudService;
 import com.jedlab.framework.spring.service.Restriction;
 
+import ar.com.fdvs.dj.domain.builders.FastReportBuilder;
+
 public abstract class AbstractQueryActionBean<E extends EntityModel> extends AbstractActionBean
 {
 
@@ -89,7 +91,7 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
 
     @PersistenceContext
     EntityManager em;
-    
+
     @PostConstruct
     public void init()
     {
@@ -101,7 +103,7 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
             protected List<E> lazyLoad(int first, int pageSize,
                     List<com.jedlab.framework.web.ExtendedLazyDataModel.SortProperty> sortFields, Map<String, Object> filters)
             {
-                return getService().load(first, pageSize, sortFields, filters, getEntityClass(), getRestriction());                
+                return getService().load(first, pageSize, sortFields, filters, getEntityClass(), getRestriction());
             }
 
             @Override
@@ -113,7 +115,7 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
 
         };
     }
-    
+
     public ExtendedLazyDataModel<E> getResultList()
     {
         return resultList;
@@ -161,10 +163,12 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
     {
 
         private Class<E> clz;
+        private ReportSection reportSection;
 
         public ExportRecords(Class<E> clz)
         {
             this.clz = clz;
+            this.reportSection = getReportSection();
         }
 
         @Override
@@ -187,9 +191,27 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
         }
 
         @Override
+        protected void beforeGenerateReport(FastReportBuilder frb)
+        {
+            if (this.reportSection != null)
+            {
+                this.reportSection.beforeFormGenerateReport(frb);
+                Map<String, Object> parameters = this.reportSection.getParameters();
+                if (parameters != null && parameters.isEmpty() == false)
+                {
+                    parameters.entrySet().forEach(item->{
+                        addParameter(item.getKey(), item.getValue());
+                    });
+                }
+            }
+        }
+
+        @Override
         protected ReportHeader getReportHeader()
         {
-            return getFormReportHeader();
+            if (this.reportSection != null)
+                return this.reportSection.getFormReportHeader();
+            return null;
         }
 
         @Override
@@ -199,8 +221,18 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
         }
 
     }
-    
-    protected ReportHeader getFormReportHeader()
+
+    public interface ReportSection
+    {
+
+        public void beforeFormGenerateReport(FastReportBuilder frb);
+
+        public ReportHeader getFormReportHeader();
+
+        public Map<String, Object> getParameters();
+    }
+
+    protected ReportSection getReportSection()
     {
         return null;
     }
@@ -241,6 +273,5 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
     {
         return null;
     }
-
 
 }
