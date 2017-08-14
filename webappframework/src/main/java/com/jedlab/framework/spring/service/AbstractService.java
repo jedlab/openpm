@@ -105,6 +105,11 @@ public abstract class AbstractService<E>
         getDao().save(entity);
         afterInsert(entity);
     }
+    
+    public void delete(Long id)
+    {        
+        getDao().delete(id);       
+    }
 
     @Transactional
     public void update(E entity)

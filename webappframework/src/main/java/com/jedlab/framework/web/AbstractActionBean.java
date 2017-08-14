@@ -18,6 +18,11 @@ public abstract class AbstractActionBean implements Serializable
     {
         return getCurrentInstance().getExternalContext().getRequestParameterMap();
     }
+    
+    public Map<String, String[]> getRequestParameterValuesMap()
+    {
+        return getCurrentInstance().getExternalContext().getRequestParameterValuesMap();
+    }
 
     public String getCurrentViewID()
     {

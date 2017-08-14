@@ -25,6 +25,7 @@ import com.jedlab.framework.report.JasperPaginationHandler;
 import com.jedlab.framework.report.ReportHeader;
 import com.jedlab.framework.spring.service.AbstractCrudService;
 import com.jedlab.framework.spring.service.Restriction;
+import com.jedlab.framework.util.CollectionUtil;
 
 import ar.com.fdvs.dj.domain.builders.FastReportBuilder;
 
@@ -103,6 +104,8 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
             protected List<E> lazyLoad(int first, int pageSize,
                     List<com.jedlab.framework.web.ExtendedLazyDataModel.SortProperty> sortFields, Map<String, Object> filters)
             {
+                if(CollectionUtil.isEmpty(sortFields))
+                    sortFields = getSortProperties();
                 return getService().load(first, pageSize, sortFields, filters, getEntityClass(), getRestriction());
             }
 
@@ -114,6 +117,11 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
             }
 
         };
+    }
+    
+    protected List<com.jedlab.framework.web.ExtendedLazyDataModel.SortProperty> getSortProperties()
+    {
+        return null;
     }
 
     public ExtendedLazyDataModel<E> getResultList()
@@ -179,7 +187,7 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
                 @Override
                 public Collection<?> getResultList(Integer firstResult, Integer maxResult)
                 {
-                    return getService().load(firstResult, maxResult, null, null, clz, getRestriction());
+                    return getService().load(firstResult, maxResult, getSortProperties(), null, clz, getRestriction());
                 }
 
                 @Override
