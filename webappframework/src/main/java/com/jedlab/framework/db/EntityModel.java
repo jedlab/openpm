@@ -11,6 +11,6 @@ public interface EntityModel<ID extends Serializable> extends Serializable
 
     public ID getId();
     
-    public void setId(ID id);
+//    public void setId(ID id);
     
 }

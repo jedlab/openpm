@@ -10,8 +10,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.WeakHashMap;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -102,7 +100,19 @@ public class QueryMapper
                                 if (entityInstance instanceof EntityModel)
                                 {
                                     EntityModel po = (EntityModel) entityInstance;
-                                    po.setId((Long) recordValue);
+//                                    po.setId((Long) recordValue);
+                                    Method[] m = po.getClass().getMethods();
+                                    if(m != null)
+                                    {
+                                        for (Method method : m)
+                                        {
+                                            if(method.getName().equals("setId"))
+                                            {
+                                                Class<?> c = method.getParameterTypes()[0];
+                                                method.invoke(po, ReflectionUtil.toObject(c, recordValue));
+                                            }
+                                        }
+                                    }
                                     ReflectionUtil.set(field, instance, entityInstance);
                                 }
                             }
