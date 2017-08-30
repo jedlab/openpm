@@ -1,5 +1,7 @@
 package com.jedlab.framework.excel;
 
+import java.util.List;
+
 import org.apache.poi.ss.usermodel.Cell;
 
 import com.jedlab.framework.excel.ExcelReader.RowCell;
@@ -14,6 +16,8 @@ public interface ExcelDecorator
     public void processRowWithCell(RowCell rowCell);
 
     public boolean skipHeader();
+    
+    public List getResult();
 
     default public String readValueValue(Cell cell)
     {
