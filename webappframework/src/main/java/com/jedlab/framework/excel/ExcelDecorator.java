@@ -23,7 +23,8 @@ public interface ExcelDecorator
     {
         if (Cell.CELL_TYPE_NUMERIC == cell.getCellType())
         {
-            return String.valueOf((int) cell.getNumericCellValue());
+//            return String.valueOf(cell.getNumericCellValue());
+            return cell.toString();
         }
         if (Cell.CELL_TYPE_STRING == cell.getCellType())
         {
