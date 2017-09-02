@@ -25,7 +25,15 @@ public abstract class DefaultDialog<T> implements DialogManager<T>
     }
 
     protected abstract void afterClose(T object);
+
     public abstract void clear();
+
+    protected Map<String, List<String>> getParams()
+    {
+        Map<String, List<String>> params = new HashMap<String, List<String>>();
+        params.put("from", Arrays.asList("fromView"));
+        return params;
+    }
 
     @Override
     public void open()
@@ -38,10 +46,8 @@ public abstract class DefaultDialog<T> implements DialogManager<T>
         options.put("height", "800");
         options.put("contentHeight", "100%");
         options.put("modal", true);
-        options.put("closable", true);
-        Map<String, List<String>> params = new HashMap<String, List<String>>();
-        params.put("from", Arrays.asList("fromView"));
-        RequestContext.getCurrentInstance().openDialog(outcome, options, params);
+        options.put("closable", true);        
+        RequestContext.getCurrentInstance().openDialog(outcome, options, getParams());
     }
 
 }
