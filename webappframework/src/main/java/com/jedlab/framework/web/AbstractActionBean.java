@@ -1,13 +1,21 @@
 package com.jedlab.framework.web;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Serializable;
+import java.net.URLEncoder;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.faces.context.FacesContext;
+import javax.mail.internet.MimeUtility;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.primefaces.component.datatable.DataTable;
+
+import com.jedlab.framework.report.JasperDataExporter.Exporter;
 
 public abstract class AbstractActionBean implements Serializable
 {
@@ -60,6 +68,29 @@ public abstract class AbstractActionBean implements Serializable
         DataTable dataTable = (DataTable) FacesContext.getCurrentInstance().getViewRoot().findComponent(compId);
         if(dataTable != null)
             dataTable.reset();
+    }
+    
+    protected OutputStream outputstream(Exporter e) throws IOException
+    {
+        FacesContext context = getCurrentInstance();
+        HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
+        response.setContentType(e.getContentType());
+        response.setCharacterEncoding("UTF-8");
+        //
+        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        if (isInternetExplorer(request)) response.setHeader("Content-Disposition",
+                e.getContentDisposition() + "; filename=\"" + URLEncoder.encode(e.getFileName(), "utf-8") + "\"");
+        else response.setHeader("Content-Disposition",
+                e.getContentDisposition() + "; filename=\"" + MimeUtility.encodeWord(e.getFileName(), "UTF-8", "Q") + "\"");
+        //
+        OutputStream os = response.getOutputStream();
+        return os;
+    }
+    
+    protected boolean isInternetExplorer(HttpServletRequest request)
+    {
+        String userAgent = request.getHeader("user-agent");
+        return (userAgent.indexOf("MSIE") > -1);
     }
 
 }
