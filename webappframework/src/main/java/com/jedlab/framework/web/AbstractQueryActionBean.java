@@ -5,8 +5,10 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -37,7 +39,7 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
     private ExtendedLazyDataModel<E> resultList;
     private Long resultCount;
     private E selectedEntity;
-    private ArrayList<E> selectedEntityList = new ArrayList<E>();
+    private Set<E> selectedEntityList = new HashSet<E>();
     private ReportFileType selectedReportFileTye;
     private Class<E> entityClass;
 
@@ -46,7 +48,7 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
         return selectedReportFileTye;
     }
 
-    public List<E> getSelectedEntityList()
+    public Set<E> getSelectedEntityList()
     {
         return selectedEntityList;
     }
