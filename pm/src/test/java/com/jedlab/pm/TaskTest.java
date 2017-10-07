@@ -26,7 +26,7 @@ public class TaskTest
     public void taskInsertProject()
     {
         Project project = projectService.findAll().iterator().next();
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 60; i++)
         {
             Task t = new Task();
             t.setProject(project);

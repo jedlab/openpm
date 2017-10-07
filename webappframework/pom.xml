@@ -99,20 +99,26 @@
 		</dependency>
 		<!-- Reports -->
 		<dependency>
-			<groupId>ar.com.fdvs</groupId>
-			<artifactId>DynamicJasper</artifactId>
-			<version>5.0.9</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>jasperreports</artifactId>
-					<groupId>net.sf.jasperreports</groupId>
-				</exclusion>
-			</exclusions>
+		  <groupId>ar.com.fdvs</groupId>
+		  <artifactId>DynamicJasper</artifactId>
+		  <version>5.0.9</version>
+		  <exclusions>
+			<exclusion>
+			  <artifactId>jasperreports</artifactId>
+			  <groupId>net.sf.jasperreports</groupId>
+			</exclusion>
+		  </exclusions>
 		</dependency>
 		<dependency>
-			<groupId>net.sf.jasperreports</groupId>
-			<artifactId>jasperreports</artifactId>
-			<version>${jasper.version}</version>
+		  <groupId>net.sf.jasperreports</groupId>
+		  <artifactId>jasperreports</artifactId>
+		  <version>${jasper.version}</version>
+		  <exclusions>
+			<exclusion>
+			  <artifactId>olap4j</artifactId>
+			  <groupId>org.olap4j</groupId>
+			</exclusion>
+		  </exclusions>
 			<exclusions>
 				<exclusion>
 					<artifactId>olap4j</artifactId>
