@@ -245,6 +245,24 @@ public class QueryController
             }
             return new Query(oracleQ.toString(), values);
         }
+        else if (dbUtil.isDatabaseMySQL())
+        {
+            //Mysql            
+            if (getMaxResults() != null)
+            {
+                if (getFirstResult() != null)
+                {
+                    if (getFirstResult() > 0)
+                        queryBuffer.append(" limit ").append(getFirstResult()-1).append(",").append(getMaxResults() + 1);
+                }
+                else
+                {
+                    queryBuffer.append(" limit ").append(getMaxResults() + 1);
+                }
+            }
+
+            return new Query(queryBuffer.toString(), values);
+        }
         else
         {
             // not oracle

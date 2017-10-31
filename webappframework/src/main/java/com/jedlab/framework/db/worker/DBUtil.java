@@ -63,6 +63,25 @@ public class DBUtil
         }
         return isOracle;
     }
+    
+    public boolean isDatabaseMySQL()
+    {
+        boolean isMysql = false;
+        SessionFactory sessionFactory = getSession().getSessionFactory();
+        try
+        {
+            Object dialect = PropertyUtils.getProperty(sessionFactory, "dialect");
+            if (dialect.toString().contains("MySQL"))
+            {
+                isMysql = true;
+            }
+        }
+        catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
+        {
+            // DO NOTHING
+        }
+        return isMysql;
+    }
 
     public <T> T executeScalar(String sql, Class<T> type, Object... params)
     {
