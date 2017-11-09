@@ -253,7 +253,7 @@ public class QueryMapper
             }
             if (ParamOperator.LIKE.equals(item.getOperator()))
             {
-                criteria.add(Restrictions.like(item.getPropertyName(), "%" + item.getValue() + "%"));
+                criteria.add(Restrictions.ilike(item.getPropertyName(), "%" + item.getValue() + "%"));
             }
             if (ParamOperator.EQ.equals(item.getOperator()))
             {
