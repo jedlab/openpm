@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.primefaces.component.datatable.DataTable;
+import org.primefaces.context.RequestContext;
 
 import com.jedlab.framework.report.JasperDataExporter.Exporter;
 
@@ -91,6 +92,12 @@ public abstract class AbstractActionBean implements Serializable
     {
         String userAgent = request.getHeader("user-agent");
         return (userAgent.indexOf("MSIE") > -1);
+    }
+    
+    
+    public void closeDialog()
+    {
+        RequestContext.getCurrentInstance().closeDialog(null);
     }
 
 }

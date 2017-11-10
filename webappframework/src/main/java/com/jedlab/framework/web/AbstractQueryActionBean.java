@@ -17,6 +17,7 @@ import javax.persistence.PersistenceContext;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 import org.springframework.data.jpa.domain.Specification;
@@ -283,5 +284,7 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
     {
         return null;
     }
+    
+    
 
 }
