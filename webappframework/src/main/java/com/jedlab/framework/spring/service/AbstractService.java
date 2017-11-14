@@ -35,7 +35,7 @@ import com.jedlab.framework.web.ExtendedLazyDataModel.SortProperty;
 public abstract class AbstractService<E>
 {
 
-    @PersistenceContext
+    @PersistenceContext(unitName="entityManagerFactory")
     protected EntityManager entityManager;
 
     public abstract AbstractDAO<E> getDao();
@@ -47,7 +47,7 @@ public abstract class AbstractService<E>
         // The JPA spec does not allow a alias to be given to a fetch join, so
         // we use hibernate seesion to ignore the spec
         List<E> result = new ArrayList<>();
-        Session hibernateSession = (Session) entityManager.getDelegate();
+        Session hibernateSession = (Session) getEntityManager().getDelegate();
         Criteria criteria = hibernateSession.createCriteria(clz);
         if(restriction != null)
             restriction.applyFilter(criteria);
@@ -90,7 +90,7 @@ public abstract class AbstractService<E>
     @Transactional(readOnly=true)
     public Long count(Class<E> clz, Restriction restriction)
     {
-        Session hibernateSession = (Session) entityManager.getDelegate();
+        Session hibernateSession = (Session) getEntityManager().getDelegate();
         Criteria criteria = hibernateSession.createCriteria(clz);
         if(restriction != null)
             restriction.applyFilter(criteria);
@@ -132,7 +132,7 @@ public abstract class AbstractService<E>
 
     private void metaData(Class<E> domainClass)
     {
-        Metamodel metamodel = entityManager.getMetamodel();
+        Metamodel metamodel = getEntityManager().getMetamodel();
         ManagedType<E> type = metamodel.managedType(domainClass);
         if (!(type instanceof IdentifiableType))
         {
@@ -162,7 +162,7 @@ public abstract class AbstractService<E>
     @Transactional(readOnly=true)
     public E findById(Class<E> clz, Object id)
     {
-        return entityManager.find(clz, id);
+        return getEntityManager().find(clz, id);
     }
 
     public Iterable<E> findAll()
@@ -173,6 +173,11 @@ public abstract class AbstractService<E>
     public Iterable<E> findAll(Specification<E> spec)
     {
         return getDao().findAll(spec);
+    }
+    
+    protected EntityManager getEntityManager()
+    {
+        return entityManager;
     }
 
 }
