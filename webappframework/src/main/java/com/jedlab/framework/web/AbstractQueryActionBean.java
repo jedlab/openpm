@@ -93,9 +93,6 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
         logger.info("load");
     }
 
-    @PersistenceContext
-    EntityManager em;
-
     @PostConstruct
     public void init()
     {
