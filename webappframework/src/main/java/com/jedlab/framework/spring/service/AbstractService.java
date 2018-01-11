@@ -64,11 +64,24 @@ public abstract class AbstractService<E>
      // set 0 for unlimited
         if(pageSize > 0)
             criteria.setMaxResults(pageSize);
+        
+        if (getHints() != null)
+        {
+            for (Map.Entry<String, String> me : getHints().entrySet())
+            {
+                criteria.setComment(me.getValue());
+            }
+        }
+        
         result = criteria.list();
         return result;
     }
     
-    
+    protected Map<String, String> getHints()
+    {
+        return null;
+    }
+   
 
     protected Sort applySort(List<SortProperty> sortFields)
     {
