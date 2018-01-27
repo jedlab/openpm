@@ -12,15 +12,11 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
-import org.springframework.data.jpa.domain.Specification;
+
+import ar.com.fdvs.dj.domain.builders.FastReportBuilder;
 
 import com.jedlab.framework.db.EntityModel;
 import com.jedlab.framework.report.JasperDataExporter;
@@ -30,8 +26,11 @@ import com.jedlab.framework.spring.service.AbstractCrudService;
 import com.jedlab.framework.spring.service.Restriction;
 import com.jedlab.framework.util.CollectionUtil;
 
-import ar.com.fdvs.dj.domain.builders.FastReportBuilder;
-
+/**
+ * @author omidp 
+ * <p>load list on page load</p>
+ * @param <E>
+ */
 public abstract class AbstractQueryActionBean<E extends EntityModel> extends AbstractActionBean
 {
 
@@ -98,13 +97,18 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
     {
         logger.info("init");
         getEntityClass();
+        initResultList();
+    }
+
+    protected void initResultList()
+    {
         resultList = new ExtendedLazyDataModel<E>() {
 
             @Override
             protected List<E> lazyLoad(int first, int pageSize,
                     List<com.jedlab.framework.web.ExtendedLazyDataModel.SortProperty> sortFields, Map<String, Object> filters)
             {
-                if(CollectionUtil.isEmpty(sortFields))
+                if (CollectionUtil.isEmpty(sortFields))
                     sortFields = getSortProperties();
                 return getService().load(first, pageSize, sortFields, filters, getEntityClass(), getRestriction());
             }
@@ -118,7 +122,7 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
 
         };
     }
-    
+
     protected List<com.jedlab.framework.web.ExtendedLazyDataModel.SortProperty> getSortProperties()
     {
         return null;
@@ -207,7 +211,7 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
                 Map<String, Object> parameters = this.reportSection.getParameters();
                 if (parameters != null && parameters.isEmpty() == false)
                 {
-                    parameters.entrySet().forEach(item->{
+                    parameters.entrySet().forEach(item -> {
                         addParameter(item.getKey(), item.getValue());
                     });
                 }
@@ -281,7 +285,5 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
     {
         return null;
     }
-    
-    
 
 }
