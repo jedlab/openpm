@@ -132,6 +132,11 @@ public abstract class AbstractAuditController<T> extends AbstractActionBean
     public void init()
     {
         logger.info("init");
+        initResultList();
+    }
+    
+    protected void initResultList()
+    {
         resultList = new LazyDataModel<Revision<T>>() {
 
             public List<Revision<T>> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters)
