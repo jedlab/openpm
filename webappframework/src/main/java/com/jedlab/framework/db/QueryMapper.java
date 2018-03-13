@@ -20,6 +20,7 @@ import javax.persistence.Transient;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.data.domain.Sort;
 
 import com.jedlab.framework.reflections.Property;
 import com.jedlab.framework.reflections.ReflectionUtil;
@@ -284,6 +285,65 @@ public class QueryMapper
                 criteria.add(Restrictions.sqlRestriction(String.valueOf(item.getValue())));
             }
         }        
+    }
+    
+    
+    /**
+     * build query parameters from sort instance to keep it in pagination
+     * @param sort
+     * @return
+     */
+    public static String sortQueryParams(Sort sort)
+    {
+        if(sort == null)
+            return null;
+        StringBuilder sb = new StringBuilder();
+        sort.forEach(s->{
+            sb.append("&").append("sort=");
+            sb.append(s.getProperty()).append(",").append(s.isAscending() ? "asc" : "desc");
+        });
+        return sb.toString();
+    }
+    
+    /**
+     * build query parameters from filter instance to keep it in pagination
+     * @param filter
+     * @return
+     */
+    public static String queryParams(Filter filter)
+    {
+        Class<? extends Filter> clz = filter.getClass();
+        PropertyDescriptor[] pds = PropertyUtils.getPropertyDescriptors(clz);
+        StringBuilder sb = new StringBuilder();
+        for (PropertyDescriptor pd : pds)
+        {
+            if (pd.getPropertyType().equals(Class.class))
+                continue;
+            try
+            {
+                Method getter = pd.getReadMethod();
+                if (getter != null)
+                {
+                    Object val = pd.getReadMethod().invoke(filter, null);
+                    String propertyName = pd.getName();
+                    if (val == null)
+                        continue;
+                    if (val instanceof String && StringUtil.isEmpty(String.valueOf(val)))
+                    {
+                        continue;
+                    }
+                    sb.append("&");
+                    sb.append(propertyName).append("=").append(val);
+                }
+            }
+            catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        if (StringUtil.isEmpty(sb.toString()))
+            return null;
+        return sb.toString();
     }
 
 }

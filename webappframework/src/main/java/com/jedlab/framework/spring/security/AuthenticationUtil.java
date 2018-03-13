@@ -1,5 +1,6 @@
 package com.jedlab.framework.spring.security;
 
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -71,6 +72,11 @@ public final class AuthenticationUtil
             return (SecurityUserContext) auth.getPrincipal();
         }
         return null;
+    }
+
+    public static boolean isAnonymous()
+    {
+        return isLoggedIn() && (AuthenticationUtil.getAuthentication() instanceof AnonymousAuthenticationToken);
     }
 
 }

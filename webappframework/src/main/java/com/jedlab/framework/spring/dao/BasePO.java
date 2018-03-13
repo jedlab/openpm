@@ -7,6 +7,11 @@ import javax.persistence.Transient;
 
 import com.jedlab.framework.db.EntityModel;
 
+/**
+ * field accessor entities
+ * @author omidp
+ *
+ */
 @MappedSuperclass
 public abstract class BasePO implements EntityModel<Long>
 {

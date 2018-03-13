@@ -9,7 +9,13 @@ import javax.persistence.MappedSuperclass;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.id.enhanced.TableGenerator;
 
+/**
+ * getter accessor entities with table strategy
+ * @author omidp
+ *
+ */
 @MappedSuperclass
+@Deprecated
 public abstract class BasePO implements EntityModel<Long>
 {
 
