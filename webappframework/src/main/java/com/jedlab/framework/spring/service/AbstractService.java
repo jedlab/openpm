@@ -22,7 +22,6 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.repository.support.PageableExecutionUtils;
-import org.springframework.data.repository.support.PageableExecutionUtils.TotalSupplier;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jedlab.framework.exceptions.ServiceException;
@@ -38,12 +37,12 @@ import com.jedlab.framework.web.ExtendedLazyDataModel.SortProperty;
 public abstract class AbstractService<E>
 {
 
-    @PersistenceContext(unitName="entityManagerFactory")
+    @PersistenceContext(unitName = "entityManagerFactory")
     protected EntityManager entityManager;
 
     public abstract AbstractDAO<E> getDao();
 
-    @Transactional(readOnly=true)
+    @Transactional(readOnly = true)
     public List<E> load(int first, int pageSize, List<com.jedlab.framework.web.ExtendedLazyDataModel.SortProperty> sortFields,
             Map<String, Object> filters, Class<E> clz, Restriction restriction)
     {
@@ -52,7 +51,7 @@ public abstract class AbstractService<E>
         List<E> result = new ArrayList<>();
         Session hibernateSession = (Session) getEntityManager().getDelegate();
         Criteria criteria = hibernateSession.createCriteria(clz);
-        if(restriction != null)
+        if (restriction != null)
             restriction.applyFilter(criteria);
         if (CollectionUtil.isNotEmpty(sortFields))
         {
@@ -64,10 +63,10 @@ public abstract class AbstractService<E>
             });
         }
         criteria.setFirstResult(first);
-     // set 0 for unlimited
-        if(pageSize > 0)
+        // set 0 for unlimited
+        if (pageSize > 0)
             criteria.setMaxResults(pageSize);
-        
+
         if (getHints() != null)
         {
             for (Map.Entry<String, String> me : getHints().entrySet())
@@ -75,16 +74,15 @@ public abstract class AbstractService<E>
                 criteria.setComment(me.getValue());
             }
         }
-        
+
         result = criteria.list();
         return result;
     }
-    
+
     protected Map<String, String> getHints()
     {
         return null;
     }
-   
 
     protected Sort applySort(List<SortProperty> sortFields)
     {
@@ -103,12 +101,12 @@ public abstract class AbstractService<E>
         return new Sort(orders);
     }
 
-    @Transactional(readOnly=true)
+    @Transactional(readOnly = true)
     public Long count(Class<E> clz, Restriction restriction)
     {
         Session hibernateSession = (Session) getEntityManager().getDelegate();
         Criteria criteria = hibernateSession.createCriteria(clz);
-        if(restriction != null)
+        if (restriction != null)
             restriction.applyFilter(criteria);
         criteria.setProjection(Projections.rowCount());
         return (Long) criteria.uniqueResult();
@@ -121,10 +119,10 @@ public abstract class AbstractService<E>
         getDao().save(entity);
         afterInsert(entity);
     }
-    
+
     public void delete(Long id)
-    {        
-        getDao().delete(id);       
+    {
+        getDao().deleteById(id);
     }
 
     @Transactional
@@ -133,7 +131,7 @@ public abstract class AbstractService<E>
         beforeUpdate(entity);
         getDao().save(entity);
         afterUpdate(entity);
-        
+
     }
 
     protected void afterUpdate(E entity)
@@ -175,7 +173,7 @@ public abstract class AbstractService<E>
 
     }
 
-    @Transactional(readOnly=true)
+    @Transactional(readOnly = true)
     public E findById(Class<E> clz, Object id)
     {
         return getEntityManager().find(clz, id);
@@ -190,13 +188,12 @@ public abstract class AbstractService<E>
     {
         return getDao().findAll(spec);
     }
-    
+
     protected EntityManager getEntityManager()
     {
         return entityManager;
     }
-    
-    
+
     @Transactional(readOnly = true)
     public Page<E> load(Pageable pageable, Class<E> clz, Restriction restriction)
     {
@@ -215,8 +212,8 @@ public abstract class AbstractService<E>
             restriction.applyFilter(criteria);
         if (sort != null)
         {
-            sort.forEach(s -> {                
-                if(StringUtil.isNotEmpty(s.getProperty()))
+            sort.forEach(s -> {
+                if (StringUtil.isNotEmpty(s.getProperty()))
                 {
                     if (s.isAscending())
                         criteria.addOrder(org.hibernate.criterion.Order.asc(s.getProperty()));
@@ -225,17 +222,13 @@ public abstract class AbstractService<E>
                 }
             });
         }
-        criteria.setFirstResult(pageable.getOffset());
+        criteria.setFirstResult((int)pageable.getOffset());
         // set 0 for unlimited
         if (pageable.getPageSize() > 0)
             criteria.setMaxResults(pageable.getPageSize());
         result = criteria.list();
-        return PageableExecutionUtils.getPage(result, pageable, new TotalSupplier() {
-
-            @Override
-            public long get() {
-                return count(clz, restriction);
-            }
+        return PageableExecutionUtils.getPage(result, pageable, () -> {
+            return count(clz, restriction);
         });
     }
 

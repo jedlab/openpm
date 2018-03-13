@@ -15,10 +15,10 @@
 		<java.compiler.version>1.8</java.compiler.version>
 		<commonsio.version>2.4</commonsio.version>
 		<jasper.version>6.1.0</jasper.version>
-		<spring.version>4.3.8.RELEASE</spring.version>
-		<spring-data-jpa.version>1.11.3.RELEASE</spring-data-jpa.version>
-		<spring-data-enver.version>1.1.3.RELEASE</spring-data-enver.version>
-		<spring-security.version>4.2.2.RELEASE</spring-security.version>
+		<spring.version>5.0.3.RELEASE</spring.version>
+		<spring-data-jpa.version>2.0.5.RELEASE</spring-data-jpa.version>
+		<spring-data-enver.version>2.0.5.RELEASE</spring-data-enver.version>
+		<spring-security.version>5.0.3.RELEASE</spring-security.version>
 		<guava.version>18.0</guava.version>
 		<jsf.version>2.2.2</jsf.version>
 		<poi.version>3.10-FINAL</poi.version>
