@@ -18,8 +18,7 @@ import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.AbstractHttpMessageConverter;
-import org.springframework.http.converter.GenericHttpMessageConverter;
+import org.springframework.http.converter.AbstractGenericHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -48,14 +47,14 @@ import com.jedlab.framework.util.StringUtil;
  *         </pre>
  * 
  */
-public class MappingAxon2HttpMessageConvertor extends AbstractHttpMessageConverter<Object> implements GenericHttpMessageConverter<Object>
+public class MappingAxon2HttpMessageConvertor extends AbstractGenericHttpMessageConverter<Object>
 {
+
+    private static final Logger logger = LoggerFactory.getLogger(MappingAxon2HttpMessageConvertor.class);
 
     public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
 
-    Logger logger = LoggerFactory.getLogger(MappingAxon2HttpMessageConvertor.class);
-
-    private AxonBuilder axonBuilder = new AxonBuilder();
+    private Axon axon = new AxonBuilder().create();
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -93,6 +92,20 @@ public class MappingAxon2HttpMessageConvertor extends AbstractHttpMessageConvert
     @Override
     public Object read(Type type, Class<?> contextClass, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException
     {
+        JavaType javaType = getJavaType(type, contextClass);
+        return readJavaType(javaType, inputMessage);
+    }
+
+    @Override
+    protected Object readInternal(Class<? extends Object> clazz, HttpInputMessage inputMessage)
+            throws IOException, HttpMessageNotReadableException
+    {
+        JavaType javaType = getJavaType(clazz, null);
+        return readJavaType(javaType, inputMessage);
+    }
+
+    private Object readJavaType(JavaType javaType, HttpInputMessage inputMessage)
+    {
         try
         {
             InputStream body = inputMessage.getBody();
@@ -103,16 +116,19 @@ public class MappingAxon2HttpMessageConvertor extends AbstractHttpMessageConvert
             IOUtils.closeQuietly(body);
 
             String jsonContent = IOUtils.toString(beanInputStream, "UTF-8");
-            JavaType javaType = getJavaType(type, contextClass);
             Class<?> rawClass = null;
             if (javaType.hasGenericTypes())
-                rawClass = (Class<?>) ((java.lang.reflect.ParameterizedType) type).getActualTypeArguments()[0];
+            {
+                Type t = javaType.getRawClass();
+                rawClass = (Class<?>) ((java.lang.reflect.ParameterizedType) t).getActualTypeArguments()[0];
+            }
             else
+            {
                 rawClass = javaType.getRawClass();
+            }
             Object instance = rawClass.newInstance();
             if (StringUtil.isEmpty(jsonContent))
                 return instance;
-            Axon axon = new AxonBuilder().create();
             Object bean = axon.toObject(jsonContent, rawClass, instance);
             body.close();
             if (inputMessage.getClass().equals(org.springframework.http.server.ServletServerHttpRequest.class))
@@ -126,7 +142,7 @@ public class MappingAxon2HttpMessageConvertor extends AbstractHttpMessageConvert
                         BasePO abstractEntity = (BasePO) bean;
                         if (abstractEntity.getId() == null || abstractEntity.getId().longValue() == 0)
                             throw new UnsupportedOperationException("entity is null");
-                        Object entity = persistentManager.findById(rawClass, abstractEntity.getId());                        
+                        Object entity = persistentManager.findById(rawClass, abstractEntity.getId());
                         if (entity == null)
                             throw new UnsupportedOperationException("entity not found");
                         return new EntityWrapper<Object>(bean, axon.toObject(jsonContent, bean.getClass(), entity));
@@ -150,23 +166,7 @@ public class MappingAxon2HttpMessageConvertor extends AbstractHttpMessageConvert
     }
 
     @Override
-    protected boolean supports(Class<?> clazz)
-    {
-        // should not be called, since we override canRead/Write instead
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    // FIXME
-    protected Object readInternal(Class<? extends Object> clazz, HttpInputMessage inputMessage)
-            throws IOException, HttpMessageNotReadableException
-    {
-        // should not be called, since we override canRead/Write instead
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    protected void writeInternal(Object t, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException
+    protected void writeInternal(Object t, Type type, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException
     {
         OutputStream body = outputMessage.getBody();
         HttpHeaders headers = outputMessage.getHeaders();
@@ -174,30 +174,16 @@ public class MappingAxon2HttpMessageConvertor extends AbstractHttpMessageConvert
         {
             // TODO : use header for filter
         }
-        String json = axonBuilder.create().toJson(t);
+        String json = axon.toJson(t);
         body.write(json.getBytes("UTF-8"));
         body.flush();
         IOUtils.closeQuietly(body);
+
     }
 
     public void setPersistentManager(PersistentManager persistentManager)
     {
         this.persistentManager = persistentManager;
-    }
-
-    @Override
-    public boolean canWrite(Type type, Class<?> clazz, MediaType mediaType)
-    {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public void write(Object t, Type type, MediaType contentType, HttpOutputMessage outputMessage)
-            throws IOException, HttpMessageNotWritableException
-    {
-        // TODO Auto-generated method stub
-
     }
 
 }
