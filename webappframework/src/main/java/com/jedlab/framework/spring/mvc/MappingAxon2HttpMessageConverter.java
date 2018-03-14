@@ -48,10 +48,10 @@ import com.jedlab.framework.util.StringUtil;
  *         </pre>
  * 
  */
-public class MappingAxon2HttpMessageConvertor extends AbstractGenericHttpMessageConverter<Object>
+public class MappingAxon2HttpMessageConverter extends AbstractGenericHttpMessageConverter<Object>
 {
 
-    private static final Logger logger = LoggerFactory.getLogger(MappingAxon2HttpMessageConvertor.class);
+    private static final Logger logger = LoggerFactory.getLogger(MappingAxon2HttpMessageConverter.class);
 
     public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
 
@@ -61,7 +61,7 @@ public class MappingAxon2HttpMessageConvertor extends AbstractGenericHttpMessage
 
     PersistentManager persistentManager;
 
-    public MappingAxon2HttpMessageConvertor()
+    public MappingAxon2HttpMessageConverter()
     {
         super(new MediaType("application", "json", DEFAULT_CHARSET), new MediaType("application", "*+json", DEFAULT_CHARSET));
     }
