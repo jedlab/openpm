@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
@@ -93,7 +94,7 @@ public class MappingAxon2HttpMessageConvertor extends AbstractGenericHttpMessage
     public Object read(Type type, Class<?> contextClass, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException
     {
         JavaType javaType = getJavaType(type, contextClass);
-        return readJavaType(javaType, inputMessage);
+        return readJavaType(javaType, inputMessage, contextClass);
     }
 
     @Override
@@ -101,10 +102,10 @@ public class MappingAxon2HttpMessageConvertor extends AbstractGenericHttpMessage
             throws IOException, HttpMessageNotReadableException
     {
         JavaType javaType = getJavaType(clazz, null);
-        return readJavaType(javaType, inputMessage);
+        return readJavaType(javaType, inputMessage, clazz);
     }
 
-    private Object readJavaType(JavaType javaType, HttpInputMessage inputMessage)
+    private Object readJavaType(JavaType javaType, HttpInputMessage inputMessage, Class<?> contextClass)
     {
         try
         {
@@ -119,8 +120,15 @@ public class MappingAxon2HttpMessageConvertor extends AbstractGenericHttpMessage
             Class<?> rawClass = null;
             if (javaType.hasGenericTypes())
             {
-                Type t = javaType.getRawClass();
-                rawClass = (Class<?>) ((java.lang.reflect.ParameterizedType) t).getActualTypeArguments()[0];
+                Type type = contextClass.getGenericSuperclass();
+                if (type instanceof ParameterizedType)
+                {
+                    rawClass = (Class<?>) ((java.lang.reflect.ParameterizedType) type).getActualTypeArguments()[0];
+                }
+                else
+                {
+                    throw new IllegalArgumentException("Could not guess entity class by reflection");
+                }
             }
             else
             {
@@ -131,25 +139,18 @@ public class MappingAxon2HttpMessageConvertor extends AbstractGenericHttpMessage
                 return instance;
             Object bean = axon.toObject(jsonContent, rawClass, instance);
             body.close();
-            if (inputMessage.getClass().equals(org.springframework.http.server.ServletServerHttpRequest.class))
+            if (bean instanceof EntityModel)
             {
-                ServletServerHttpRequest sshr = (ServletServerHttpRequest) inputMessage;
-                // HttpServletRequest servletRequest = sshr.getServletRequest();
-                if (sshr.getMethod() == HttpMethod.PUT && persistentManager != null)
+                EntityModel<Long> abstractEntity = (EntityModel<Long>) bean;
+                if (abstractEntity.getId() != null && persistentManager != null)
                 {
-                    if (bean instanceof EntityModel)
-                    {
-                        EntityModel<Long> abstractEntity = (EntityModel<Long>) bean;
-                        if (abstractEntity.getId() == null || abstractEntity.getId().longValue() == 0)
-                            throw new UnsupportedOperationException("entity is null");
-                        Object entity = persistentManager.findById(rawClass, abstractEntity.getId());
-                        if (entity == null)
-                            throw new UnsupportedOperationException("entity not found");
-                        return new EntityWrapper<Object>(bean, axon.toObject(jsonContent, bean.getClass(), entity));
-                    }
+                    Object entity = persistentManager.findById(rawClass, abstractEntity.getId());
+                    if (entity == null)
+                        throw new UnsupportedOperationException("entity not found");
+                    return new EntityWrapper<Object>(bean, axon.toObject(jsonContent, bean.getClass(), entity));
                 }
-
             }
+
             return bean;
         }
         catch (Exception e)
