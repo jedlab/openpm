@@ -16,6 +16,11 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.JoinColumn;
 import javax.persistence.Transient;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.hibernate.Criteria;
@@ -24,6 +29,8 @@ import org.springframework.data.domain.Sort;
 
 import com.jedlab.framework.reflections.Property;
 import com.jedlab.framework.reflections.ReflectionUtil;
+import com.jedlab.framework.spring.rest.QueryWhereParser;
+import com.jedlab.framework.spring.rest.QueryWhereParser.FilterProperty;
 import com.jedlab.framework.spring.web.Filter;
 import com.jedlab.framework.spring.web.ParamOperator;
 import com.jedlab.framework.spring.web.ParameterItem;
@@ -344,6 +351,44 @@ public class QueryMapper
         if (StringUtil.isEmpty(sb.toString()))
             return null;
         return sb.toString();
+    }
+
+    public static List<Predicate> filterMap(List<FilterProperty> filterProperties, CriteriaBuilder cb, CriteriaQuery criteria, Root root)
+    {
+        List<Predicate> predicateList = new ArrayList<Predicate>();
+        for (int i = 0; i < filterProperties.size(); i++)
+        {
+            FilterProperty item = filterProperties.get(i);
+            String property = item.getPropertyName();
+            Object value = item.getValue();
+            String operator = item.getOperator();
+            if (property.indexOf(".") > 0)
+            {
+                
+            }
+            else
+            {
+//                ParameterExpression<?> pe = cb.parameter(String.class, property);
+                if (QueryWhereParser.EQ.equals(operator))
+                    predicateList.add(cb.equal(root.get(property), value));
+                if (QueryWhereParser.LK.equals(operator))
+                    predicateList.add(cb.like(root.<String> get(property), "%" + value.toString() + "%"));
+                if (QueryWhereParser.BW.equals(operator))
+                    predicateList.add(cb.like(root.<String> get(property), value.toString() + "%"));
+                if (QueryWhereParser.EW.equals(operator))
+                    predicateList.add(cb.like(root.<String> get(property), "%" + value.toString()));
+                if (QueryWhereParser.GT.equals(operator))
+                    predicateList.add(cb.greaterThan(root.<Long> get(property), (Long)value));
+                if (QueryWhereParser.GTE.equals(operator))
+                    predicateList.add(cb.greaterThanOrEqualTo(root.<Long> get(property), (Long)value));
+                if (QueryWhereParser.LT.equals(operator))
+                    predicateList.add(cb.lessThan(root.<Long> get(property), (Long)value));
+                if (QueryWhereParser.LTE.equals(operator))
+                    predicateList.add(cb.lessThanOrEqualTo(root.<Long> get(property), (Long)value));
+            }
+            
+        }
+       return predicateList;
     }
 
 }

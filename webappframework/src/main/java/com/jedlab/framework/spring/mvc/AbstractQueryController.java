@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.jedlab.framework.db.QueryMapper;
 import com.jedlab.framework.spring.service.AbstractService;
+import com.jedlab.framework.spring.service.JPARestriction;
 import com.jedlab.framework.spring.service.Restriction;
 import com.jedlab.framework.spring.web.Filter;
 
@@ -78,7 +79,7 @@ public abstract class AbstractQueryController<E>
         // param. decreased by 1.
 
         int evalPage = (page.orElse(0) < 1) ? INITIAL_PAGE : page.get() - 1;
-        Page<E> list = getService().load(new PageRequest(evalPage, evalPageSize), getEntityClass(), addRestriction(filter), sort);
+        Page<E> list = getService().load(new PageRequest(evalPage, evalPageSize), getEntityClass(), getRestriction(filter), sort);
 
         Pager pager = new Pager(list.getTotalPages(), list.getNumber(), BUTTONS_TO_SHOW);
 
@@ -92,7 +93,9 @@ public abstract class AbstractQueryController<E>
         return path;
     }
 
-    protected Restriction addRestriction(Filter filter)
+   
+
+    protected JPARestriction getRestriction(Filter filter)
     {
         return null;
     }

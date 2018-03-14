@@ -6,6 +6,11 @@ import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.IdentifiableType;
 import javax.persistence.metamodel.ManagedType;
 import javax.persistence.metamodel.Metamodel;
@@ -43,6 +48,7 @@ public abstract class AbstractService<E>
     public abstract AbstractDAO<E> getDao();
 
     @Transactional(readOnly = true)
+    @Deprecated
     public List<E> load(int first, int pageSize, List<com.jedlab.framework.web.ExtendedLazyDataModel.SortProperty> sortFields,
             Map<String, Object> filters, Class<E> clz, Restriction restriction)
     {
@@ -102,6 +108,7 @@ public abstract class AbstractService<E>
     }
 
     @Transactional(readOnly = true)
+    @Deprecated
     public Long count(Class<E> clz, Restriction restriction)
     {
         Session hibernateSession = (Session) getEntityManager().getDelegate();
@@ -195,41 +202,61 @@ public abstract class AbstractService<E>
     }
 
     @Transactional(readOnly = true)
-    public Page<E> load(Pageable pageable, Class<E> clz, Restriction restriction)
+    public Page<E> load(Pageable pageable, Class<E> clz, JPARestriction restriction)
     {
         return load(pageable, clz, restriction, null);
     }
 
     @Transactional(readOnly = true)
-    public Page<E> load(Pageable pageable, Class<E> clz, Restriction restriction, Sort sort)
-    {
-        // The JPA spec does not allow a alias to be given to a fetch join, so
-        // we use hibernate seesion to ignore the spec
+    public Page<E> load(Pageable pageable, Class<E> clz, JPARestriction restriction, Sort sort)
+    {      
         List<E> result = new ArrayList<>();
-        Session hibernateSession = (Session) getEntityManager().getDelegate();
-        Criteria criteria = hibernateSession.createCriteria(clz);
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<E> criteria = builder.createQuery( clz);
+        Root<E> root = criteria.from( clz );
+        criteria.select( root );
         if (restriction != null)
-            restriction.applyFilter(criteria);
+        {
+            List<Predicate> predicates = restriction.applyFilter(builder, criteria, root);
+            if(CollectionUtil.isNotEmpty(predicates))
+            criteria.where(predicates.toArray(new Predicate[predicates.size()]));
+        }
         if (sort != null)
         {
+            List<javax.persistence.criteria.Order> orderList = new ArrayList<>();
             sort.forEach(s -> {
                 if (StringUtil.isNotEmpty(s.getProperty()))
                 {
                     if (s.isAscending())
-                        criteria.addOrder(org.hibernate.criterion.Order.asc(s.getProperty()));
+                        orderList.add(builder.asc(root.get(s.getProperty())));
                     else
-                        criteria.addOrder(org.hibernate.criterion.Order.desc(s.getProperty()));
+                        orderList.add(builder.desc(root.get(s.getProperty())));
                 }
             });
         }
-        criteria.setFirstResult((int)pageable.getOffset());
+        
+        TypedQuery<E> createQuery = entityManager.createQuery( criteria );        
+        createQuery.setFirstResult((int)pageable.getOffset());
         // set 0 for unlimited
         if (pageable.getPageSize() > 0)
-            criteria.setMaxResults(pageable.getPageSize());
-        result = criteria.list();
+            createQuery.setMaxResults(pageable.getPageSize());
+        result = createQuery.getResultList();
         return PageableExecutionUtils.getPage(result, pageable, () -> {
             return count(clz, restriction);
         });
+    }
+    
+    
+    @Transactional(readOnly = true)
+    public Long count(Class<E> clz, JPARestriction restriction)
+    {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> criteria = builder.createQuery( Long.class);
+        Root<E> root = criteria.from( clz );
+        criteria.select(builder.count(root));
+        if (restriction != null)
+            restriction.applyFilter(builder, criteria, root);        
+        return (Long) entityManager.createQuery(criteria).getSingleResult();
     }
 
 }

@@ -8,7 +8,6 @@ import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 
 import org.apache.commons.io.IOUtils;
-import org.dom4j.tree.AbstractEntity;
 import org.omidbiz.core.axon.Axon;
 import org.omidbiz.core.axon.AxonBuilder;
 import org.slf4j.Logger;
@@ -26,6 +25,7 @@ import org.springframework.http.server.ServletServerHttpRequest;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.ByteStreams;
+import com.jedlab.framework.db.EntityModel;
 import com.jedlab.framework.spring.dao.BasePO;
 import com.jedlab.framework.util.StringUtil;
 
@@ -137,9 +137,9 @@ public class MappingAxon2HttpMessageConvertor extends AbstractGenericHttpMessage
                 // HttpServletRequest servletRequest = sshr.getServletRequest();
                 if (sshr.getMethod() == HttpMethod.PUT && persistentManager != null)
                 {
-                    if (bean instanceof AbstractEntity)
+                    if (bean instanceof EntityModel)
                     {
-                        BasePO abstractEntity = (BasePO) bean;
+                        EntityModel<Long> abstractEntity = (EntityModel<Long>) bean;
                         if (abstractEntity.getId() == null || abstractEntity.getId().longValue() == 0)
                             throw new UnsupportedOperationException("entity is null");
                         Object entity = persistentManager.findById(rawClass, abstractEntity.getId());
