@@ -213,6 +213,7 @@ public class QueryMapper
         return props;
     }
 
+    @Deprecated
     public static void filterMap(Filter filter, Criteria criteria)
     {
         List<ParameterItem> filterItems = new ArrayList<>();
@@ -389,6 +390,91 @@ public class QueryMapper
             
         }
        return predicateList;
+    }
+    
+    
+    public static void filterMap(Filter filter, CriteriaBuilder cb, CriteriaQuery criteria, Root root)
+    {
+        List<ParameterItem> filterItems = new ArrayList<>();
+        Class<? extends Filter> clz = filter.getClass();
+        PropertyDescriptor[] pds = PropertyUtils.getPropertyDescriptors(clz);
+        for (PropertyDescriptor pd : pds)
+        {
+            if (pd.getPropertyType().equals(Class.class))
+                continue;
+            try
+            {
+                Method getter = pd.getReadMethod();
+                if (getter != null && getter.isAnnotationPresent(QParam.class))
+                {
+                    QParam annotation = getter.getAnnotation(QParam.class);
+                    Object invoke = pd.getReadMethod().invoke(filter, null);
+                    String propertyName = pd.getName();
+                    if(StringUtil.isNotEmpty(annotation.propertyName()))
+                        propertyName = annotation.propertyName();
+                    filterItems.add(new ParameterItem(propertyName, annotation.operator(), invoke));
+                }
+            }
+            catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        //
+        List<Predicate> predicateList = new ArrayList<Predicate>();
+        for (ParameterItem item : filterItems)
+        {
+            Object val = item.getValue();
+            if(val == null)
+                continue;
+            if(val instanceof String && StringUtil.isEmpty(String.valueOf(val)))
+            {                   
+                continue;
+            }
+            if(val instanceof Date)
+            {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime((Date)val);
+                cal.set(Calendar.HOUR, 0);
+                cal.set(Calendar.MINUTE, 0);
+                cal.set(Calendar.SECOND, 0);
+                cal.set(Calendar.MILLISECOND, 0);
+                val = cal.getTime();
+            }
+            if (ParamOperator.LIKE.equals(item.getOperator()))
+            {
+                predicateList.add(cb.like(root.<String> get(item.getPropertyName()), "%" + val.toString() + "%"));
+            }
+            if (ParamOperator.EQ.equals(item.getOperator()))
+            {
+                predicateList.add(cb.equal(root.get(item.getPropertyName()), val));
+            }
+            if (ParamOperator.NEQ.equals(item.getOperator()))
+            {
+                predicateList.add(cb.not(cb.equal(root.get(item.getPropertyName()), val)));
+            }
+            if (ParamOperator.GT.equals(item.getOperator()))
+            {
+                predicateList.add(cb.greaterThan(root.<Long> get(item.getPropertyName()), (Long)val));
+            }
+            if (ParamOperator.LT.equals(item.getOperator()))
+            {
+                predicateList.add(cb.lessThan(root.<Long> get(item.getPropertyName()), (Long)val));
+            }
+            if (ParamOperator.LTE.equals(item.getOperator()))
+            {
+                predicateList.add(cb.lessThanOrEqualTo(root.<Long>get(item.getPropertyName()), (Long)val));
+            }
+            if (ParamOperator.GTE.equals(item.getOperator()))
+            {
+                predicateList.add(cb.greaterThanOrEqualTo(root.<Long>get(item.getPropertyName()), (Long)val));
+            }
+            if (ParamOperator.SQLQUERY.equals(item.getOperator()))
+            {
+                throw new UnsupportedOperationException("not supported in JPA");
+//                criteria.add(Restrictions.sqlRestriction(String.valueOf(item.getValue())));
+            }
+        }        
     }
 
 }

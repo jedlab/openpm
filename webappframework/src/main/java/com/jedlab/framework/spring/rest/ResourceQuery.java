@@ -25,12 +25,13 @@ import javax.ws.rs.core.UriInfo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.PageRequest;
 
 import com.google.common.collect.Lists;
 import com.jedlab.framework.exceptions.ServiceException;
 import com.jedlab.framework.spring.dao.BasePO;
 import com.jedlab.framework.spring.service.AbstractCrudService;
-import com.jedlab.framework.spring.service.Restriction;
+import com.jedlab.framework.spring.service.JPARestriction;
 import com.jedlab.framework.util.CollectionUtil;
 
 public abstract class ResourceQuery<T extends BasePO> 
@@ -61,7 +62,7 @@ public abstract class ResourceQuery<T extends BasePO>
            return Response.status(Status.BAD_REQUEST).build();
         }
         
-        Iterable<T> projects = getService().load(start, show, null, null, getEntityClass(), getRestriction());
+        Iterable<T> projects = getService().load(PageRequest.of(start, show), getEntityClass(), getRestriction());
         ArrayList<T> projectList = Lists.newArrayList(projects);
         if (CollectionUtil.isNotEmpty(projectList))
         {
@@ -72,7 +73,7 @@ public abstract class ResourceQuery<T extends BasePO>
         return Response.noContent().build();
     }
     
-    protected Restriction getRestriction()
+    protected JPARestriction getRestriction()
     {
         return null;
     }

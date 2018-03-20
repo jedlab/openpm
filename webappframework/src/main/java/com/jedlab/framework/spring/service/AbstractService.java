@@ -47,44 +47,6 @@ public abstract class AbstractService<E>
 
     public abstract AbstractDAO<E> getDao();
 
-    @Transactional(readOnly = true)
-    @Deprecated
-    public List<E> load(int first, int pageSize, List<com.jedlab.framework.web.ExtendedLazyDataModel.SortProperty> sortFields,
-            Map<String, Object> filters, Class<E> clz, Restriction restriction)
-    {
-        // The JPA spec does not allow a alias to be given to a fetch join, so
-        // we use hibernate seesion to ignore the spec
-        List<E> result = new ArrayList<>();
-        Session hibernateSession = (Session) getEntityManager().getDelegate();
-        Criteria criteria = hibernateSession.createCriteria(clz);
-        if (restriction != null)
-            restriction.applyFilter(criteria);
-        if (CollectionUtil.isNotEmpty(sortFields))
-        {
-            sortFields.forEach(item -> {
-                if (SortOrder.ASCENDING.equals(item.getSortOrder()))
-                    criteria.addOrder(org.hibernate.criterion.Order.asc(item.getName()));
-                else
-                    criteria.addOrder(org.hibernate.criterion.Order.desc(item.getName()));
-            });
-        }
-        criteria.setFirstResult(first);
-        // set 0 for unlimited
-        if (pageSize > 0)
-            criteria.setMaxResults(pageSize);
-
-        if (getHints() != null)
-        {
-            for (Map.Entry<String, String> me : getHints().entrySet())
-            {
-                criteria.setComment(me.getValue());
-            }
-        }
-
-        result = criteria.list();
-        return result;
-    }
-
     protected Map<String, String> getHints()
     {
         return null;
@@ -105,18 +67,6 @@ public abstract class AbstractService<E>
         if (CollectionUtil.isEmpty(orders))
             return null;
         return new Sort(orders);
-    }
-
-    @Transactional(readOnly = true)
-    @Deprecated
-    public Long count(Class<E> clz, Restriction restriction)
-    {
-        Session hibernateSession = (Session) getEntityManager().getDelegate();
-        Criteria criteria = hibernateSession.createCriteria(clz);
-        if (restriction != null)
-            restriction.applyFilter(criteria);
-        criteria.setProjection(Projections.rowCount());
-        return (Long) criteria.uniqueResult();
     }
 
     @Transactional
@@ -209,17 +159,15 @@ public abstract class AbstractService<E>
 
     @Transactional(readOnly = true)
     public Page<E> load(Pageable pageable, Class<E> clz, JPARestriction restriction, Sort sort)
-    {      
+    {
         List<E> result = new ArrayList<>();
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<E> criteria = builder.createQuery( clz);
-        Root<E> root = criteria.from( clz );
-        criteria.select( root );
+        CriteriaQuery<E> criteria = builder.createQuery(clz);
+        Root<E> root = criteria.from(clz);
+        criteria.select(root);
         if (restriction != null)
         {
-            List<Predicate> predicates = restriction.applyFilter(builder, criteria, root);
-            if(CollectionUtil.isNotEmpty(predicates))
-            criteria.where(predicates.toArray(new Predicate[predicates.size()]));
+            restriction.applyFilter(builder, criteria, root, true);
         }
         if (sort != null)
         {
@@ -234,9 +182,9 @@ public abstract class AbstractService<E>
                 }
             });
         }
-        
-        TypedQuery<E> createQuery = entityManager.createQuery( criteria );        
-        createQuery.setFirstResult((int)pageable.getOffset());
+
+        TypedQuery<E> createQuery = entityManager.createQuery(criteria);
+        createQuery.setFirstResult((int) pageable.getOffset());
         // set 0 for unlimited
         if (pageable.getPageSize() > 0)
             createQuery.setMaxResults(pageable.getPageSize());
@@ -245,18 +193,56 @@ public abstract class AbstractService<E>
             return count(clz, restriction);
         });
     }
-    
-    
+
     @Transactional(readOnly = true)
     public Long count(Class<E> clz, JPARestriction restriction)
     {
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Long> criteria = builder.createQuery( Long.class);
-        Root<E> root = criteria.from( clz );
+        CriteriaQuery<Long> criteria = builder.createQuery(Long.class);
+        Root<E> root = criteria.from(clz);
         criteria.select(builder.count(root));
         if (restriction != null)
-            restriction.applyFilter(builder, criteria, root);        
+        {
+            restriction.applyFilter(builder, criteria, root, false);
+        }
         return (Long) entityManager.createQuery(criteria).getSingleResult();
+    }
+    
+    
+    @Transactional(readOnly = true)
+    public List<E> load(int first, int pageSize, List<com.jedlab.framework.web.ExtendedLazyDataModel.SortProperty> sortFields,
+            Map<String, Object> filters, Class<E> clz, JPARestriction restriction)
+    {
+        
+        List<E> result = new ArrayList<>();
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<E> criteria = builder.createQuery(clz);
+        Root<E> root = criteria.from(clz);
+        criteria.select(root);
+        if (restriction != null)
+        {
+            restriction.applyFilter(builder, criteria, root, true);
+        }
+        if (CollectionUtil.isNotEmpty(sortFields))
+        {
+            List<javax.persistence.criteria.Order> orderList = new ArrayList();
+            sortFields.forEach(item -> {
+                if (SortOrder.ASCENDING.equals(item.getSortOrder()))
+                    orderList.add(builder.asc(root.get(item.getName())));
+                else
+                    orderList.add(builder.desc(root.get(item.getName())));
+            });
+            criteria.orderBy(orderList);
+        }
+        
+        TypedQuery<E> createQuery = entityManager.createQuery(criteria);
+        createQuery.setFirstResult(first);
+        // set 0 for unlimited
+        if (pageSize > 0)
+            createQuery.setMaxResults(pageSize);
+        
+        result = createQuery.getResultList();
+        return result;
     }
 
 }

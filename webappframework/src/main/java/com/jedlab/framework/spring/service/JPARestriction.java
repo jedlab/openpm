@@ -10,8 +10,21 @@ import javax.persistence.criteria.Root;
 @FunctionalInterface
 public interface JPARestriction
 {
-    
+
+    /**
+     * <p>for internal use only</p>
+     * @param builder
+     * @param criteria
+     * @param root
+     * @param joinFetch
+     * @return
+     */
     @SuppressWarnings("rawtypes")
-    public List<Predicate> applyFilter(CriteriaBuilder builder, CriteriaQuery criteria, Root root);
+    public void applyFilter(CriteriaBuilder builder, CriteriaQuery criteria, Root root, boolean joinFetch);
+
+    static JPARestrictionImpl create(Restriction restriction)
+    {
+        return new JPARestrictionImpl(restriction);
+    }
 
 }

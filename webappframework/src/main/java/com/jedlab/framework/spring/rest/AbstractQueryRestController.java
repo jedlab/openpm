@@ -65,7 +65,7 @@ public abstract class AbstractQueryRestController<E extends EntityModel>
                 sort);
         Pager pager = new Pager(list.getTotalPages(), list.getNumber(), BUTTONS_TO_SHOW);
         return new ResultList<E>(evalPageSize, new ArrayList<>(list.getContent()), pager.getStartPage(), pager.getEndPage(),
-                list.getTotalElements(), list.getTotalPages());
+                getService().count(getEntityClass(), getRestriction(qb.getFilterProperties())), list.getTotalPages());
     }
 
     protected JPARestriction getRestriction(List<FilterProperty> filterProperties)

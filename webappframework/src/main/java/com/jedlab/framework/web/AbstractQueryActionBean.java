@@ -16,15 +16,15 @@ import javax.annotation.PostConstruct;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 
-import ar.com.fdvs.dj.domain.builders.FastReportBuilder;
-
 import com.jedlab.framework.db.EntityModel;
 import com.jedlab.framework.report.JasperDataExporter;
 import com.jedlab.framework.report.JasperPaginationHandler;
 import com.jedlab.framework.report.ReportHeader;
 import com.jedlab.framework.spring.service.AbstractCrudService;
-import com.jedlab.framework.spring.service.Restriction;
+import com.jedlab.framework.spring.service.JPARestriction;
 import com.jedlab.framework.util.CollectionUtil;
+
+import ar.com.fdvs.dj.domain.builders.FastReportBuilder;
 
 /**
  * @author omidp 
@@ -281,7 +281,7 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
         return entityClass;
     }
 
-    protected Restriction getRestriction()
+    protected JPARestriction getRestriction()
     {
         return null;
     }
