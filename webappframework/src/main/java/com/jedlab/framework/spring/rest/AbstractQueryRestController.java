@@ -47,7 +47,7 @@ public abstract class AbstractQueryRestController<E extends EntityModel>
     protected MessageSource messageSource;
 
     @ResponseBody
-    @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value="/",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResultList<E> get(@RequestParam("pageSize") Optional<Integer> pageSize, @RequestParam("page") Optional<Integer> page,
             @RequestParam(value = "filter", required = false) String filter,
             @RequestParam(value = "match", required = false, defaultValue = QueryWhereParser.AND) String match, Sort sort)

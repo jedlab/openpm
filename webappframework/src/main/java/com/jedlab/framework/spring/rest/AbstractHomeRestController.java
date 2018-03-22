@@ -44,7 +44,7 @@ public abstract class AbstractHomeRestController<E extends EntityModel>
     protected MessageSource messageSource;
 
     @ResponseBody
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value="/",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseMessage post(@RequestBody E entity, Errors errors) throws BindingValidationError
     {
         validate(entity, errors);
