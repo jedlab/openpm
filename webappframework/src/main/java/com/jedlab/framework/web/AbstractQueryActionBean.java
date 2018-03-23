@@ -190,7 +190,7 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
 
                 @Override
                 public Collection<?> getResultList(Integer firstResult, Integer maxResult)
-                {
+                {                    
                     return getService().load(firstResult, maxResult, getSortProperties(), null, clz, getRestriction());
                 }
 

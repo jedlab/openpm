@@ -14,10 +14,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import com.jedlab.framework.spring.security.SecurityUser;
+import com.jedlab.framework.spring.security.SecurityUserContext;
 
 @Entity
 @Table(name = "users", schema = "public", uniqueConstraints = { @UniqueConstraint(columnNames = { "user_name", "email" }) })
-public class User extends SecurityUser
+public class User extends SecurityUser implements SecurityUserContext
 {
 
     private String email;
