@@ -7,48 +7,35 @@
       	parent="parent-flow">
 
 	
-
-	<secured attributes="ROLE_USER"/>
-	
 	<persistence-context />
 	
-	<view-state id="projectList">
-		<attribute name="commit" value="true" type="java.lang.Boolean"></attribute>
-		<var name="projectQuery" class="com.jedlab.pm.webflow.ProjectQueryWebFlow"/>
-		<transition on="create" bind="false" to="projectEdit"></transition>
+	
+	<view-state id="taskList">
+		<var name="taskQuery" class="com.jedlab.pm.webflow.TaskQueryWebFlow"/>
+		<transition on="create" bind="false" to="taskEdit"></transition>
+		
 		<transition on="resetSearch">
-			<evaluate expression="projectQuery.resetSearch()"></evaluate>
-			<render fragments="projectSearchForm, projectListForm"></render>
+			<evaluate expression="taskQuery.resetSearch()"></evaluate>
+			<render fragments="taskSearchForm, taskListForm"></render>
 		</transition>
 		<transition on="search">
-			<evaluate expression="projectQuery.resetPagination('projectListForm:projectListTable')"></evaluate>
-			<render fragments="projectListForm:projectListTable"></render>
+			<evaluate expression="taskQuery.resetPagination('taskListForm:taskListTable')"></evaluate>
+			<render fragments="taskListForm:taskListTable"></render>
 		</transition>
-	</view-state>
-
-	<view-state id="projectEdit" model="project">		
-		<var name="projectHome" class="com.jedlab.pm.webflow.ProjectHomeWebFlow"/>
-		<on-entry>
-			<set name="requestScope.projectId" value="requestParameters.id" type="long" />
-			<evaluate expression="projectHome.setProjectId(projectId)"></evaluate>
-			<evaluate expression="projectHome.instance" result="viewScope.project"></evaluate>
-		</on-entry>
-		<transition on="save" to="projectList">
-			<evaluate expression="projectHome.save()"></evaluate>
-		</transition>
-		<transition on="update" to="projectList">
-			<evaluate expression="projectHome.update()"></evaluate>
-		</transition>
-		<transition on="delete" to="projectList">
-			<evaluate expression="projectHome.delete()"></evaluate>
-		</transition>
-		<transition on="cancel" to="end"></transition>	
+		
 	</view-state>
 	
+	<view-state id="taskEdit">
+		<var name="taskQuery" class="com.jedlab.pm.webflow.TaskQueryWebFlow"/>
+		<transition on="create" bind="false" to="taskEdit"></transition>
+	</view-state>
+ 
 	
 	
 	
-	<end-state id="end" commit="true" view="externalRedirect:servletRelative:/project"></end-state>
+	
+	
+	<end-state id="end" commit="true" view="externalRedirect:servletRelative:/task"></end-state>
 	
 	
 	

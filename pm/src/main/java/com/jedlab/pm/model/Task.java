@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import com.jedlab.framework.spring.dao.PO;
 
 @Entity
-@Table(name = "task")
+@Table(name = "tasks")
 public class Task extends PO
 {
 

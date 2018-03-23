@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jedlab.pm.model.Project;
@@ -14,6 +15,7 @@ import com.jedlab.pm.service.TaskService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/test-context.xml"})
+@TransactionConfiguration(defaultRollback=false,transactionManager="transactionManage")
 public class TaskTest
 {
 
@@ -29,14 +31,14 @@ public class TaskTest
     @Transactional
     public void taskInsertProject()
     {
-        Project project = projectService.findAll().iterator().next();
-        for (int i = 0; i < 10; i++)
-        {
+       
+       
+       
             Task t = new Task();
-            t.setProject(project);
-            t.setName("task " + i);
+            t.setProject(projectService.findAll().iterator().next());
+            t.setName("task 1");
             taskService.persist(t);            
-        }
+        
     }
     
    
