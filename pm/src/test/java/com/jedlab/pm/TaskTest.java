@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.jedlab.pm.model.Project;
 import com.jedlab.pm.model.Task;
@@ -22,7 +23,10 @@ public class TaskTest
     @Autowired
     ProjectService projectService;
     
+   
+    
     @Test
+    @Transactional
     public void taskInsertProject()
     {
         Project project = projectService.findAll().iterator().next();
@@ -34,5 +38,7 @@ public class TaskTest
             taskService.persist(t);            
         }
     }
+    
+   
     
 }
