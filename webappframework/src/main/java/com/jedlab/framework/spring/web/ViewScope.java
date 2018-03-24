@@ -34,6 +34,11 @@ public class ViewScope implements Scope, Serializable, HttpSessionBindingListene
     @Override
     public Object get(String name, ObjectFactory objectFactory)
     {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        if(facesContext == null)
+            return objectFactory.getObject();
+        if(facesContext.getViewRoot() == null)
+            return objectFactory.getObject();
         Map<String, Object> viewMap = FacesContext.getCurrentInstance().getViewRoot().getViewMap();
         // noinspection SynchronizationOnLocalVariableOrMethodParameter
         if (viewMap.containsKey(name))
