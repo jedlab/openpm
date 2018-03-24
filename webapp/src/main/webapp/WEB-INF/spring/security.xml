@@ -11,7 +11,8 @@ http://www.springframework.org/schema/security/spring-security.xsd">
 			<concurrency-control max-sessions="1" />
 		</session-management>
 		<intercept-url pattern="/login" access="permitAll" />
-		<intercept-url pattern="/app/secure/**" access="hasRole('ROLE_USER')" />		
+		<intercept-url pattern="/app/secure/**" access="hasRole('ROLE_USER')" />	
+		<intercept-url pattern="/app/rest/task" access="hasRole('ROLE_USER')" />	
 		<form-login login-page="/app/login"
 			always-use-default-target="false" default-target-url="/app/home"
 			authentication-success-handler-ref="sucHandler"

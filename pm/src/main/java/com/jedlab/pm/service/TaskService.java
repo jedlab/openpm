@@ -1,5 +1,4 @@
 package com.jedlab.pm.service;
-
 import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +12,9 @@ import com.jedlab.framework.spring.service.AbstractCrudService;
 import com.jedlab.pm.dao.TaskDao;
 import com.jedlab.pm.model.Task;
 
-@Transactional
+
 @Service
+@Transactional
 public class TaskService extends AbstractCrudService<Task>
 {
 
@@ -27,17 +27,18 @@ public class TaskService extends AbstractCrudService<Task>
     @Autowired
     MessageSource messageSource;
     
-    
+    /*
     public void persist(Task instance)
     {
         taskDao.save(instance);
     }
+    */
 
     @Override
     public AbstractDAO<Task> getDao()
     {
-        
-        return (AbstractDAO<Task>) taskDao;
+     
+        return taskDao;
     }
     
     @Override
@@ -50,7 +51,5 @@ public class TaskService extends AbstractCrudService<Task>
     protected void afterInsert(Task entity) {
         
     }
-    
-    
     
 }

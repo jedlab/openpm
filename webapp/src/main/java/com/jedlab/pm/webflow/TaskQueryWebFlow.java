@@ -8,6 +8,9 @@ import org.hibernate.sql.JoinType;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.jedlab.framework.db.QueryMapper;
+import com.jedlab.framework.report.ReportHeader;
+import com.jedlab.framework.spring.SpringUtil;
+import com.jedlab.framework.spring.security.AuthenticationUtil;
 import com.jedlab.framework.spring.service.AbstractCrudService;
 import com.jedlab.framework.spring.service.Restriction;
 import com.jedlab.framework.spring.web.Filter;
@@ -15,6 +18,7 @@ import com.jedlab.framework.spring.web.ParamOperator;
 import com.jedlab.framework.spring.web.QParam;
 import com.jedlab.framework.web.AbstractQueryActionBean;
 import com.jedlab.pm.model.Task;
+import com.jedlab.pm.report.DefaultReportHeader;
 import com.jedlab.pm.service.TaskService;
 
 public class TaskQueryWebFlow extends AbstractQueryActionBean<Task>
@@ -49,6 +53,8 @@ public class TaskQueryWebFlow extends AbstractQueryActionBean<Task>
            
             criteria.createCriteria("project", "p", JoinType.LEFT_OUTER_JOIN);
             criteria.createCriteria("p.owner", "o", JoinType.LEFT_OUTER_JOIN);
+            if(AuthenticationUtil.getUserId() != null)
+                criteria.add(Restrictions.eq("o.id", AuthenticationUtil.getUserId()));
             QueryMapper.filterMap(getFilter(), criteria);
             
             
@@ -80,6 +86,7 @@ public class TaskQueryWebFlow extends AbstractQueryActionBean<Task>
     }
     
     public static class TaskFilter implements Filter{
+
         
         private String taskName;
         
@@ -105,11 +112,14 @@ public class TaskQueryWebFlow extends AbstractQueryActionBean<Task>
         public void setUsername(String username)
         {
             this.username = username;
-        }
-        
-        
-        
-        
+        } 
+       
     }
-
+    
+    @Override
+    protected ReportHeader getFormReportHeader()
+    {
+        String message=SpringUtil.getMessage("Task_List", null);
+        return new DefaultReportHeader(message);
+    }
 }

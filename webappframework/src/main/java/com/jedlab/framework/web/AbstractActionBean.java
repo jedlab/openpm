@@ -17,6 +17,7 @@ import org.primefaces.component.datatable.DataTable;
 import org.primefaces.context.RequestContext;
 
 import com.jedlab.framework.report.JasperDataExporter.Exporter;
+import com.jedlab.framework.report.ReportHeader;
 
 public abstract class AbstractActionBean implements Serializable
 {
@@ -98,6 +99,12 @@ public abstract class AbstractActionBean implements Serializable
     public void closeDialog()
     {
         RequestContext.getCurrentInstance().closeDialog(null);
+    }
+
+    protected ReportHeader getFormReportHeader()
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

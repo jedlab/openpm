@@ -33,6 +33,10 @@
 			</sec:authorize>
 			<a href="#{_ctx}/app/project" onclick="w3_close()"
 				class="w3-bar-item w3-button w3-hover-white">#{msgs['Project_List']}</a>
+				
+			<a href="#{_ctx}/app/task" onclick="w3_close()"
+				class="w3-bar-item w3-button w3-hover-white">#{msgs['Task_List']}</a>
+				
 			<sec:authorize ifAnyGranted="ROLE_USER">			
 				<a href="${request.contextPath}/app/logout" onclick="w3_close()"
 					class="w3-bar-item w3-button w3-hover-white rtl-dir">  					

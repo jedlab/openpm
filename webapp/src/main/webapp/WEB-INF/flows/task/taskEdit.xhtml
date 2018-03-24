@@ -9,7 +9,41 @@
 
 <ui:define name="content">
 	
-	This is task edit.
+	<h:form id="taskEditForm" styleClass="form">
+		<fieldset>
+			<legend>#{msgs['Task_Edit']}</legend>
+	
+	
+				<ui:decorate template="/WEB-INF/templates/sameLineEdit.xhtml">
+					<ui:define name="label">Project</ui:define>
+					<p:autoComplete id="proj" minQueryLength="2"
+						var="_item"
+						itemLabel="#{_item.name}"
+						itemValue="#{_item.id}"
+						converter="javax.faces.Long"
+						completeMethod="#{taskHome.completeProject}">
+						
+						<p:ajax event="itemSelect" listener="#{taskHome.onItemSelect}" />
+						
+					</p:autoComplete>
+				</ui:decorate>
+				
+				<ui:decorate template="/WEB-INF/templates/sameLineEdit.xhtml">
+					<ui:define name="label">Name</ui:define>
+					<p:inputText required="true" value="#{task.name}"></p:inputText>
+					<ui:param name="required" value="true"></ui:param>
+				</ui:decorate>
+	
+				
+			
+		</fieldset>
+
+		<p:commandButton value="#{msgs['Save']}" action="save" ajax="true" update="@form :uiMessages :globalGrowl" rendered="#{!taskHome.idDefined}" styleClass="button blue"></p:commandButton>
+		<p:commandButton value="#{msgs['Update']}" action="update" update="@form :uiMessages :globalGrowl" rendered="#{taskHome.idDefined}" styleClass="button green"></p:commandButton>
+		<p:commandButton value="#{msgs['Delete']}" action="delete"  rendered="#{taskHome.idDefined}" styleClass="button red"></p:commandButton>
+		<p:commandButton action="cancel" value="#{msgs['Back']}" immediate="true" styleClass="button outline" ajax="false"></p:commandButton>
+	
+	</h:form>	
 	
 </ui:define>
 </ui:composition>

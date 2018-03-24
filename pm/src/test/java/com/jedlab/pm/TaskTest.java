@@ -15,7 +15,6 @@ import com.jedlab.pm.service.TaskService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/test-context.xml"})
-@TransactionConfiguration(defaultRollback=false,transactionManager="transactionManage")
 public class TaskTest
 {
 
@@ -25,22 +24,17 @@ public class TaskTest
     @Autowired
     ProjectService projectService;
     
-   
-    
     @Test
-    @Transactional
     public void taskInsertProject()
     {
-       
-       
-       
-            Task t = new Task();
-            t.setProject(projectService.findAll().iterator().next());
-            t.setName("task 1");
-            taskService.persist(t);            
-        
+       for (int i = 4; i < 30; i++)
+    {
+           Task task=new Task();
+           task.setProject(projectService.findAll().iterator().next());
+           task.setName("task "+i);
+           taskService.insert(task);
+           
     }
-    
-   
+    }
     
 }

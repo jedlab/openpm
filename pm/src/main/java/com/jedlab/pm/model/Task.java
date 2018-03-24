@@ -7,10 +7,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.jedlab.framework.report.ReportField;
 import com.jedlab.framework.spring.dao.PO;
 
 @Entity
-@Table(name = "tasks")
+@Table(name = "task")
 public class Task extends PO
 {
 
@@ -19,6 +20,7 @@ public class Task extends PO
     private Project project;
 
     @Column(name = "name")
+    @ReportField(msg="Task_Name")
     private String name;
 
     public String getName()
