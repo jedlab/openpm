@@ -5,7 +5,6 @@ import java.util.Map;
 
 import javax.mail.internet.MimeMessage;
 
-import org.apache.velocity.app.VelocityEngine;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailPreparationException;
@@ -13,17 +12,23 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 
 public class MailClient
 {
 
     private JavaMailSender mailSender;
-    private VelocityEngine velocityEngine;
+    Configuration freemarkerConfiguration;
     public static final String TEMPLATE = "com/core/mail/template.vm";
 
-    public void setVelocityEngine(VelocityEngine velocityEngine)
+    
+
+    public void setFreemarkerConfiguration(Configuration freemarkerConfiguration)
     {
-        this.velocityEngine = velocityEngine;
+        this.freemarkerConfiguration = freemarkerConfiguration;
     }
 
     public void setMailSender(JavaMailSender mailSender)
@@ -40,7 +45,8 @@ public class MailClient
      * @param templateLocation
      * @param model
      */
-    public void send(String from, String to, String subject, String templateLocation, Map<String, Object> model, UncaughtExceptionHandler uc)
+    public void send(String from, String to, String subject, String templateLocation, Map<String, Object> model,
+            UncaughtExceptionHandler uc)
     {
         MessagePreparator mp = new MessagePreparator(from, to, subject, templateLocation, model);
         Thread thread = new Thread(new MessageSender(mp));
@@ -157,7 +163,9 @@ public class MailClient
 
         public void prepare(MimeMessage mimeMessage) throws Exception
         {
-            String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, templateLocation, "UTF-8", model);
+//            String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, templateLocation, "UTF-8", model);
+            Template template = freemarkerConfiguration.getTemplate(templateLocation);
+            String text = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
             MimeMessageHelper message = new MimeMessageHelper(mimeMessage);
             message.setFrom(from);
             message.setTo(to);
