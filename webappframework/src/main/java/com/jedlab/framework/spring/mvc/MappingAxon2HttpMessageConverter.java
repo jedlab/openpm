@@ -85,7 +85,9 @@ public class MappingAxon2HttpMessageConverter extends AbstractGenericHttpMessage
     public boolean canWrite(Class<?> clazz, MediaType mediaType)
     {
         if (mediaType == null || mediaType.isCompatibleWith(MediaType.APPLICATION_JSON))
-            return true;
+        {
+            return clazz.isAnnotationPresent(org.omidbiz.core.axon.internal.Axon.class);
+        }
 
         return false;
     }

@@ -11,6 +11,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.Validator;
@@ -45,30 +46,30 @@ public abstract class AbstractHomeRestController<E extends EntityModel>
 
     @ResponseBody
     @PostMapping(value="/",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseMessage post(@RequestBody E entity, Errors errors) throws BindingValidationError
+    public ResponseEntity<ResponseMessage> post(@RequestBody E entity, Errors errors) throws BindingValidationError
     {
         validate(entity, errors);
         getService().insert(entity);
-        return new ResponseMessage(SpringUtil.getMessage("successful", null), 0);
+        return ResponseEntity.ok(new ResponseMessage(SpringUtil.getMessage("successful", null), 0));
     }
     
     
     @ResponseBody
     @PutMapping(value="/{id}",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseMessage put(@RequestBody EntityWrapper<E> entity, @PathVariable("id") Long id, Errors errors) throws BindingValidationError
+    public ResponseEntity<ResponseMessage> put(@RequestBody EntityWrapper<E> entity, @PathVariable("id") Long id, Errors errors) throws BindingValidationError
     {
         validate(entity.getPersistedEntity(), errors);
         getService().update(entity.getPersistedEntity());
-        return new ResponseMessage(SpringUtil.getMessage("successful", null), 0);
+        return ResponseEntity.ok(new ResponseMessage(SpringUtil.getMessage("successful", null), 0));
     }
     
     
     @ResponseBody
     @DeleteMapping(value="/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseMessage delete(@PathVariable("id") Long id, Errors errors) throws BindingValidationError
+    public ResponseEntity<ResponseMessage> delete(@PathVariable("id") Long id, Errors errors) throws BindingValidationError
     {
         getService().delete(id);
-        return new ResponseMessage(SpringUtil.getMessage("successful", null), 0);
+        return ResponseEntity.ok(new ResponseMessage(SpringUtil.getMessage("successful", null), 0));
     }
 
     

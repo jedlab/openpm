@@ -1,9 +1,12 @@
 package com.jedlab.framework.spring.rest;
 
+import org.omidbiz.core.axon.internal.Axon;
+
 /**
  * @author omidp
  *
  */
+@Axon
 public class ResponseMessage
 {
 
