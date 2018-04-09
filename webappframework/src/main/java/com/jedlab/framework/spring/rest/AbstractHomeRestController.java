@@ -6,6 +6,8 @@ import java.lang.reflect.TypeVariable;
 import java.util.List;
 import java.util.Locale;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -46,8 +48,9 @@ public abstract class AbstractHomeRestController<E extends EntityModel>
 
     @ResponseBody
     @PostMapping(value="/",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseMessage> post(@RequestBody E entity, Errors errors) throws BindingValidationError
+    public ResponseEntity<ResponseMessage> post(@RequestBody E entity, Errors errors, HttpServletRequest request) throws BindingValidationError
     {
+        createInstance(entity, request);
         validate(entity, errors);
         getService().insert(entity);
         return ResponseEntity.ok(new ResponseMessage(SpringUtil.getMessage("successful", null), 0));
@@ -56,8 +59,9 @@ public abstract class AbstractHomeRestController<E extends EntityModel>
     
     @ResponseBody
     @PutMapping(value="/{id}",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseMessage> put(@RequestBody EntityWrapper<E> entity, @PathVariable("id") Long id, Errors errors) throws BindingValidationError
+    public ResponseEntity<ResponseMessage> put(@RequestBody EntityWrapper<E> entity, @PathVariable("id") Long id, Errors errors, HttpServletRequest request) throws BindingValidationError
     {
+        createInstance(entity.getPersistedEntity(), request);
         validate(entity.getPersistedEntity(), errors);
         getService().update(entity.getPersistedEntity());
         return ResponseEntity.ok(new ResponseMessage(SpringUtil.getMessage("successful", null), 0));
@@ -76,6 +80,11 @@ public abstract class AbstractHomeRestController<E extends EntityModel>
     protected Restriction getRestriction()
     {
         return null;
+    }
+    
+    protected void createInstance(E entity, HttpServletRequest request)
+    {
+        
     }
 
     protected abstract AbstractService<E> getService();
