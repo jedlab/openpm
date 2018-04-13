@@ -167,7 +167,13 @@ public abstract class AbstractService<E>
         criteria.select(root);
         if (restriction != null)
         {
-            restriction.applyFilter(builder, criteria, root, true);
+            Specification listSpec = restriction.listSpec(builder, criteria, root);
+            if(listSpec != null)
+            {
+                Predicate predicate = listSpec.toPredicate(root, criteria, builder);
+                if(predicate != null)
+                    criteria.where(predicate);
+            }
         }
         if (sort != null)
         {
@@ -203,7 +209,13 @@ public abstract class AbstractService<E>
         criteria.select(builder.count(root));
         if (restriction != null)
         {
-            restriction.applyFilter(builder, criteria, root, false);
+            Specification listSpec = restriction.countSpec(builder, criteria, root);
+            if(listSpec != null)
+            {
+                Predicate predicate = listSpec.toPredicate(root, criteria, builder);
+                if(predicate != null)
+                    criteria.where(predicate);
+            }
         }
         return (Long) entityManager.createQuery(criteria).getSingleResult();
     }
@@ -221,7 +233,13 @@ public abstract class AbstractService<E>
         criteria.select(root);
         if (restriction != null)
         {
-            restriction.applyFilter(builder, criteria, root, true);
+            Specification listSpec = restriction.listSpec(builder, criteria, root);
+            if(listSpec != null)
+            {
+                Predicate predicate = listSpec.toPredicate(root, criteria, builder);
+                if(predicate != null)
+                    criteria.where(predicate);
+            }
         }
         if (CollectionUtil.isNotEmpty(sortFields))
         {
