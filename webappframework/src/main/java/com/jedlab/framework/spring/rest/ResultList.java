@@ -1,12 +1,18 @@
 package com.jedlab.framework.spring.rest;
 
 import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 
 import org.omidbiz.core.axon.internal.Axon;
+import org.omidbiz.core.axon.internal.IgnoreElement;
+
+import com.jedlab.framework.reflections.ReflectionUtil;
 
 @Axon
-public class ResultList<E> implements Serializable
+public class ResultList<E> implements ParameterizedType
 {
     private int selectedPageSize;
     private ArrayList<E> resultList;
@@ -14,12 +20,14 @@ public class ResultList<E> implements Serializable
     private int endPage;
     private long resultCount;
     private int totalPage;
+    private final Class<?> clz;
 
-    public ResultList()
+    public ResultList(Class<?> clz)
     {
+        this.clz = clz;
     }
 
-    public ResultList(int selectedPageSize, ArrayList<E> resultList, int startPage, int endPage, long resultCount, int totalPage)
+    public ResultList(int selectedPageSize, ArrayList<E> resultList, int startPage, int endPage, long resultCount, int totalPage, Class<?> clz)
     {
         this.selectedPageSize = selectedPageSize;
         this.resultList = resultList;
@@ -27,6 +35,7 @@ public class ResultList<E> implements Serializable
         this.endPage = endPage;
         this.resultCount = resultCount;
         this.totalPage = totalPage;
+        this.clz = clz;
     }
 
     public int getTotalPage()
@@ -78,5 +87,34 @@ public class ResultList<E> implements Serializable
     {
         this.endPage = endPage;
     }
+
+    @IgnoreElement
+    @Override
+    public Type[] getActualTypeArguments()
+    {
+        return new Type[] { clz };
+    }
+
+    @IgnoreElement
+    @Override
+    public Type getRawType()
+    {
+        return resultList.getClass();
+    }
+
+    @IgnoreElement
+    @Override
+    public Type getOwnerType()
+    {
+        return null;
+    }
+
+    @IgnoreElement
+    public Type getType()
+    {
+        return this;
+    }
+
+   
 
 }

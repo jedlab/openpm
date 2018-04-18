@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.ByteStreams;
 import com.jedlab.framework.db.EntityModel;
+import com.jedlab.framework.json.xml.XmlConfigFilter;
 import com.jedlab.framework.spring.dao.BasePO;
 import com.jedlab.framework.util.StringUtil;
 
@@ -55,7 +56,7 @@ public class MappingAxon2HttpMessageConverter extends AbstractGenericHttpMessage
 
     public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
 
-    private Axon axon = new AxonBuilder().create();
+    private static final AxonBuilder axonBuilder = new AxonBuilder();
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -139,7 +140,7 @@ public class MappingAxon2HttpMessageConverter extends AbstractGenericHttpMessage
             Object instance = rawClass.newInstance();
             if (StringUtil.isEmpty(jsonContent))
                 return instance;
-            Object bean = axon.toObject(jsonContent, rawClass, instance);
+            Object bean = axonBuilder.create().toObject(jsonContent, rawClass, instance);
             body.close();
             if (bean instanceof EntityModel)
             {
@@ -149,7 +150,7 @@ public class MappingAxon2HttpMessageConverter extends AbstractGenericHttpMessage
                     Object entity = persistentManager.findById(rawClass, abstractEntity.getId());
                     if (entity == null)
                         throw new UnsupportedOperationException("entity not found");
-                    return new EntityWrapper<Object>(bean, axon.toObject(jsonContent, bean.getClass(), entity));
+                    return new EntityWrapper<Object>(bean, axonBuilder.create().toObject(jsonContent, bean.getClass(), entity));
                 }
             }
 
@@ -174,10 +175,19 @@ public class MappingAxon2HttpMessageConverter extends AbstractGenericHttpMessage
         OutputStream body = outputMessage.getBody();
         HttpHeaders headers = outputMessage.getHeaders();
         if (headers != null)
-        {
-            // TODO : use header for filter
+        {            
+            String viewName = headers.get("viewName") != null ? headers.get("viewName").iterator().next() : "";
+            if(StringUtil.isNotEmpty(viewName))
+            {
+                if (t instanceof ParameterizedType)
+                {
+                    ParameterizedType paramType = (ParameterizedType) t;
+                    Class<?> clz = (Class<?>) paramType.getActualTypeArguments()[0];
+                    axonBuilder.addFilter(new XmlConfigFilter(clz, viewName));
+                }
+            }
         }
-        String json = axon.toJson(t);
+        String json = axonBuilder.create().toJson(t);
         body.write(json.getBytes("UTF-8"));
         body.flush();
         IOUtils.closeQuietly(body);
