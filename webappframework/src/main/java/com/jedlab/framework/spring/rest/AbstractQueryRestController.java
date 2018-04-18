@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
@@ -17,8 +18,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -27,6 +30,7 @@ import com.jedlab.framework.spring.mvc.Pager;
 import com.jedlab.framework.spring.rest.QueryWhereParser.FilterProperty;
 import com.jedlab.framework.spring.service.AbstractService;
 import com.jedlab.framework.spring.service.JPARestriction;
+import com.jedlab.framework.util.StringUtil;
 
 /**
  * @author omidp
@@ -51,7 +55,7 @@ public abstract class AbstractQueryRestController<E extends EntityModel>
     @GetMapping(value="/",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultList<E>> get(@RequestParam("pageSize") Optional<Integer> pageSize, @RequestParam("page") Optional<Integer> page,
             @RequestParam(value = "filter", required = false) String filter,
-            @RequestParam(value = "match", required = false, defaultValue = QueryWhereParser.AND) String match, Sort sort)
+            @RequestParam(value = "match", required = false, defaultValue = QueryWhereParser.AND) String match, Sort sort, @RequestHeader("X-VIEWNAME") String viewName)
             throws BindingValidationError, UnsupportedEncodingException
     {
         int evalPageSize = pageSize.orElse(INITIAL_PAGE_SIZE);
@@ -64,8 +68,11 @@ public abstract class AbstractQueryRestController<E extends EntityModel>
 
         Page<E> list = getService().load(PageRequest.of(evalPage, evalPageSize), getEntityClass(), getRestriction(qb.getFilterProperties()),
                 sort);
-        Pager pager = new Pager(list.getTotalPages(), list.getNumber(), BUTTONS_TO_SHOW);
-        return ResponseEntity.ok(new ResultList<E>(evalPageSize, new ArrayList<>(list.getContent()), pager.getStartPage(), pager.getEndPage(),
+        Pager pager = new Pager(list.getTotalPages(), list.getNumber(), BUTTONS_TO_SHOW);        
+        BodyBuilder ok = ResponseEntity.ok();
+        if(StringUtil.isNotEmpty(viewName))
+            ok.header("X-VIEWNAME", viewName);
+        return ok.body(new ResultList<E>(evalPageSize, new ArrayList<>(list.getContent()), pager.getStartPage(), pager.getEndPage(),
                 getService().count(getEntityClass(), getRestriction(qb.getFilterProperties())), list.getTotalPages(), getEntityClass()));
     }
 

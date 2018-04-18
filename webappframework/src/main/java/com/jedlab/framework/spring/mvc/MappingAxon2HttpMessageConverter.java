@@ -176,7 +176,7 @@ public class MappingAxon2HttpMessageConverter extends AbstractGenericHttpMessage
         HttpHeaders headers = outputMessage.getHeaders();
         if (headers != null)
         {            
-            String viewName = headers.get("viewName") != null ? headers.get("viewName").iterator().next() : "";
+            String viewName = headers.get("X-VIEWNAME") != null ? headers.get("X-VIEWNAME").iterator().next() : "";
             if(StringUtil.isNotEmpty(viewName))
             {
                 if (t instanceof ParameterizedType)
