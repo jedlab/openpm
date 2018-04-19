@@ -56,7 +56,7 @@ public class MappingAxon2HttpMessageConverter extends AbstractGenericHttpMessage
 
     public static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
 
-    private static final AxonBuilder axonBuilder = new AxonBuilder();
+    private static final Axon axon = new AxonBuilder().preventRecursion().create();
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -140,7 +140,7 @@ public class MappingAxon2HttpMessageConverter extends AbstractGenericHttpMessage
             Object instance = rawClass.newInstance();
             if (StringUtil.isEmpty(jsonContent))
                 return instance;
-            Object bean = axonBuilder.create().toObject(jsonContent, rawClass, instance);
+            Object bean = axon.toObject(jsonContent, rawClass, instance);
             body.close();
             if (bean instanceof EntityModel)
             {
@@ -150,7 +150,7 @@ public class MappingAxon2HttpMessageConverter extends AbstractGenericHttpMessage
                     Object entity = persistentManager.findById(rawClass, abstractEntity.getId());
                     if (entity == null)
                         throw new UnsupportedOperationException("entity not found");
-                    return new EntityWrapper<Object>(bean, axonBuilder.create().toObject(jsonContent, bean.getClass(), entity));
+                    return new EntityWrapper<Object>(bean, axon.toObject(jsonContent, bean.getClass(), entity));
                 }
             }
 
@@ -174,6 +174,7 @@ public class MappingAxon2HttpMessageConverter extends AbstractGenericHttpMessage
     {
         OutputStream body = outputMessage.getBody();
         HttpHeaders headers = outputMessage.getHeaders();
+        AxonBuilder axonBuilder = new AxonBuilder();
         if (headers != null)
         {            
             String viewName = headers.get("X-VIEWNAME") != null ? headers.get("X-VIEWNAME").iterator().next() : "";
