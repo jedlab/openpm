@@ -55,7 +55,8 @@ public abstract class AbstractQueryRestController<E extends EntityModel>
     @GetMapping(value="/",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultList<E>> get(@RequestParam("pageSize") Optional<Integer> pageSize, @RequestParam("page") Optional<Integer> page,
             @RequestParam(value = "filter", required = false) String filter,
-            @RequestParam(value = "match", required = false, defaultValue = QueryWhereParser.AND) String match, Sort sort, @RequestHeader("X-VIEWNAME") String viewName)
+            @RequestParam(value = "match", required = false, defaultValue = QueryWhereParser.AND) String match, Sort sort, 
+            @RequestHeader(value="X-VIEWNAME",required=false) String viewName)
             throws BindingValidationError, UnsupportedEncodingException
     {
         int evalPageSize = pageSize.orElse(INITIAL_PAGE_SIZE);
