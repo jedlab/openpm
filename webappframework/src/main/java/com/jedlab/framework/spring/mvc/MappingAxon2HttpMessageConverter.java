@@ -186,6 +186,12 @@ public class MappingAxon2HttpMessageConverter extends AbstractGenericHttpMessage
                     Class<?> clz = (Class<?>) paramType.getActualTypeArguments()[0];
                     axonBuilder.addFilter(new XmlConfigFilter(clz, viewName));
                 }
+                else if (type instanceof ParameterizedType)
+                {
+                    ParameterizedType paramType = (ParameterizedType) type;
+                    Class<?> clz = (Class<?>) paramType.getActualTypeArguments()[0];
+                    axonBuilder.addFilter(new XmlConfigFilter(clz, viewName));
+                }
             }
         }
         String json = axonBuilder.create().toJson(t);
