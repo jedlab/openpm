@@ -58,6 +58,8 @@ public class XmlConfigFilter implements Filter
                 }
                 viewName = cc.getString(beanName + "/" + viewName + "/field[@name='" + p + "']/@view", "simple");
                 Property prop = AxonBeanHelper.getProperty(clz, true, p);
+                if(prop == null)
+                    prop = property;
                 if (iscollection)
                 {
                     clz = ReflectionUtil.getGenericMethodClassType(clz, prop.getGetter());
