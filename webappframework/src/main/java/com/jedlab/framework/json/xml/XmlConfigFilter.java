@@ -8,7 +8,9 @@ import org.omidbiz.core.axon.Property;
 import org.omidbiz.core.axon.internal.PathProcessor;
 import org.omidbiz.core.axon.internal.SerializationContext;
 
+import com.jedlab.framework.db.EntityModel;
 import com.jedlab.framework.reflections.ReflectionUtil;
+import com.jedlab.framework.spring.rest.ResultList;
 
 public class XmlConfigFilter implements Filter
 {
@@ -39,9 +41,36 @@ public class XmlConfigFilter implements Filter
         {
 
             String viewName = startingViewName;
-            String beanName = startingBeanName;            
+            String beanName = startingBeanName;
             Class<?> clz = rootClass;
-            
+            String[] paths = path.split("\\.");
+            String p = paths[paths.length - 1];
+
+            boolean iscollection = p.contains("[]");
+            p = p.replace("resultList[]", "").replace("[]", "");
+
+            if (!p.isEmpty())
+            {
+                
+                if (cc.getString(beanName + "/" + viewName + "/field[@name='" + p + "']/@name") == null)
+                {
+                    return true;
+                }
+                viewName = cc.getString(beanName + "/" + viewName + "/field[@name='" + p + "']/@view", "simple");
+                Property prop = AxonBeanHelper.getProperty(clz, true, p);
+                if (iscollection)
+                {
+                    clz = ReflectionUtil.getGenericMethodClassType(clz, prop.getGetter());
+                }
+                else
+                {
+                    clz = prop.getType();
+                }
+            }
+            if(clz == null)
+                clz = rootClass;
+            beanName = clz.getSimpleName().toLowerCase();
+
             if (cc.getString(beanName + "/" + viewName + "/field[@name='" + property.getName() + "']/@name") == null)
             {
                 return true;
@@ -55,4 +84,5 @@ public class XmlConfigFilter implements Filter
     {
 
     }
+
 }

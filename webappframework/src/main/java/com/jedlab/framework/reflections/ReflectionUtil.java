@@ -5,6 +5,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -545,8 +547,11 @@ public class ReflectionUtil
     }
     
     public static Class<?> getGenericMethodClassType(Class<?> clz, Method method)
-    {
-        Class<?> clazz = (Class<?>) ((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments()[0];
+    {        
+        Type type = ((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments()[0];
+        if(type instanceof TypeVariable)
+            return null;
+        Class<?> clazz = (Class<?>) type;
         return clazz;
     }
 
