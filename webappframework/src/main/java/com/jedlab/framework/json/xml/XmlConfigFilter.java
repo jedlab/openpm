@@ -47,7 +47,7 @@ public class XmlConfigFilter implements Filter
             String p = paths[paths.length - 1];
 
             boolean iscollection = p.contains("[]");
-            p = p.replace("resultList[]", "").replace("[]", "");
+            p = p.replace("resultList[]", "").replace("[]", "").replace("result", "");
 
             if (!p.isEmpty())
             {
