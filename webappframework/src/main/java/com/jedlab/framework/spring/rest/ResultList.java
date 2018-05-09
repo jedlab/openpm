@@ -1,17 +1,17 @@
 package com.jedlab.framework.spring.rest;
 
-import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 
 import org.omidbiz.core.axon.internal.Axon;
 import org.omidbiz.core.axon.internal.IgnoreElement;
 
-import com.jedlab.framework.reflections.ReflectionUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Axon
+@JsonIgnoreProperties(value = { "typeName" })
 public class ResultList<E> implements ParameterizedType
 {
     private int selectedPageSize;
@@ -89,6 +89,7 @@ public class ResultList<E> implements ParameterizedType
     }
 
     @IgnoreElement
+    @JsonIgnore
     @Override
     public Type[] getActualTypeArguments()
     {
@@ -96,6 +97,7 @@ public class ResultList<E> implements ParameterizedType
     }
 
     @IgnoreElement
+    @JsonIgnore
     @Override
     public Type getRawType()
     {
@@ -103,6 +105,7 @@ public class ResultList<E> implements ParameterizedType
     }
 
     @IgnoreElement
+    @JsonIgnore
     @Override
     public Type getOwnerType()
     {
@@ -110,6 +113,7 @@ public class ResultList<E> implements ParameterizedType
     }
 
     @IgnoreElement
+    @JsonIgnore
     public Type getType()
     {
         return this;
