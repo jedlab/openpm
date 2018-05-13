@@ -354,7 +354,7 @@ public class QueryMapper
         return sb.toString();
     }
 
-    public static List<Predicate> filterMap(List<FilterProperty> filterProperties, CriteriaBuilder cb, CriteriaQuery criteria, Root root)
+    public static List<Predicate> filterMap(List<FilterProperty> filterProperties, CriteriaBuilder cb, CriteriaQuery criteria, Root root, Class<?> clz)
     {
         List<Predicate> predicateList = new ArrayList<Predicate>();
         for (int i = 0; i < filterProperties.size(); i++)
@@ -363,6 +363,12 @@ public class QueryMapper
             String property = item.getPropertyName();
             Object value = item.getValue();
             String operator = item.getOperator();
+            if(value == null)
+                continue;
+            if(value instanceof String && StringUtil.isEmpty(String.valueOf(value)))
+            {                   
+                continue;
+            }
             if (property.indexOf(".") > 0)
             {
                 
@@ -379,13 +385,61 @@ public class QueryMapper
                 if (QueryWhereParser.EW.equals(operator))
                     predicateList.add(cb.like(root.<String> get(property), "%" + value.toString()));
                 if (QueryWhereParser.GT.equals(operator))
-                    predicateList.add(cb.greaterThan(root.<Long> get(property), (Long)value));
+                {
+                    Field field = ReflectionUtil.getField(clz, property);
+                    if(Date.class.isAssignableFrom(field.getType()))
+                    {
+                        String v = String.valueOf(value);
+                        predicateList.add(cb.greaterThan(root.<Date> get(property), new Date(Long.parseLong(v))));
+                    }
+                    if(Number.class.isAssignableFrom(field.getType()))
+                    {
+                        String v = String.valueOf(value);
+                        predicateList.add(cb.greaterThan(root.<Long> get(property), Long.parseLong(v)));
+                    }                    
+                }
                 if (QueryWhereParser.GTE.equals(operator))
-                    predicateList.add(cb.greaterThanOrEqualTo(root.<Long> get(property), (Long)value));
+                {
+                    Field field = ReflectionUtil.getField(clz, property);
+                    if(Date.class.isAssignableFrom(field.getType()))
+                    {
+                        String v = String.valueOf(value);
+                        predicateList.add(cb.greaterThanOrEqualTo(root.<Date> get(property), new Date(Long.parseLong(v))));
+                    }
+                    if(Number.class.isAssignableFrom(field.getType()))
+                    {
+                        String v = String.valueOf(value);
+                        predicateList.add(cb.greaterThanOrEqualTo(root.<Long> get(property), Long.parseLong(v)));
+                    }
+                }
                 if (QueryWhereParser.LT.equals(operator))
-                    predicateList.add(cb.lessThan(root.<Long> get(property), (Long)value));
+                {
+                    Field field = ReflectionUtil.getField(clz, property);
+                    if(Date.class.isAssignableFrom(field.getType()))
+                    {
+                        String v = String.valueOf(value);
+                        predicateList.add(cb.lessThan(root.<Date> get(property), new Date(Long.parseLong(v))));
+                    }
+                    if(Number.class.isAssignableFrom(field.getType()))
+                    {
+                        String v = String.valueOf(value);
+                        predicateList.add(cb.lessThan(root.<Long> get(property), Long.parseLong(v)));
+                    }
+                }
                 if (QueryWhereParser.LTE.equals(operator))
-                    predicateList.add(cb.lessThanOrEqualTo(root.<Long> get(property), (Long)value));
+                {
+                    Field field = ReflectionUtil.getField(clz, property);
+                    if(Date.class.isAssignableFrom(field.getType()))
+                    {
+                        String v = String.valueOf(value);
+                        predicateList.add(cb.lessThanOrEqualTo(root.<Date> get(property), new Date(Long.parseLong(v))));
+                    }
+                    if(Number.class.isAssignableFrom(field.getType()))
+                    {
+                        String v = String.valueOf(value);
+                        predicateList.add(cb.lessThanOrEqualTo(root.<Long> get(property), Long.parseLong(v)));
+                    }
+                }
             }
             
         }
