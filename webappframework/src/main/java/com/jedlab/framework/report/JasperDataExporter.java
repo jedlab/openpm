@@ -16,6 +16,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -31,10 +32,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.context.MessageSource;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 
 import com.jedlab.framework.reflections.ReflectionUtil;
 import com.jedlab.framework.spring.SpringUtil;
+import com.jedlab.framework.spring.security.AuthenticationUtil;
+import com.jedlab.framework.util.CollectionUtil;
 import com.jedlab.framework.util.PersianDateConverter;
+import com.jedlab.framework.util.StringUtil;
 
 import ar.com.fdvs.dj.core.DynamicJasperHelper;
 import ar.com.fdvs.dj.core.layout.ClassicLayoutManager;
@@ -371,8 +377,32 @@ public abstract class JasperDataExporter<E> implements Serializable
             {
                 MessageSource messageSource = SpringUtil.getBean(MessageSource.class);
                 String title = messageSource.getMessage(rptField.msg(), null, new Locale("fa", "IR"));
-                items.add(new ReportItem(rptField.order(), rptField.interceptor(), rptField.width(), title, field.getName(),
-                        field.getType(), rptField.type(), rptField.exportTypes()));
+                String roleName = rptField.roleName();
+                if(StringUtil.isNotEmpty(roleName))
+                {
+                	Authentication auth = AuthenticationUtil.getAuthentication();
+                	if(auth != null)
+                	{
+                		Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
+                		if(CollectionUtil.isNotEmpty(authorities))
+                		{
+                			for (GrantedAuthority ga : authorities) 
+                			{
+                				if(roleName.equals(ga.getAuthority()))
+                				{
+                					items.add(new ReportItem(rptField.order(), rptField.interceptor(), rptField.width(), title, field.getName(),
+                                			field.getType(), rptField.type(), rptField.exportTypes()));
+                					break;
+                				}
+							}
+                		}
+                	}
+                }
+                else
+                {
+                	items.add(new ReportItem(rptField.order(), rptField.interceptor(), rptField.width(), title, field.getName(),
+                			field.getType(), rptField.type(), rptField.exportTypes()));
+                }
             }
         }
         Accessor ac = new FieldAccessor(entityClass);

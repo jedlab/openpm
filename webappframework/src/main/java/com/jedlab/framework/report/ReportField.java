@@ -38,4 +38,6 @@ public @interface ReportField
     
     ExportType[] exportTypes() default {ExportType.XLS, ExportType.PDF, ExportType.INLINEPDF};
     
+    String roleName() default "";
+    
 }
