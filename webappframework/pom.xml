@@ -24,6 +24,7 @@
 		<poi.version>3.10-FINAL</poi.version>
 		<primefaces.version>6.1</primefaces.version>
 		<java.mail.version>1.4.3</java.mail.version>
+		<jackson.version>2.9.5</jackson.version>
 	</properties>
 
 
@@ -170,8 +171,48 @@
 					<artifactId>olap4j</artifactId>
 					<groupId>org.olap4j</groupId>
 				</exclusion>
+				<exclusion>
+					<groupId>com.fasterxml.jackson.core</groupId>
+					<artifactId>jackson-databind</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.fasterxml.jackson.core</groupId>
+					<artifactId>jackson-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.fasterxml.jackson.core</groupId>
+					<artifactId>jackson-annotations</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
+
+		<!-- Json/Jackson -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<version>3.21.0-GA</version>
+			<scope>provided</scope>
+		</dependency>
+
+
 		<!-- Persistence -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
