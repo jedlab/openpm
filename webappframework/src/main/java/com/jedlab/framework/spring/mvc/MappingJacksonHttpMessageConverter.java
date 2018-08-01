@@ -75,6 +75,15 @@ public class MappingJacksonHttpMessageConverter extends  AbstractGenericHttpMess
 //        super(objectMapper);
         this.objectMapper = objectMapper;
     }
+    
+    
+
+    public void setPersistentManager(PersistentManager persistentManager)
+    {
+        this.persistentManager = persistentManager;
+    }
+
+
 
     public static class XmlPropertyFilter extends SimpleBeanPropertyFilter
     {
