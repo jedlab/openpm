@@ -7,11 +7,15 @@ import java.util.ArrayList;
 import org.omidbiz.core.axon.internal.Axon;
 import org.omidbiz.core.axon.internal.IgnoreElement;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.jedlab.framework.json.JacksonView;
 
 @Axon
 @JsonIgnoreProperties(value = { "typeName" })
+@JsonFilter("JsonViewFilter")
+@JacksonView
 public class ResultList<E> implements ParameterizedType
 {
     private int selectedPageSize;

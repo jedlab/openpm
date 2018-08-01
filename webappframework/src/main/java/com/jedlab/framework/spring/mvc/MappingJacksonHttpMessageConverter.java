@@ -268,9 +268,7 @@ public class MappingJacksonHttpMessageConverter extends  AbstractGenericHttpMess
                     Object entity = persistentManager.findById(rawClass, abstractEntity.getId());
                     if (entity == null)
                         throw new UnsupportedOperationException("entity not found");
-                    // return new EntityWrapper<Object>(bean,
-                    // axon.toObject(jsonContent, bean.getClass(), entity));
-                    return new EntityWrapper<Object>(bean, objectMapper.readValue(jsonContent, bean.getClass()));
+                    return new EntityWrapper<Object>(bean, objectMapper.readerForUpdating(entity).readValue(jsonContent));
                 }
             }
 
