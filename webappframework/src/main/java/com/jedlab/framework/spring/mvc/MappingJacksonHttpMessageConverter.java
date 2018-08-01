@@ -15,6 +15,7 @@ import org.apache.commons.configuration.tree.xpath.XPathExpressionEngine;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
@@ -175,7 +176,8 @@ public class MappingJacksonHttpMessageConverter extends  AbstractGenericHttpMess
 
         if (StringUtil.isEmpty(json))
         {
-            if (t.getClass().isAnnotationPresent(JsonFilter.class))
+            Class<?> declaringClass = AnnotationUtils.findAnnotationDeclaringClass(JsonFilter.class, t.getClass());
+            if (declaringClass != null)
                 json = objectMapper
                         .writer(new SimpleFilterProvider().addFilter("JsonViewFilter", SimpleBeanPropertyFilter.serializeAllExcept("")))
                         .writeValueAsString(t);
