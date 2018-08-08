@@ -187,6 +187,8 @@ public abstract class AbstractService<E>
                         orderList.add(builder.desc(root.get(s.getProperty())));
                 }
             });
+            if(CollectionUtil.isNotEmpty(orderList))
+                criteria.orderBy(orderList);
         }
 
         TypedQuery<E> createQuery = entityManager.createQuery(criteria);

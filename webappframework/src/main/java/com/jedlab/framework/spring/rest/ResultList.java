@@ -14,7 +14,7 @@ import com.jedlab.framework.json.JacksonView;
 
 @Axon
 @JsonIgnoreProperties(value = { "typeName" })
-@JsonFilter("JsonViewFilter")
+//@JsonFilter("JsonViewFilter")
 @JacksonView
 public class ResultList<E> implements ParameterizedType
 {
