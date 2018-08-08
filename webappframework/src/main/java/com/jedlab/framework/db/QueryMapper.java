@@ -447,7 +447,7 @@ public class QueryMapper
     }
     
     
-    public static void filterMap(Filter filter, CriteriaBuilder cb, CriteriaQuery criteria, Root root)
+    public static List<Predicate> filterMap(Filter filter, CriteriaBuilder cb, CriteriaQuery criteria, Root root)
     {
         List<ParameterItem> filterItems = new ArrayList<>();
         Class<? extends Filter> clz = filter.getClass();
@@ -529,6 +529,7 @@ public class QueryMapper
 //                criteria.add(Restrictions.sqlRestriction(String.valueOf(item.getValue())));
             }
         }        
+        return predicateList;
     }
 
 }
