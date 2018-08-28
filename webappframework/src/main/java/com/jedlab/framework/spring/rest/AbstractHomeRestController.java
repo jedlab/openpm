@@ -166,7 +166,7 @@ public abstract class AbstractHomeRestController<E extends EntityModel>
             }
             else
             {
-                dto.addFieldError(fieldError.getField(), defaultMessage);
+                dto.addFieldError(fieldError.getField(), messageSource.getMessage(defaultMessage, null, current));
             }
         }
 
