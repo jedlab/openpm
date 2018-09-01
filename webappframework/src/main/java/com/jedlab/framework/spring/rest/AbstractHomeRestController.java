@@ -5,6 +5,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -31,6 +33,8 @@ import com.jedlab.framework.spring.SpringUtil;
 import com.jedlab.framework.spring.mvc.EntityWrapper;
 import com.jedlab.framework.spring.service.AbstractService;
 import com.jedlab.framework.spring.service.Restriction;
+import com.jedlab.framework.util.CollectionUtil;
+import com.jedlab.framework.util.StringUtil;
 
 /**
  * @author omidp
@@ -94,13 +98,13 @@ public abstract class AbstractHomeRestController<E extends EntityModel>
         // BeanPropertyBindingResult bindingResult = new
         // BeanPropertyBindingResult(validated, Person.class.getSimpleName());
         // spring validator
-        validator.validate(validated, errors);
-        if (errors.hasErrors())
-        {
-            throw new BindingValidationError(errors.getFieldErrors());
-        }
+        validator.validate(validated, errors);        
         if (getValidator() != null && getValidator().supports(getEntityClass()))
             getValidator().validate(validated, errors);
+        if (errors.hasErrors())
+        {
+            throw new BindingValidationError(errors.getAllErrors());
+        }
     }
 
     protected Validator getValidator()
@@ -148,29 +152,67 @@ public abstract class AbstractHomeRestController<E extends EntityModel>
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public BindingErrorMessage handleFormValidationError(BindingValidationError validationError)
     {
-        Locale current = LocaleContextHolder.getLocale();
 
-        List<FieldError> fieldErrors = validationError.getFieldErrors();
+        BindingErrorMessage bem = new BindingErrorMessage();
+        
+        List<ObjectError> errors = validationError.getErrors();
+        
+        processFieldErrors(errors, bem);
+        
+        processGlobalErrors(errors, bem);
+        
 
-        BindingErrorMessage dto = new BindingErrorMessage();
+        return bem;
+    }
 
-        for (FieldError fieldError : fieldErrors)
+
+    private void processGlobalErrors(List<ObjectError> errors, BindingErrorMessage bem)
+    {
+        List<ObjectError> fieldErrors = errors.stream().filter(item->item instanceof ObjectError).collect(Collectors.toList());
+        if(CollectionUtil.isNotEmpty(fieldErrors))
         {
-            String code = fieldError.getCode();
-            String defaultMessage = fieldError.getDefaultMessage();
-
-            String localizedError = messageSource.getMessage(code, fieldError.getArguments(), current);
-            if (localizedError != null && !localizedError.equals(code))
+            Locale current = LocaleContextHolder.getLocale();
+            for (ObjectError fieldError : fieldErrors)
             {
-                dto.addFieldError(fieldError.getField(), localizedError);
-            }
-            else
-            {
-                dto.addFieldError(fieldError.getField(), messageSource.getMessage(defaultMessage, null, current));
+                String code = fieldError.getCode();
+                String defaultMessage = fieldError.getDefaultMessage();
+                
+                String localizedError = messageSource.getMessage(code, fieldError.getArguments(), current);
+                if (localizedError != null && !localizedError.equals(code))
+                {
+                    bem.addFieldError(fieldError.getObjectName(), localizedError);
+                }
+                else
+                {
+                    bem.addFieldError(fieldError.getObjectName(), StringUtil.isEmpty(defaultMessage) ? messageSource.getMessage(code, null, current) : defaultMessage);
+                }
             }
         }
+    }
 
-        return dto;
+
+    private void processFieldErrors(List<ObjectError> errors, BindingErrorMessage dto)
+    {
+        Locale current = LocaleContextHolder.getLocale();
+        List<FieldError> fieldErrors = errors.stream().filter(item->item instanceof FieldError).map(item->(FieldError)item).collect(Collectors.toList());
+        if(CollectionUtil.isNotEmpty(fieldErrors))
+        {
+            for (FieldError fieldError : fieldErrors)
+            {
+                String code = fieldError.getCode();
+                String defaultMessage = fieldError.getDefaultMessage();
+                
+                String localizedError = messageSource.getMessage(code, fieldError.getArguments(), current);
+                if (localizedError != null && !localizedError.equals(code))
+                {
+                    dto.addFieldError(fieldError.getField(), localizedError);
+                }
+                else
+                {
+                    dto.addFieldError(fieldError.getObjectName(), StringUtil.isEmpty(defaultMessage) ? messageSource.getMessage(code, null, current) : defaultMessage);
+                }
+            }
+        }
     }
 
 }

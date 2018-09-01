@@ -3,20 +3,21 @@ package com.jedlab.framework.spring.rest;
 import java.util.List;
 
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 
 public class BindingValidationError extends Exception
 {
 
-    private List<FieldError> fieldErrors;
+    private List<ObjectError> errors;
 
-    public BindingValidationError(List<FieldError> fieldErrors)
+    public BindingValidationError(List<ObjectError> errors)
     {
-        this.fieldErrors = fieldErrors;
+        this.errors = errors;
     }
 
-    public List<FieldError> getFieldErrors()
+    public List<ObjectError> getErrors()
     {
-        return fieldErrors;
+        return errors;
     }
 
 }
