@@ -3,6 +3,8 @@ package com.jedlab.framework.web;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Locale;
 import java.util.Map;
@@ -98,6 +100,21 @@ public abstract class AbstractActionBean implements Serializable
     public void closeDialog()
     {
         RequestContext.getCurrentInstance().closeDialog(null);
+    }
+    
+    
+
+    protected static HttpServletRequest getRequestUrl(FacesContext facesContext)
+    {
+       Object request = facesContext.getExternalContext().getRequest(); 
+       if (request instanceof HttpServletRequest) 
+       {
+          return ( (HttpServletRequest) request);
+       }
+       else
+       {
+          return null;
+       }
     }
 
 }
