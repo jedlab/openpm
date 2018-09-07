@@ -1,117 +1,237 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.project</groupId>
 	<artifactId>webapp</artifactId>
 	<packaging>war</packaging>
-	<version>0.0.1</version>
+	<version>1.0.0</version>
 	<name>JEDLab Project Management</name>
 	<url>http://jedlab.ir</url>
 
-	<properties>
-		<java.version>1.8</java.version>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<slf4j.version>1.7.10</slf4j.version>
-		<junit.version>4.12</junit.version>
-		<springframework.version>4.3.8.RELEASE</springframework.version>
-		<spring-data-jpa.version>1.11.3.RELEASE</spring-data-jpa.version>
-		<spring-data-enver.version>1.1.3.RELEASE</spring-data-enver.version>
-		<spring-security.version>4.2.2.RELEASE</spring-security.version>
-		<hibernate.version>4.3.11.Final</hibernate.version>
-		<hibernate.validator.version>5.2.1.Final</hibernate.validator.version>
-		<log4j.version>2.5</log4j.version>
-		<hikaricp.version>2.4.6</hikaricp.version>
-		<primefaces.version>6.1</primefaces.version>
-		<javaee-web.version>7.0</javaee-web.version>
-		<omnifaces.version>1.14.1</omnifaces.version>
-		<jsf.version>2.2.11</jsf.version>
-		<com.oracle.version>11.2.0.3.0</com.oracle.version>
-		<javassist.version>3.21.0-GA</javassist.version>
-		<jasper.version>6.1.0</jasper.version>
-		<springwebflow-version>2.4.4.RELEASE</springwebflow-version>
-		<jersey.version>1.19.4</jersey.version>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.0.0.RELEASE</version>
+		<relativePath /> <!-- lookup parent from repository -->
+	</parent>
 
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+		<rewrite.version>3.4.1.Final</rewrite.version>
+		<jsf.version>2.2.11</jsf.version>
+		<primefaces.version>6.1</primefaces.version>
+		<springwebflow-version>2.5.0.RELEASE</springwebflow-version>
+		<hikaricp.version>2.6.3</hikaricp.version>
+		<tomcat.version>8.5.16</tomcat.version>
 	</properties>
 
-	<repositories>
-		<repository>
-			<id>prime-repo</id>
-			<name>PrimeFaces Maven Repository</name>
-			<url>http://repository.primefaces.org</url>
-			<layout>default</layout>
-		</repository>
-		<repository>
-			<id>omidbiz</id>
-			<name>OMidbiz Maven Repository</name>
-			<url>http://omidbiz.com/nexus/content/sites/omidbiz_repo/</url>			
-		</repository>
-	</repositories>
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-framework-bom</artifactId>
-				<version>${springframework.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.logging.log4j</groupId>
-				<artifactId>log4j-bom</artifactId>
-				<version>${log4j.version}</version>
-				<scope>import</scope>
-				<type>pom</type>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-
 	<dependencies>
+
+		
+		<dependency>
+			<groupId>org.atmosphere</groupId>
+			<artifactId>atmosphere-runtime</artifactId>
+			<version>2.4.6</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.atmosphere</groupId>
+			<artifactId>atmosphere-redis</artifactId>
+			<version>2.4.5</version>
+		</dependency>
+
+
+
+
+
+		<dependency>
+			<groupId>com.jedlab.springfaces</groupId>
+			<artifactId>framework</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-freemarker</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-ehcache</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>2.7.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>2.7.0</version>
+		</dependency>
+
+
+
 
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
 			<version>1.3</version>
 		</dependency>
-		
-		
-		<!-- Spring webflow -->
+
+
+
+
+		<!-- PrettyFaces -->
+		<dependency>
+			<groupId>org.ocpsoft.rewrite</groupId>
+			<artifactId>rewrite-servlet</artifactId>
+			<version>${rewrite.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.ocpsoft.rewrite</groupId>
+			<artifactId>rewrite-integration-faces</artifactId>
+			<version>${rewrite.version}</version>
+		</dependency>
 
 		<dependency>
-			<groupId>org.springframework.webflow</groupId>
-			<artifactId>spring-binding</artifactId>
-			<version>${springwebflow-version}</version>
+			<groupId>org.ocpsoft.rewrite</groupId>
+			<artifactId>rewrite-integration-spring</artifactId>
+			<version>${rewrite.version}</version>
+		</dependency>
+
+
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-core</artifactId>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.webflow</groupId>
-			<artifactId>spring-js</artifactId>
-			<version>${springwebflow-version}</version>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-el</artifactId>
+			<scope>compile</scope>
 		</dependency>
+
 		<dependency>
-			<groupId>org.springframework.webflow</groupId>
-			<artifactId>spring-webflow</artifactId>
-			<version>${springwebflow-version}</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-taglibs</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.webflow</groupId>
 			<artifactId>spring-faces</artifactId>
 			<version>${springwebflow-version}</version>
 		</dependency>
 
-		<!-- Spring Security Web -->
-
 		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-web</artifactId>
-			<version>${spring-security.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-taglibs</artifactId>
-			<version>${spring-security.version}</version>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-envers</artifactId>
 		</dependency>
 
-		<!-- JSF -->
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>com.vaadin.external.google</groupId>
+					<artifactId>android-json</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+
+
+		<!-- https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils -->
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.8.3</version>
+		</dependency>
+
+
+		<!-- hot swapping, disable cache for template, enable live reload -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>
+
+
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>9.3-1102-jdbc41</version>
+		</dependency>
+
+
+
+		<!-- Primefaces -->
+		<dependency>
+			<groupId>org.primefaces</groupId>
+			<artifactId>primefaces</artifactId>
+			<version>${primefaces.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>com.sun.faces</groupId>
 			<artifactId>jsf-api</artifactId>
@@ -123,261 +243,67 @@
 			<version>${jsf.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.omnifaces</groupId>
-			<artifactId>omnifaces</artifactId>
-			<version>${omnifaces.version}</version>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-jasper</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>javax</groupId>
-			<artifactId>javaee-web-api</artifactId>
-			<version>${javaee-web.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<!-- Primefaces -->
-		<dependency>
-			<groupId>org.primefaces</groupId>
-			<artifactId>primefaces</artifactId>
-			<version>${primefaces.version}</version>
-		</dependency>
-
-		<!-- Spring web mvc -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
 
 
 		<dependency>
-			<groupId>com.jedlab</groupId>
-			<artifactId>pm</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+
+
+
+		<dependency>
+			<groupId>com.omidbiz</groupId>
+			<artifactId>pfaces</artifactId>
 			<version>0.0.1</version>
 		</dependency>
 
 		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20170516</version>
+		</dependency>
+
+		<dependency>
 			<groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId>
-			<version>1.2</version>
+			<artifactId>javax.servlet-api</artifactId>
+			<scope>provided</scope>
 		</dependency>
 
-
-		<!-- Spring test -->
-
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>c3p0</groupId>
-			<artifactId>c3p0</artifactId>
-			<version>0.9.1.2</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.el</groupId>
-			<artifactId>javax.el-api</artifactId>
-			<version>2.2.4</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		
-		<!-- Logging -->
-		<dependency>
-		    <groupId>org.apache.logging.log4j</groupId>
-		    <artifactId>log4j-slf4j-impl</artifactId>
-		    <version>2.3</version>
-		    <scope>test</scope>
-		</dependency>		
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>${slf4j.version}</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.15</version>
-			<exclusions>
-				<exclusion>
-					<groupId>javax.mail</groupId>
-					<artifactId>mail</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>javax.jms</groupId>
-					<artifactId>jms</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.sun.jdmk</groupId>
-					<artifactId>jmxtools</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.sun.jmx</groupId>
-					<artifactId>jmxri</artifactId>
-				</exclusion>
-			</exclusions>
-			<scope>runtime</scope>
-		</dependency>
-		
-		<!-- Jersey + Spring -->
-		<dependency>
-			<groupId>com.sun.jersey.contribs</groupId>
-			<artifactId>jersey-spring</artifactId>
-			<version>${jersey.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework</groupId>
-					<artifactId>spring</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.springframework</groupId>
-					<artifactId>spring-core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.springframework</groupId>
-					<artifactId>spring-web</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.springframework</groupId>
-					<artifactId>spring-beans</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.springframework</groupId>
-					<artifactId>spring-context</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.springframework</groupId>
-					<artifactId>spring-aop</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		
-		<dependency>
-		    <groupId>javax.ws.rs</groupId>
-		    <artifactId>javax.ws.rs-api</artifactId>
-		    <version>2.0</version>
-		</dependency>
-		
 
 	</dependencies>
 
-	<profiles>
-		<profile>
-			<id>dev</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<build.profile.id>dev</build.profile.id>
-			</properties>
-			<build>
-				
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-war-plugin</artifactId>
-						<configuration>
-							<webXml>profiles/${build.profile.id}/config/web.xml</webXml>	
-							<webResources>
-								<resource>
-									<directory>profiles/${build.profile.id}/config/</directory>
-									<targetPath>WEB-INF/classes</targetPath>									
-									<filtering>true</filtering>
-									<excludes>
-										<exclude>web.xml</exclude>
-									</excludes>
-								</resource>
-							</webResources>												
-						</configuration>						
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<!-- The configuration of the production profile -->
-		<profile>
-			<id>prod</id>
-			<properties>
-				<build.profile.id>prod</build.profile.id>
-			</properties>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-war-plugin</artifactId>
-						<configuration>
-							<webXml>profiles/${build.profile.id}/config/web.xml</webXml>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
-
-
 	<build>
-		<finalName>webapp</finalName>
+		<outputDirectory>src/main/webapp/WEB-INF/classes</outputDirectory>
 		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>com.jedlab.pm.PMApplication</mainClass>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.5.1</version>
+				<version>3.0</version>
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
+					<compilerArgument>-deprecation</compilerArgument>
+					<compilerArgument>-Xlint:unchecked</compilerArgument>
+					<compilerArgument>-Xlint:deprecation</compilerArgument>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.6</version>
-				<configuration>
-					<nonFilteredFileExtensions>
-						<nonFilteredFileExtension>pdf</nonFilteredFileExtension>
-						<nonFilteredFileExtension>jasper</nonFilteredFileExtension>
-						<nonFilteredFileExtension>jrxml</nonFilteredFileExtension>
-						<nonFilteredFileExtension>ttf</nonFilteredFileExtension>
-						<nonFilteredFileExtension>xlsx</nonFilteredFileExtension>
-						<nonFilteredFileExtension>xls</nonFilteredFileExtension>
-					</nonFilteredFileExtensions>
-				</configuration>
-
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>

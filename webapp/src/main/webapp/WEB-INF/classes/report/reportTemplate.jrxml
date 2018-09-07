@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportTemplate" columnDirection="RTL" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isTitleNewPage="true" uuid="a99124f6-cb11-432c-af3c-2632e660abdf">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="pstyle" fontName="ZTitr" fontSize="12" pdfFontName="ZTitr" pdfEncoding="Identity-H"/>
+	<parameter name="Report_Logo" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="Report_Name" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="Report_User" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="Report_Date" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="Report_Date_Label" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="Report_User_Label" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="Report_Name_Label" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="Footer_Text" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="Report_Date_From_Label" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="Report_Date_To_Label" class="java.lang.String" isForPrompting="false"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="90" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="37" width="752" height="51" uuid="2ce15af4-de45-47b9-a8f8-572e073edf36"/>
+			</rectangle>
+			<image hAlign="Center">
+				<reportElement x="320" y="0" width="112" height="29" uuid="d825a92f-70ba-41e5-a0a3-c44cef9b049b"/>
+				<imageExpression><![CDATA[$P{REPORT_PARAMETERS_MAP}.get( "Report_Logo" )]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement style="pstyle" x="640" y="43" width="100" height="20" uuid="0b077797-302f-4983-b418-0f06bd57600e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{Report_Name_Label}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="pstyle" x="524" y="43" width="100" height="20" uuid="ca9aabfe-771c-4575-93cb-2642d9c1154d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{Report_Name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="pstyle" x="640" y="68" width="100" height="20" uuid="b802eef1-fd5e-4d3e-a6f2-b5283abe47f7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{Report_Date_Label}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="pstyle" x="524" y="68" width="100" height="20" uuid="64724909-b081-4062-9526-41e0832f0b64"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{Report_Date}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="pstyle" x="192" y="44" width="100" height="20" uuid="e1427e34-0314-4ff4-88f1-c53b5dcf8d41"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{Report_User_Label}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="pstyle" x="62" y="43" width="100" height="20" uuid="d29236ec-48a3-4f59-a7b7-24fe3801ab75"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{Report_User}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="30" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="pstyle" stretchType="RelativeToBandHeight" x="0" y="6" width="752" height="20" uuid="ac556e88-9411-40fe-9f10-7fc20de63a33"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font pdfFontName="ZTitr" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{Footer_Text}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+	<noData>
+		<band height="20"/>
+	</noData>
+</jasperReport>
