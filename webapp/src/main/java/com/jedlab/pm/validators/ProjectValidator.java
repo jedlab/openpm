@@ -7,12 +7,14 @@ import org.springframework.binding.message.MessageBuilder;
 import org.springframework.binding.message.MessageContext;
 import org.springframework.binding.validation.ValidationContext;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
 
 import com.jedlab.pm.dao.ProjectDao;
 import com.jedlab.pm.model.Project;
 
 @Component
-public class ProjectValidator
+public class ProjectValidator implements Validator
 {
 
     private static final Logger logger = LoggerFactory.getLogger(ProjectValidator.class);
@@ -20,10 +22,19 @@ public class ProjectValidator
     @Autowired
     ProjectDao projectDao;
     
-    public void validateProjectEdit(Project project, ValidationContext vc)
+  
+
+    @Override
+    public boolean supports(Class<?> clazz)
+    {
+        return clazz.isAssignableFrom(Project.class);
+    }
+
+    @Override
+    public void validate(Object target, Errors errors)
     {
         logger.info("validating project");
-        MessageContext messages = vc.getMessageContext();
+        Project project = (Project) target;
         Project result = null;
         if(project.isNew())
              result = projectDao.findProjectByName(project.getName());
@@ -31,9 +42,9 @@ public class ProjectValidator
             result = projectDao.findProjectByNameAndId(project.getName(), project.getId());
         if(result != null)
         {
-            messages.addMessage(new MessageBuilder().error().source("Project")
-                    .code("Project_Exists").build());
+            errors.rejectValue("name", "duplicate");
         }
+        
     }
     
     
