@@ -378,6 +378,8 @@ public class QueryMapper
 //                ParameterExpression<?> pe = cb.parameter(String.class, property);
                 if (QueryWhereParser.EQ.equals(operator))
                     predicateList.add(cb.equal(root.get(property), value));
+                if (QueryWhereParser.NEQ.equals(operator))
+                    predicateList.add(cb.not(cb.equal(root.get(property), value)));
                 if (QueryWhereParser.LK.equals(operator))
                     predicateList.add(cb.like(root.<String> get(property), "%" + value.toString() + "%"));
                 if (QueryWhereParser.BW.equals(operator))
