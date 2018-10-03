@@ -19,10 +19,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import org.apache.commons.beanutils.PropertyUtils;
 
 import com.jedlab.framework.util.StringUtil;
+import com.jedlab.framework.web.AbstractActionBean;
 
 /**
  * @author Omid Pourhadi : omidpourhadi [AT] gmail [DOT] com
@@ -30,6 +32,8 @@ import com.jedlab.framework.util.StringUtil;
  */
 public class ReflectionUtil
 {
+    
+    private static final Logger logger = Logger.getLogger(ReflectionUtil.class.getName());
 
     private static final Class<?>[] WRAPPER_TYPES = { int.class, long.class, short.class, float.class, double.class, byte.class,
             boolean.class, char.class };
@@ -72,9 +76,10 @@ public class ReflectionUtil
             }
             catch (NoSuchFieldException nsfe)
             {
+                logger.info(name + " field not found");
             }
         }
-        throw new IllegalArgumentException("no such field: " + clazz.getName() + '.' + name);
+        return null;
     }
 
     public static Collection<?> instantiateCollection(Class<?> t)

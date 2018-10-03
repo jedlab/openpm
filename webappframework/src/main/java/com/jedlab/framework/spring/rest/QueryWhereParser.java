@@ -20,7 +20,7 @@ public class QueryWhereParser
 {
 
     private static Logger log = LoggerFactory.getLogger(QueryWhereParser.class);
-    
+
     public static final QueryWhereParser EMPTY = new QueryWhereParser();
 
     public static final String AND = "AND";
@@ -69,26 +69,28 @@ public class QueryWhereParser
 
     }
 
+    private void parseFilter(String key, JSONArray jsonArr, int index) throws JSONException
+    {
+        for (int i = 0; i < jsonArr.length(); i++)
+        {
+            Object object = jsonArr.get(i);
+            if (object instanceof JSONObject)
+            {
+                JSONObject obj = (JSONObject) object;
+                parseFilter(key, obj, i);
+            }
+        }
+    }
+
     private void parseFilter(String key, JSONObject jsonObject, int index) throws JSONException
     {
         FilterProperty fp = new FilterProperty();
-//        if (!RegexUtil.match(OPERATOR_EXPRESIION, key) && !RegexUtil.match(OPERATOR_EXPRESIION_3, key))
-//        {
-//            fp.setOperator(LK);
-//            fp.setPropertyName(key);
-//            Object op = jsonObject.keys().next();
-//            Object objectValue = jsonObject.get(String.valueOf(op));
-//            fp.setValue(objectValue);
-//        }
-//        else
-//        {
-            // jsonobject
-            Object op = jsonObject.keys().next();
-            fp.setOperator(String.valueOf(op));
-            Object objectValue = jsonObject.get(String.valueOf(op));
-            fp.setValue(objectValue);
-            fp.setPropertyName(key);
-//        }
+        // jsonobject
+        Object op = jsonObject.keys().next();
+        fp.setOperator(String.valueOf(op));
+        Object objectValue = jsonObject.get(String.valueOf(op));
+        fp.setValue(objectValue);
+        fp.setPropertyName(key);
         filterProperties.add(fp);
     }
 
@@ -108,7 +110,7 @@ public class QueryWhereParser
                 }
                 else if (value instanceof JSONArray)
                 {
-                    throw new UnsupportedOperationException("Not Implemented yet");
+                    parseFilter(key, (JSONArray) value, index++);
                 }
             }
         }

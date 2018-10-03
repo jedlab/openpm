@@ -362,7 +362,7 @@ public class QueryMapper
             FilterProperty item = filterProperties.get(i);
             String property = item.getPropertyName();
             Object value = item.getValue();
-            String operator = item.getOperator();
+            String operator = item.getOperator();            
             if(value == null)
                 continue;
             if(value instanceof String && StringUtil.isEmpty(String.valueOf(value)))
@@ -376,8 +376,31 @@ public class QueryMapper
             else
             {
 //                ParameterExpression<?> pe = cb.parameter(String.class, property);
+                Field field = ReflectionUtil.getField(clz, property);
                 if (QueryWhereParser.EQ.equals(operator))
-                    predicateList.add(cb.equal(root.get(property), value));
+                {
+                    if(field.getType().isEnum())
+                    {
+                        Enum valueOf = Enum.valueOf((Class<Enum>) field.getType(), String.valueOf(value));
+                        predicateList.add(cb.equal(root.get(property), valueOf));
+                    }
+                    else
+                    {
+                        predicateList.add(cb.equal(root.get(property), value));
+                    }
+                }                    
+                if (QueryWhereParser.NEQ.equals(operator))
+                {
+                    if(field.getType().isEnum())
+                    {
+                        Enum valueOf = Enum.valueOf((Class<Enum>) field.getType(), String.valueOf(value));
+                        predicateList.add(cb.not(cb.equal(root.get(property), valueOf)));
+                    }
+                    else
+                    {
+                        predicateList.add(cb.not(cb.equal(root.get(property), value)));
+                    }
+                }
                 if (QueryWhereParser.LK.equals(operator))
                     predicateList.add(cb.like(root.<String> get(property), "%" + value.toString() + "%"));
                 if (QueryWhereParser.BW.equals(operator))
@@ -386,7 +409,6 @@ public class QueryMapper
                     predicateList.add(cb.like(root.<String> get(property), "%" + value.toString()));
                 if (QueryWhereParser.GT.equals(operator))
                 {
-                    Field field = ReflectionUtil.getField(clz, property);
                     if(Date.class.isAssignableFrom(field.getType()))
                     {
                         String v = String.valueOf(value);
@@ -400,7 +422,6 @@ public class QueryMapper
                 }
                 if (QueryWhereParser.GTE.equals(operator))
                 {
-                    Field field = ReflectionUtil.getField(clz, property);
                     if(Date.class.isAssignableFrom(field.getType()))
                     {
                         String v = String.valueOf(value);
@@ -414,7 +435,6 @@ public class QueryMapper
                 }
                 if (QueryWhereParser.LT.equals(operator))
                 {
-                    Field field = ReflectionUtil.getField(clz, property);
                     if(Date.class.isAssignableFrom(field.getType()))
                     {
                         String v = String.valueOf(value);
@@ -428,7 +448,6 @@ public class QueryMapper
                 }
                 if (QueryWhereParser.LTE.equals(operator))
                 {
-                    Field field = ReflectionUtil.getField(clz, property);
                     if(Date.class.isAssignableFrom(field.getType()))
                     {
                         String v = String.valueOf(value);
@@ -531,5 +550,7 @@ public class QueryMapper
         }        
         return predicateList;
     }
+    
+    
 
 }
