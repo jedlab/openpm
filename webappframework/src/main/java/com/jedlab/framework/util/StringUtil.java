@@ -60,12 +60,7 @@ public class StringUtil
         String val = input == null ? null : String.valueOf(input);
         return isNotEmpty(val);
     }
-    /**
-     *@param remove all space from str and assimilate all persian special character.
-     * @see this method sync with prepare_string_and_space_remover() postgresql function, if you need change this function you have to change preparesprepare_string_and_space_removertring() in postgresql
-     * @author Ali Taghaddosy Pour : a.taghadosi AT gmail DOT com
-     * 
-     */
+  
     public static String stringSpaceRemover(String str)
     {
         // Remove all space from str
@@ -87,6 +82,13 @@ public class StringUtil
         if(stringSpaceRemover(targetStr.toLowerCase()).indexOf(stringSpaceRemover(sourceStr.toLowerCase())) > -1)
             return true;
         return false;
+    }
+    
+    public static String removeNewLine(String input)
+    {
+        if(isEmpty(input))
+            return input;
+        return input.replaceAll("\\n", "");
     }
     
 }
