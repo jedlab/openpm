@@ -1,8 +1,8 @@
 package com.jedlab.framework.spring.dao;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.NoRepositoryBean;
-import org.springframework.data.repository.PagingAndSortingRepository;
 
 /**
  * @author omidp
@@ -10,7 +10,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
  * @param <T>
  */
 @NoRepositoryBean
-public interface AbstractDAO<T> extends PagingAndSortingRepository<T, Long>, JpaSpecificationExecutor<T>
+public interface AbstractDAO<T> extends JpaRepository<T, Long>, JpaSpecificationExecutor<T>
 {
 
     

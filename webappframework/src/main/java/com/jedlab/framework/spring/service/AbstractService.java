@@ -15,11 +15,13 @@ import javax.persistence.metamodel.IdentifiableType;
 import javax.persistence.metamodel.ManagedType;
 import javax.persistence.metamodel.Metamodel;
 import javax.persistence.metamodel.SingularAttribute;
+import javax.validation.ConstraintViolationException;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.primefaces.model.SortOrder;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -27,6 +29,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.repository.support.PageableExecutionUtils;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jedlab.framework.exceptions.ServiceException;
@@ -69,12 +72,42 @@ public abstract class AbstractService<E>
         return new Sort(orders);
     }
 
-    @Transactional
-    public void insert(E entity)
+    @Transactional(rollbackFor = { Exception.class, ServiceException.class })
+    public void insert(E entity, boolean flush) throws ServiceException
     {
-        beforeInsert(entity);
-        getDao().save(entity);
-        afterInsert(entity);
+        boolean success = true;
+        try
+        {
+            beforeInsert(entity);
+            getDao().save(entity);
+            if (flush)
+                getDao().flush();
+        }
+        catch (ServiceException e)
+        {
+            success = false;
+            throw e;
+        }
+        catch (TransactionSystemException | ConstraintViolationException | DataAccessException e)
+        {
+            success = false;
+            throw e;
+        }
+        catch (Exception e)
+        {
+            success = false;
+            throw new ServiceException(e);
+        }
+        finally
+        {
+            afterInsert(entity, success);
+        }
+    }
+
+    @Transactional(rollbackFor = { Exception.class, ServiceException.class })
+    public void insert(E entity) throws ServiceException
+    {
+        insert(entity, true);
     }
 
     public void delete(Long id)
@@ -82,16 +115,51 @@ public abstract class AbstractService<E>
         getDao().deleteById(id);
     }
 
-    @Transactional
-    public void update(E entity)
+    @Transactional(rollbackFor = { Exception.class, ServiceException.class })
+    public void update(E entity, boolean flush) throws ServiceException
     {
-        beforeUpdate(entity);
-        getDao().save(entity);
-        afterUpdate(entity);
+        boolean success = true;
+        try
+        {
+            beforeUpdate(entity);
+            getDao().save(entity);
+            if (flush)
+                getDao().flush();
+        }
+        catch (ServiceException e)
+        {
+            success = false;
+            throw e;
+        }
+        catch (TransactionSystemException | ConstraintViolationException | DataAccessException e)
+        {
+            success = false;
+            throw e;
+        }
+        catch (Exception e)
+        {
+            success = false;
+            throw new ServiceException(e);
+        }
+        finally
+        {
+            afterUpdate(entity, success);
+        }
 
     }
 
-    protected void afterUpdate(E entity)
+    public void flush()
+    {
+        getDao().flush();
+    }
+
+    @Transactional(rollbackFor = { Exception.class, ServiceException.class })
+    public void update(E entity) throws ServiceException
+    {
+        update(entity, true);
+    }
+
+    protected void afterUpdate(E entity, boolean success)
     {
 
     }
@@ -120,7 +188,7 @@ public abstract class AbstractService<E>
         }
     }
 
-    protected void afterInsert(E entity)
+    protected void afterInsert(E entity, boolean success)
     {
 
     }
@@ -168,10 +236,10 @@ public abstract class AbstractService<E>
         if (restriction != null)
         {
             Specification listSpec = restriction.listSpec(builder, criteria, root);
-            if(listSpec != null)
+            if (listSpec != null)
             {
                 Predicate predicate = listSpec.toPredicate(root, criteria, builder);
-                if(predicate != null)
+                if (predicate != null)
                     criteria.where(predicate);
             }
         }
@@ -187,7 +255,7 @@ public abstract class AbstractService<E>
                         orderList.add(builder.desc(root.get(s.getProperty())));
                 }
             });
-            if(CollectionUtil.isNotEmpty(orderList))
+            if (CollectionUtil.isNotEmpty(orderList))
                 criteria.orderBy(orderList);
         }
 
@@ -212,22 +280,21 @@ public abstract class AbstractService<E>
         if (restriction != null)
         {
             Specification listSpec = restriction.countSpec(builder, criteria, root);
-            if(listSpec != null)
+            if (listSpec != null)
             {
                 Predicate predicate = listSpec.toPredicate(root, criteria, builder);
-                if(predicate != null)
+                if (predicate != null)
                     criteria.where(predicate);
             }
         }
         return (Long) entityManager.createQuery(criteria).getSingleResult();
     }
-    
-    
+
     @Transactional(readOnly = true)
     public List<E> load(int first, int pageSize, List<com.jedlab.framework.web.ExtendedLazyDataModel.SortProperty> sortFields,
             Map<String, Object> filters, Class<E> clz, JPARestriction restriction)
     {
-        
+
         List<E> result = new ArrayList<>();
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<E> criteria = builder.createQuery(clz);
@@ -236,10 +303,10 @@ public abstract class AbstractService<E>
         if (restriction != null)
         {
             Specification listSpec = restriction.listSpec(builder, criteria, root);
-            if(listSpec != null)
+            if (listSpec != null)
             {
                 Predicate predicate = listSpec.toPredicate(root, criteria, builder);
-                if(predicate != null)
+                if (predicate != null)
                     criteria.where(predicate);
             }
         }
@@ -254,13 +321,13 @@ public abstract class AbstractService<E>
             });
             criteria.orderBy(orderList);
         }
-        
+
         TypedQuery<E> createQuery = entityManager.createQuery(criteria);
         createQuery.setFirstResult(first);
         // set 0 for unlimited
         if (pageSize > 0)
             createQuery.setMaxResults(pageSize);
-        
+
         result = createQuery.getResultList();
         return result;
     }
