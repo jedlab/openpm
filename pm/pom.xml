@@ -18,7 +18,7 @@
 		<springframework.version>4.3.8.RELEASE</springframework.version>
 		<spring-data-jpa.version>1.11.3.RELEASE</spring-data-jpa.version>
 		<spring-data-enver.version>1.1.3.RELEASE</spring-data-enver.version>
-		<spring-security.version>4.2.2.RELEASE</spring-security.version>
+		<spring-security.version>4.2.4.RELEASE</spring-security.version>
 		<hibernate.version>4.3.11.Final</hibernate.version>
 		<hibernate.validator.version>5.2.1.Final</hibernate.validator.version>
 		<log4j.version>2.5</log4j.version>
@@ -34,13 +34,7 @@
 		<springwebflow-version>2.4.4.RELEASE</springwebflow-version>
 	</properties>
 	
-	<repositories>		
-		<repository>
-			<id>omidbiz</id>
-			<name>OMidbiz Maven Repository</name>
-			<url>http://omidbiz.com/nexus/content/sites/omidbiz_repo/</url>			
-		</repository>
-	</repositories>
+	
 
 	<dependencyManagement>
 		<dependencies>
