@@ -17,9 +17,6 @@ import javax.persistence.metamodel.Metamodel;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.ConstraintViolationException;
 
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.criterion.Projections;
 import org.primefaces.model.SortOrder;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
@@ -29,6 +26,8 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.repository.support.PageableExecutionUtils;
+import org.springframework.orm.jpa.JpaSystemException;
+import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -88,10 +87,10 @@ public abstract class AbstractService<E>
             success = false;
             throw e;
         }
-        catch (TransactionSystemException | ConstraintViolationException | DataAccessException e)
+        catch (ConstraintViolationException | DataAccessException | TransactionException e)
         {
             success = false;
-            throw e;
+            throw new ServiceException(e);
         }
         catch (Exception e)
         {
@@ -131,10 +130,10 @@ public abstract class AbstractService<E>
             success = false;
             throw e;
         }
-        catch (TransactionSystemException | ConstraintViolationException | DataAccessException e)
+        catch (ConstraintViolationException | DataAccessException | TransactionException e)
         {
             success = false;
-            throw e;
+            throw new ServiceException(e);
         }
         catch (Exception e)
         {
