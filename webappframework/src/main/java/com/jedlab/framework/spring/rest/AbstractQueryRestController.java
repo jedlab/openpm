@@ -1,6 +1,5 @@
 package com.jedlab.framework.spring.rest;
 
-import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -9,7 +8,6 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -30,6 +28,7 @@ import com.jedlab.framework.spring.mvc.Pager;
 import com.jedlab.framework.spring.rest.QueryWhereParser.FilterProperty;
 import com.jedlab.framework.spring.service.AbstractService;
 import com.jedlab.framework.spring.service.JPARestriction;
+import com.jedlab.framework.spring.validation.BindingValidationError;
 import com.jedlab.framework.util.StringUtil;
 
 /**

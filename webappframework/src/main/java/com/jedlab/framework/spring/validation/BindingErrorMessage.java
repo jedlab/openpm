@@ -1,4 +1,4 @@
-package com.jedlab.framework.spring.rest;
+package com.jedlab.framework.spring.validation;
 
 import java.util.ArrayList;
 

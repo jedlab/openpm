@@ -33,6 +33,9 @@ import com.jedlab.framework.spring.SpringUtil;
 import com.jedlab.framework.spring.mvc.EntityWrapper;
 import com.jedlab.framework.spring.service.AbstractService;
 import com.jedlab.framework.spring.service.Restriction;
+import com.jedlab.framework.spring.validation.BindingErrorMessage;
+import com.jedlab.framework.spring.validation.BindingValidationError;
+import com.jedlab.framework.spring.validation.ValidationUtil;
 import com.jedlab.framework.util.CollectionUtil;
 import com.jedlab.framework.util.StringUtil;
 
@@ -157,62 +160,17 @@ public abstract class AbstractHomeRestController<E extends EntityModel>
         
         List<ObjectError> errors = validationError.getErrors();
         
-        processFieldErrors(errors, bem);
+        ValidationUtil vu = new ValidationUtil(messageSource);
         
-        processGlobalErrors(errors, bem);
+        vu.processFieldErrors(errors, bem);
+        
+        vu.processGlobalErrors(errors, bem);
         
 
         return bem;
     }
 
 
-    private void processGlobalErrors(List<ObjectError> errors, BindingErrorMessage bem)
-    {
-        List<ObjectError> fieldErrors = errors.stream().filter(item->item instanceof ObjectError).collect(Collectors.toList());
-        if(CollectionUtil.isNotEmpty(fieldErrors))
-        {
-            Locale current = LocaleContextHolder.getLocale();
-            for (ObjectError fieldError : fieldErrors)
-            {
-                String code = fieldError.getCode();
-                String defaultMessage = fieldError.getDefaultMessage();
-                
-                String localizedError = messageSource.getMessage(code, fieldError.getArguments(), current);
-                if (localizedError != null && !localizedError.equals(code))
-                {
-                    bem.addFieldError(fieldError.getObjectName(), localizedError);
-                }
-                else
-                {
-                    bem.addFieldError(fieldError.getObjectName(), StringUtil.isEmpty(defaultMessage) ? messageSource.getMessage(code, null, current) : defaultMessage);
-                }
-            }
-        }
-    }
-
-
-    private void processFieldErrors(List<ObjectError> errors, BindingErrorMessage dto)
-    {
-        Locale current = LocaleContextHolder.getLocale();
-        List<FieldError> fieldErrors = errors.stream().filter(item->item instanceof FieldError).map(item->(FieldError)item).collect(Collectors.toList());
-        if(CollectionUtil.isNotEmpty(fieldErrors))
-        {
-            for (FieldError fieldError : fieldErrors)
-            {
-                String code = fieldError.getCode();
-                String defaultMessage = fieldError.getDefaultMessage();
-                
-                String localizedError = messageSource.getMessage(code, fieldError.getArguments(), current);
-                if (localizedError != null && !localizedError.equals(code))
-                {
-                    dto.addFieldError(fieldError.getField(), localizedError);
-                }
-                else
-                {
-                    dto.addFieldError(fieldError.getObjectName(), StringUtil.isEmpty(defaultMessage) ? messageSource.getMessage(code, null, current) : defaultMessage);
-                }
-            }
-        }
-    }
+    
 
 }

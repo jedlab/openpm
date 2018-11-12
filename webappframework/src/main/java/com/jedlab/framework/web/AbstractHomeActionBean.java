@@ -13,8 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import com.jedlab.framework.spring.service.AbstractCrudService;
+import com.jedlab.framework.spring.validation.BindingErrorMessage;
+import com.jedlab.framework.spring.validation.ValidationUtil;
 
 public abstract class AbstractHomeActionBean<E> extends AbstractActionBean
 {
@@ -220,5 +223,27 @@ public abstract class AbstractHomeActionBean<E> extends AbstractActionBean
     {
         return getService().findById(getEntityClass(), getId());
     }
+    
+    
+    
+    /**
+     * @return true if everything is ok
+     */
+    protected boolean isValid()
+    {
+        if(getValidator() == null)
+            return true;
+        ValidationUtil vu = new ValidationUtil(messageSource);
+        BindingErrorMessage errorMsg = vu.invokeValidator(getValidator(), getInstance());
+        errorMsg.getErrors().forEach(item->{
+            getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_FATAL, "", item.getMessage()));
+            getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+        });
+        
+        return errorMsg.getErrors().size() == 0;
+    }
+    
+    protected Validator getValidator(){return null;}
 
 }
