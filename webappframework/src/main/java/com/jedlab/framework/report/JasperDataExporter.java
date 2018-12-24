@@ -376,7 +376,7 @@ public abstract class JasperDataExporter<E> implements Serializable
             }
         }
         Accessor ac = new FieldAccessor(entityClass);
-        if (BeanAccessor.PROPERTY.equals(accessor())) ac = new PropertyAccessor(entityClass);
+        if (BeanAccessor.PROPERTY.equals(accessor(entityClass))) ac = new PropertyAccessor(entityClass);
         List<ReportItem> reportItems = ac.getReportItems(); //
         Collections.sort(reportItems, new ReportItemCompare());
         if (ExportType.XLS.equals(getExportType()) == false) Collections.reverse(reportItems);
@@ -472,8 +472,11 @@ public abstract class JasperDataExporter<E> implements Serializable
 
     }
 
-    public BeanAccessor accessor()
+    public BeanAccessor accessor(Class<E> clz)
     {
+        ReportAccessor a = clz.getAnnotation(ReportAccessor.class);
+        if(a != null && a.accessor() == BeanAccessor.PROPERTY)
+            return BeanAccessor.PROPERTY;
         return BeanAccessor.FIELD;
     }
 
