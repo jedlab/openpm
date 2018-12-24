@@ -12,7 +12,7 @@ import com.jedlab.framework.report.JasperDataExporter.ExportType;
  * @author omidp
  *
  */
-@Target(ElementType.FIELD)
+@Target({ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface ReportField
