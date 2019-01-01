@@ -81,11 +81,29 @@ public class MailClient
     public void send(String from, String to, String subject, String templateLocation, Map<String, Object> model, String attachmentPath,
             String attachmentName, UncaughtExceptionHandler uc, String...cc )
     {
-        MessagePreparator mp = new MessagePreparator(from, to, subject, templateLocation, model, attachmentPath, attachmentName, cc);
+        MessagePreparator mp = new MessagePreparator(from, to, subject, templateLocation, model, attachmentPath, attachmentName, cc);        
         Thread thread = new Thread(new MessageSender(mp));
         if (uc != null)
             thread.setUncaughtExceptionHandler(uc);
         thread.start();
+    }
+    
+    public void send(String from, String to, String subject, String templateLocation, Map<String, Object> model, String attachmentPath,
+            String attachmentName, String[] cc )
+    {
+        MessagePreparator mp = new MessagePreparator(from, to, subject, templateLocation, model, attachmentPath, attachmentName, cc);
+        try
+        {
+            mailSender.send(mp);
+        }
+        catch (MailException ex)
+        {
+            throw ex;
+        }
+        catch (Exception ex)
+        {
+            throw new MailPreparationException(ex);
+        }        
     }
 
     /**
