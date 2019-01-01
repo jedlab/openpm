@@ -27,8 +27,10 @@ import com.jedlab.framework.util.CollectionUtil;
 import ar.com.fdvs.dj.domain.builders.FastReportBuilder;
 
 /**
- * @author omidp 
- * <p>load list on page load</p>
+ * @author omidp
+ *         <p>
+ *         load list on page load
+ *         </p>
  * @param <E>
  */
 public abstract class AbstractQueryActionBean<E extends EntityModel> extends AbstractActionBean
@@ -283,6 +285,75 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
 
     protected JPARestriction getRestriction()
     {
+        return null;
+    }
+
+    private PaginationHelper<E> pagination;
+
+    public PaginationHelper<E> getPagination()
+    {
+
+        if (pagination == null)
+        {
+
+            pagination = new PaginationHelper<E>(50) {
+                @Override
+                public int getItemsCount()
+                {
+                    return getService().count(getEntityClass(), getRestriction()).intValue();
+                }
+
+                @Override
+                public List<E> createPageDataModel()
+                {
+
+                    return getService().load(getPageFirstItem(), getPageFirstItem() + getPageSize(), null, null, getEntityClass(),
+                            getRestriction());
+                }
+            };
+        }
+        return pagination;
+    }
+
+    private List<E> entityResultList;
+
+    public List<E> getEntityResultList()
+    {
+        if (entityResultList == null)
+            entityResultList = getPagination().createPageDataModel();
+        return entityResultList;
+    }
+
+    public String next()
+    {
+        getPagination().nextPage();
+        recreateModel();
+        return null;
+    }
+
+    public String last()
+    {
+        getPagination().lastPage();
+        recreateModel();
+        return null;
+    }
+
+    public String first()
+    {
+        getPagination().firstPage();
+        recreateModel();
+        return null;
+    }
+
+    private void recreateModel()
+    {
+        entityResultList = null;
+    }
+
+    public String previous()
+    {
+        getPagination().previousPage();
+        recreateModel();
         return null;
     }
 
