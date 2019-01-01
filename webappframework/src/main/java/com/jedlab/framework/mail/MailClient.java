@@ -41,18 +41,18 @@ public class MailClient
      * @param templateLocation
      * @param model
      */
-    public void send(String from, String to, String subject, String templateLocation, Map<String, Object> model, UncaughtExceptionHandler uc)
+    public void send(String from, String to, String subject, String templateLocation, Map<String, Object> model, UncaughtExceptionHandler uc, String... cc)
     {
-        MessagePreparator mp = new MessagePreparator(from, to, subject, templateLocation, model);
+        MessagePreparator mp = new MessagePreparator(from, to, subject, templateLocation, model, cc);
         Thread thread = new Thread(new MessageSender(mp));
         if (uc != null)
             thread.setUncaughtExceptionHandler(uc);
         thread.start();
     }
 
-    public void send(String from, String to, String subject, String templateLocation, Map<String, Object> model)
+    public void send(String from, String to, String subject, String templateLocation, Map<String, Object> model, String... cc)
     {
-        MessagePreparator mp = new MessagePreparator(from, to, subject, templateLocation, model);
+        MessagePreparator mp = new MessagePreparator(from, to, subject, templateLocation, model, cc);
         try
         {
             mailSender.send(mp);
@@ -79,9 +79,9 @@ public class MailClient
      * @param attachmentName
      */
     public void send(String from, String to, String subject, String templateLocation, Map<String, Object> model, String attachmentPath,
-            String attachmentName, UncaughtExceptionHandler uc)
+            String attachmentName, UncaughtExceptionHandler uc, String...cc )
     {
-        MessagePreparator mp = new MessagePreparator(from, to, subject, templateLocation, model, attachmentPath, attachmentName);
+        MessagePreparator mp = new MessagePreparator(from, to, subject, templateLocation, model, attachmentPath, attachmentName, cc);
         Thread thread = new Thread(new MessageSender(mp));
         if (uc != null)
             thread.setUncaughtExceptionHandler(uc);
@@ -96,7 +96,7 @@ public class MailClient
      * @param subject
      * @param msg
      */
-    public void send(String from, String to, String subject, String msg)
+    public void send(String from, String to, String subject, String msg, String... cc)
     {
         SimpleMailMessage message = new SimpleMailMessage();
 
@@ -104,6 +104,8 @@ public class MailClient
         message.setTo(to);
         message.setSubject(subject);
         message.setText(msg);
+        if(cc.length > 0)
+            message.setCc(cc);
         mailSender.send(message);
     }
 
@@ -135,17 +137,20 @@ public class MailClient
         private String attachmentPath;
         private String attachmentName;
 
-        public MessagePreparator(String from, String to, String subject, String templateLocation, Map<String, Object> model)
+        private String[] ccList;
+
+        public MessagePreparator(String from, String to, String subject, String templateLocation, Map<String, Object> model, String... ccList)
         {
             this.from = from;
             this.to = to;
             this.subject = subject;
             this.templateLocation = templateLocation;
             this.model = model;
+            this.ccList = ccList;
         }
 
         public MessagePreparator(String from, String to, String subject, String templateLocation, Map<String, Object> model,
-                String attachmentPath, String attachmentName)
+                String attachmentPath, String attachmentName, String... ccList)
         {
             this.from = from;
             this.to = to;
@@ -154,6 +159,7 @@ public class MailClient
             this.model = model;
             this.attachmentPath = attachmentPath;
             this.attachmentName = attachmentName;
+            this.ccList = ccList;
         }
 
         public void prepare(MimeMessage mimeMessage) throws Exception
@@ -164,6 +170,8 @@ public class MailClient
             message.setTo(to);
             message.setSubject(subject);
             message.setText(text, true);
+            if(ccList.length > 0)
+                message.setCc(ccList);
             if (attachmentPath != null  && attachmentName.trim().length() > 0)
             {
                 FileSystemResource file = new FileSystemResource(attachmentPath);
@@ -172,5 +180,8 @@ public class MailClient
         }
 
     }
+    
+    
+   
 
 }
