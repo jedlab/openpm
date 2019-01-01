@@ -296,23 +296,32 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
         if (pagination == null)
         {
 
-            pagination = new PaginationHelper<E>(50) {
+            pagination = new PaginationHelper<E>(getListPageSize()) {
                 @Override
                 public int getItemsCount()
                 {
-                    return getService().count(getEntityClass(), getRestriction()).intValue();
+                    if(resultCount == null)
+                        resultCount = getService().count(getEntityClass(), getRestriction());
+                    return resultCount.intValue();
                 }
 
                 @Override
                 public List<E> createPageDataModel()
                 {
-
-                    return getService().load(getPageFirstItem(), getPageFirstItem() + getPageSize(), null, null, getEntityClass(),
+                    if(entityResultList == null)
+                        entityResultList = getService().load(getPageFirstItem(), getPageSize(), null, null, getEntityClass(),
                             getRestriction());
+                    return entityResultList;
                 }
             };
         }
         return pagination;
+    }
+
+
+    protected int getListPageSize()
+    {
+        return 10;
     }
 
     private List<E> entityResultList;
@@ -345,9 +354,10 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
         return null;
     }
 
-    private void recreateModel()
+    protected void recreateModel()
     {
         entityResultList = null;
+        resultCount = null;
     }
 
     public String previous()
