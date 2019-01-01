@@ -368,45 +368,9 @@ public abstract class JasperDataExporter<E> implements Serializable
     {
         if (entityClass == null) 
             entityClass = getEntityClass();
-        List<Field> fields = ReflectionUtil.getFields(entityClass);
-        List<ReportItem> items = new ArrayList<>();
-        for (Field field : fields)
-        {
-            ReportField rptField = field.getAnnotation(ReportField.class);
-            if (rptField != null)
-            {
-                MessageSource messageSource = SpringUtil.getBean(MessageSource.class);
-                String title = messageSource.getMessage(rptField.msg(), null, new Locale("fa", "IR"));
-                String roleName = rptField.roleName();
-                if(StringUtil.isNotEmpty(roleName))
-                {
-                	Authentication auth = AuthenticationUtil.getAuthentication();
-                	if(auth != null)
-                	{
-                		Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
-                		if(CollectionUtil.isNotEmpty(authorities))
-                		{
-                			for (GrantedAuthority ga : authorities) 
-                			{
-                				if(roleName.equals(ga.getAuthority()))
-                				{
-                					items.add(new ReportItem(rptField.order(), rptField.interceptor(), rptField.width(), title, field.getName(),
-                                			field.getType(), rptField.type(), rptField.exportTypes()));
-                					break;
-                				}
-							}
-                		}
-                	}
-                }
-                else
-                {
-                	items.add(new ReportItem(rptField.order(), rptField.interceptor(), rptField.width(), title, field.getName(),
-                			field.getType(), rptField.type(), rptField.exportTypes()));
-                }
-            }
-        }
+        
         Accessor ac = new FieldAccessor(entityClass);
-        if (BeanAccessor.PROPERTY.equals(accessor())) ac = new PropertyAccessor(entityClass);
+        if (BeanAccessor.PROPERTY.equals(accessor(entityClass))) ac = new PropertyAccessor(entityClass);
         List<ReportItem> reportItems = ac.getReportItems(); //
         Collections.sort(reportItems, new ReportItemCompare());
         if (ExportType.XLS.equals(getExportType()) == false) Collections.reverse(reportItems);
@@ -502,8 +466,11 @@ public abstract class JasperDataExporter<E> implements Serializable
 
     }
 
-    public BeanAccessor accessor()
+    public BeanAccessor accessor(Class<E> clz)
     {
+        ReportAccessor a = clz.getAnnotation(ReportAccessor.class);
+        if(a != null && a.accessor() == BeanAccessor.PROPERTY)
+            return BeanAccessor.PROPERTY;
         return BeanAccessor.FIELD;
     }
 
