@@ -309,7 +309,7 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
                 public List<E> createPageDataModel()
                 {
                     if(entityResultList == null)
-                        entityResultList = getService().load(getPageFirstItem(), getPageSize(), null, null, getEntityClass(),
+                        entityResultList = getService().load(getPageFirstItem(), getPageSize(), getSortProperties(), null, getEntityClass(),
                             getRestriction());
                     return entityResultList;
                 }
