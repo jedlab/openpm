@@ -175,9 +175,11 @@ public class MappingAxon2HttpMessageConverter extends AbstractGenericHttpMessage
         OutputStream body = outputMessage.getBody();
         HttpHeaders headers = outputMessage.getHeaders();
         AxonBuilder axonBuilder = new AxonBuilder();
+        String serializeNull = "false";
         if (headers != null)
         {            
             String viewName = headers.get("X-VIEWNAME") != null ? headers.get("X-VIEWNAME").iterator().next() : "";
+            serializeNull = headers.get("X-SERIALIZENULL") != null ? headers.get("X-SERIALIZENULL").iterator().next() : "false";
             if(StringUtil.isNotEmpty(viewName))
             {
                 if (t instanceof ParameterizedType)
@@ -194,7 +196,7 @@ public class MappingAxon2HttpMessageConverter extends AbstractGenericHttpMessage
                 }
             }
         }
-        String json = axonBuilder.create().toJson(t);
+        String json = axonBuilder.serializeNulls("true".equals(serializeNull)).create().toJson(t);
         body.write(json.getBytes("UTF-8"));
         body.flush();
         IOUtils.closeQuietly(body);
