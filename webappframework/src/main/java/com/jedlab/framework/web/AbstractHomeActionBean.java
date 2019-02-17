@@ -244,6 +244,25 @@ public abstract class AbstractHomeActionBean<E> extends AbstractActionBean
         return errorMsg.getErrors().size() == 0;
     }
     
+    
+    /**
+     * @return true if everything is ok
+     */
+    protected boolean isValid(Validator vld, Object model)
+    {
+        if(vld == null || model == null)
+            throw new IllegalArgumentException("vld/model can not be null");
+        ValidationUtil vu = new ValidationUtil(messageSource);
+        BindingErrorMessage errorMsg = vu.invokeValidator(vld, model);
+        errorMsg.getErrors().forEach(item->{
+            getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_FATAL, "", item.getMessage()));
+            getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+        });
+        
+        return errorMsg.getErrors().size() == 0;
+    }
+    
     protected Validator getValidator(){return null;}
 
 }
