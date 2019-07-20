@@ -7,7 +7,7 @@
 </div>
 
 <br/>
-<a href="http://localhost:8080/webapp/app/users/activate?c=${code}">فعالسازی</a>
+<a href="http://localhost:8081/webapp/app/users/activate?c=${code}">فعالسازی</a>
 <br/>
 
 </body>

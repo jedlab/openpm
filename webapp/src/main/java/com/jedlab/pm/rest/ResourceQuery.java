@@ -78,7 +78,8 @@ public abstract class ResourceQuery<T extends BasePO> extends ResourcePing
             GenericEntity<List<T>> entityWrapperList = new GenericEntity<List<T>>(projectList, responseType);
             return Response.ok(entityWrapperList).build();
         }
-        return Response.noContent().build();
+        return Response.ok("no result").build();
+        //return Response.noContent().build();
     }
     
     protected Restriction getRestriction()

@@ -1,10 +1,11 @@
 package com.jedlab.pm.dao;
 
-import org.springframework.data.repository.CrudRepository;
 
+
+import com.jedlab.framework.spring.dao.AbstractCrudDAO;
 import com.jedlab.pm.model.Task;
 
-public interface TaskDao extends CrudRepository<Task, Long>
+public interface TaskDao extends AbstractCrudDAO<Task>
 {
 
 }

@@ -5,6 +5,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.jedlab.pm.model.Project;
 import com.jedlab.pm.model.Task;
@@ -25,14 +27,14 @@ public class TaskTest
     @Test
     public void taskInsertProject()
     {
-        Project project = projectService.findAll().iterator().next();
-        for (int i = 0; i < 10; i++)
-        {
-            Task t = new Task();
-            t.setProject(project);
-            t.setName("task " + i);
-            taskService.persist(t);            
-        }
+       for (int i = 4; i < 30; i++)
+    {
+           Task task=new Task();
+           task.setProject(projectService.findAll().iterator().next());
+           task.setName("task "+i);
+           taskService.insert(task);
+           
+    }
     }
     
 }

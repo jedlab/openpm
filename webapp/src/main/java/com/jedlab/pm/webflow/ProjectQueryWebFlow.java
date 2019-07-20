@@ -54,6 +54,11 @@ public class ProjectQueryWebFlow extends AbstractQueryActionBean<Project>
         this.filter = new ProjectFilter();        
     }
     
-   
+   @Override
+   protected ReportHeader getFormReportHeader()
+   {
+       String message=SpringUtil.getMessage("Project_List", null);
+       return new DefaultReportHeader(message);
+   }
 
 }

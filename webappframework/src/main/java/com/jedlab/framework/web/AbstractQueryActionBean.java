@@ -286,4 +286,10 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
         return null;
     }
 
+    protected ReportHeader getFormReportHeader()
+    {
+      
+        return null;
+    }
+
 }

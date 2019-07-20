@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow  xmlns="http://www.springframework.org/schema/webflow"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="
+      	http://www.springframework.org/schema/webflow
+      	http://www.springframework.org/schema/webflow/spring-webflow-2.4.xsd"
+      	parent="parent-flow">
+
+	<secured attributes="ROLE_USER"/>
+	<persistence-context />
+	
+	
+	<view-state id="taskList">
+		<var name="taskQuery" class="com.jedlab.pm.webflow.TaskQueryWebFlow"/>
+		<transition on="create" bind="false" to="taskEdit"></transition>
+		<transition on="resetSearch">
+			<evaluate expression="taskQuery.resetSearch()"></evaluate>
+			<render fragments="taskSearchForm, taskListForm"></render>
+		</transition>
+		<transition on="search">
+			<evaluate expression="taskQuery.resetPagination('taskListForm:taskListTable')"></evaluate>
+			<render fragments="taskListForm:taskListTable"></render>
+		</transition>
+		
+	</view-state>
+	
+	<view-state id="taskEdit">
+		<var name="taskHome" class="com.jedlab.pm.webflow.TaskHomeWebFlow"/>
+		<on-entry>
+			<set name="requestScope.taskId" value="requestParameters.id" type="long" />
+			<evaluate expression="taskHome.setTaskId(taskId)"></evaluate>
+			<evaluate expression="taskHome.instance" result="viewScope.task"></evaluate>
+		</on-entry>
+		<transition on="save" to="taskList">
+			<evaluate expression="taskHome.save()"></evaluate>
+		</transition>
+		<transition on="update" to="taskList">
+			<evaluate expression="taskHome.update()"></evaluate>
+		</transition>
+		<transition on="delete" to="taskList">
+			<evaluate expression="taskHome.delete()"></evaluate>
+		</transition>
+		<transition on="cancel"  to="end"></transition>
+	</view-state>
+ 
+	
+	
+	
+	
+	
+	<end-state id="end" commit="true" view="externalRedirect:servletRelative:/task"></end-state>
+	
+	
+	
+	
+		
+</flow>
