@@ -389,7 +389,7 @@ public class QueryMapper
                         predicateList.add(cb.equal(root.get(property), value));
                     }
                 }                    
-                if (QueryWhereParser.NEQ.equals(operator))
+                else if (QueryWhereParser.NEQ.equals(operator))
                 {
                     if(field.getType().isEnum())
                     {
@@ -401,13 +401,13 @@ public class QueryMapper
                         predicateList.add(cb.not(cb.equal(root.get(property), value)));
                     }
                 }
-                if (QueryWhereParser.LK.equals(operator))
+                else if (QueryWhereParser.LK.equals(operator))
                     predicateList.add(cb.like(root.<String> get(property), "%" + value.toString() + "%"));
-                if (QueryWhereParser.BW.equals(operator))
+                else if (QueryWhereParser.BW.equals(operator))
                     predicateList.add(cb.like(root.<String> get(property), value.toString() + "%"));
-                if (QueryWhereParser.EW.equals(operator))
+                else if (QueryWhereParser.EW.equals(operator))
                     predicateList.add(cb.like(root.<String> get(property), "%" + value.toString()));
-                if (QueryWhereParser.GT.equals(operator))
+                else if (QueryWhereParser.GT.equals(operator))
                 {
                     if(Date.class.isAssignableFrom(field.getType()))
                     {
@@ -420,7 +420,7 @@ public class QueryMapper
                         predicateList.add(cb.greaterThan(root.<Long> get(property), Long.parseLong(v)));
                     }                    
                 }
-                if (QueryWhereParser.GTE.equals(operator))
+                else if (QueryWhereParser.GTE.equals(operator))
                 {
                     if(Date.class.isAssignableFrom(field.getType()))
                     {
@@ -433,7 +433,7 @@ public class QueryMapper
                         predicateList.add(cb.greaterThanOrEqualTo(root.<Long> get(property), Long.parseLong(v)));
                     }
                 }
-                if (QueryWhereParser.LT.equals(operator))
+                else if (QueryWhereParser.LT.equals(operator))
                 {
                     if(Date.class.isAssignableFrom(field.getType()))
                     {
@@ -446,7 +446,7 @@ public class QueryMapper
                         predicateList.add(cb.lessThan(root.<Long> get(property), Long.parseLong(v)));
                     }
                 }
-                if (QueryWhereParser.LTE.equals(operator))
+                else if (QueryWhereParser.LTE.equals(operator))
                 {
                     if(Date.class.isAssignableFrom(field.getType()))
                     {
@@ -458,6 +458,10 @@ public class QueryMapper
                         String v = String.valueOf(value);
                         predicateList.add(cb.lessThanOrEqualTo(root.<Long> get(property), Long.parseLong(v)));
                     }
+                }
+                else if(QueryWhereParser.IN.equals(operator) && value instanceof List)
+                {
+                    predicateList.add(cb.in(root.get(property)).value(value));
                 }
             }
             
