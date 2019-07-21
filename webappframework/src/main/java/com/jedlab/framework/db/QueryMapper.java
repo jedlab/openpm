@@ -18,7 +18,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Transient;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -411,10 +410,9 @@ public class QueryMapper
                 {
                     if(Date.class.isAssignableFrom(field.getType()))
                     {
-                        String v = String.valueOf(value);
-                        predicateList.add(cb.greaterThan(root.<Date> get(property), new Date(Long.parseLong(v))));
+                        predicateList.add(cb.greaterThan(root.<Date> get(property), (Date)value));
                     }
-                    if(Number.class.isAssignableFrom(field.getType()))
+                    else if(Number.class.isAssignableFrom(field.getType()))
                     {
                         String v = String.valueOf(value);
                         predicateList.add(cb.greaterThan(root.<Long> get(property), Long.parseLong(v)));
@@ -424,10 +422,10 @@ public class QueryMapper
                 {
                     if(Date.class.isAssignableFrom(field.getType()))
                     {
-                        String v = String.valueOf(value);
-                        predicateList.add(cb.greaterThanOrEqualTo(root.<Date> get(property), new Date(Long.parseLong(v))));
+
+                        predicateList.add(cb.greaterThanOrEqualTo(root.<Date> get(property), (Date)value ));
                     }
-                    if(Number.class.isAssignableFrom(field.getType()))
+                    else if(Number.class.isAssignableFrom(field.getType()))
                     {
                         String v = String.valueOf(value);
                         predicateList.add(cb.greaterThanOrEqualTo(root.<Long> get(property), Long.parseLong(v)));
@@ -437,10 +435,10 @@ public class QueryMapper
                 {
                     if(Date.class.isAssignableFrom(field.getType()))
                     {
-                        String v = String.valueOf(value);
-                        predicateList.add(cb.lessThan(root.<Date> get(property), new Date(Long.parseLong(v))));
+
+                        predicateList.add(cb.lessThan(root.<Date> get(property), (Date) value));
                     }
-                    if(Number.class.isAssignableFrom(field.getType()))
+                    else if(Number.class.isAssignableFrom(field.getType()))
                     {
                         String v = String.valueOf(value);
                         predicateList.add(cb.lessThan(root.<Long> get(property), Long.parseLong(v)));
@@ -450,10 +448,10 @@ public class QueryMapper
                 {
                     if(Date.class.isAssignableFrom(field.getType()))
                     {
-                        String v = String.valueOf(value);
-                        predicateList.add(cb.lessThanOrEqualTo(root.<Date> get(property), new Date(Long.parseLong(v))));
+
+                        predicateList.add(cb.lessThanOrEqualTo(root.<Date> get(property), (Date) value));
                     }
-                    if(Number.class.isAssignableFrom(field.getType()))
+                    else if(Number.class.isAssignableFrom(field.getType()))
                     {
                         String v = String.valueOf(value);
                         predicateList.add(cb.lessThanOrEqualTo(root.<Long> get(property), Long.parseLong(v)));
