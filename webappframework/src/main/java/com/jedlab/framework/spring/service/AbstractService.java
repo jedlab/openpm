@@ -26,16 +26,14 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.repository.support.PageableExecutionUtils;
-import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.transaction.TransactionException;
-import org.springframework.transaction.TransactionSystemException;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.jedlab.framework.exceptions.ServiceException;
 import com.jedlab.framework.spring.dao.AbstractDAO;
 import com.jedlab.framework.util.CollectionUtil;
 import com.jedlab.framework.util.StringUtil;
-import com.jedlab.framework.web.ExtendedLazyDataModel.SortProperty;
+import com.jedlab.framework.web.SortProperty;
 
 /**
  * @author Omid Pourhadi
@@ -290,7 +288,7 @@ public abstract class AbstractService<E>
     }
 
     @Transactional(readOnly = true)
-    public List<E> load(int first, int pageSize, List<com.jedlab.framework.web.ExtendedLazyDataModel.SortProperty> sortFields,
+    public List<E> load(int first, int pageSize, List<SortProperty> sortFields,
             Map<String, Object> filters, Class<E> clz, JPARestriction restriction)
     {
 
