@@ -12,30 +12,28 @@ import org.primefaces.model.SortOrder;
 
 import com.jedlab.framework.db.EntityModel;
 
-public abstract class ExtendedLazyDataModel<E extends EntityModel> extends LazyDataModel<E>
+public abstract class ApiExtendedLazyDataModel<E extends EntityModel> extends LazyDataModel<E>
 {
-
     private Number count;
 
-    public ExtendedLazyDataModel()
+    public ApiExtendedLazyDataModel()
     {
     }
 
     @Override
     public List<E> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters)
     {
-        this.count = rowCount(filters);
+        if (filters != null)
+            filters.values().removeIf(Objects::isNull);
+        ApiListResponse<E> lazyLoadRsp = lazyLoad(first, pageSize, Arrays.asList(new SortProperty(sortField, sortOrder)), filters);
+        this.count = lazyLoadRsp.getResultCount();
         if (count == null)
             return new ArrayList<E>();
         setRowCount(count.intValue());
-        if (count.intValue() > 0)
-        {
-            if (filters != null)
-                filters.values().removeIf(Objects::isNull);
-            List<E> load = lazyLoad(first, pageSize, Arrays.asList(new SortProperty(sortField, sortOrder)), filters);
-            return load;
-        }
-        return new ArrayList<E>();
+        List<E> resultList = lazyLoadRsp.getResultList();
+        if (resultList == null)
+            return new ArrayList<>();
+        return resultList;
     }
 
     @Override
@@ -46,18 +44,17 @@ public abstract class ExtendedLazyDataModel<E extends EntityModel> extends LazyD
         {
             multiSortMeta.forEach(item -> sorts.add(new SortProperty(item.getSortField(), item.getSortOrder())));
         }
-        this.count = rowCount(filters);
+        if (filters != null)
+            filters.values().removeIf(Objects::isNull);
+        ApiListResponse<E> lazyLoadRsp = lazyLoad(first, pageSize, sorts, filters);
+        this.count = lazyLoadRsp.getResultCount();
         if (count == null)
             return new ArrayList<E>();
         setRowCount(count.intValue());
-        if (count.intValue() > 0)
-        {
-            if (filters != null)
-                filters.values().removeIf(Objects::isNull);
-            List<E> load = lazyLoad(first, pageSize, sorts, filters);
-            return load;
-        }
-        return new ArrayList<E>();
+        List<E> resultList = lazyLoadRsp.getResultList();
+        if (resultList == null)
+            return new ArrayList<>();
+        return resultList;
     }
 
     @Override
@@ -97,10 +94,6 @@ public abstract class ExtendedLazyDataModel<E extends EntityModel> extends LazyD
         return instance.getId();
     }
 
-    
-
-    protected abstract List<E> lazyLoad(int first, int pageSize, List<SortProperty> sortFields, Map<String, Object> filters);
-
-    protected abstract Number rowCount(Map<String, Object> filters);
+    protected abstract ApiListResponse<E> lazyLoad(int first, int pageSize, List<SortProperty> sortFields, Map<String, Object> filters);
 
 }

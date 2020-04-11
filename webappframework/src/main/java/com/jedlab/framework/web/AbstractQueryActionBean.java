@@ -108,7 +108,7 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
 
             @Override
             protected List<E> lazyLoad(int first, int pageSize,
-                    List<com.jedlab.framework.web.ExtendedLazyDataModel.SortProperty> sortFields, Map<String, Object> filters)
+                    List<SortProperty> sortFields, Map<String, Object> filters)
             {
                 if (CollectionUtil.isEmpty(sortFields))
                     sortFields = getSortProperties();
@@ -125,7 +125,7 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
         };
     }
 
-    protected List<com.jedlab.framework.web.ExtendedLazyDataModel.SortProperty> getSortProperties()
+    protected List<SortProperty> getSortProperties()
     {
         return null;
     }

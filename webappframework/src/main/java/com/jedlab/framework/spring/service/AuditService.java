@@ -21,7 +21,7 @@ import com.jedlab.framework.audit.Revision;
 import com.jedlab.framework.audit.RevisionPO;
 import com.jedlab.framework.util.CollectionUtil;
 import com.jedlab.framework.util.StringUtil;
-import com.jedlab.framework.web.ExtendedLazyDataModel.SortProperty;
+import com.jedlab.framework.web.SortProperty;
 
 public abstract class AuditService<T>
 {

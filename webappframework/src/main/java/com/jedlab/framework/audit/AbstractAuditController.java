@@ -10,25 +10,16 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
-import org.hibernate.envers.AuditReader;
-import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.RevisionType;
-import org.hibernate.envers.query.AuditEntity;
-import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.envers.query.criteria.AuditCriterion;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
 import org.primefaces.model.SortOrder;
 
 import com.jedlab.framework.spring.service.AuditService;
-import com.jedlab.framework.util.CollectionUtil;
-import com.jedlab.framework.util.StringUtil;
 import com.jedlab.framework.web.AbstractActionBean;
-import com.jedlab.framework.web.ExtendedLazyDataModel;
-import com.jedlab.framework.web.ExtendedLazyDataModel.SortProperty;
+import com.jedlab.framework.web.SortProperty;
 
 public abstract class AbstractAuditController<T> extends AbstractActionBean
 {
@@ -160,7 +151,7 @@ public abstract class AbstractAuditController<T> extends AbstractActionBean
 
             public List<Revision<T>> load(int first, int pageSize, List<SortMeta> multiSortMeta, Map<String, Object> filters)
             {
-                List<SortProperty> sorts = new ArrayList<ExtendedLazyDataModel.SortProperty>();
+                List<SortProperty> sorts = new ArrayList<SortProperty>();
                 if (multiSortMeta != null)
                 {
                     multiSortMeta.forEach(item -> sorts.add(new SortProperty(item.getSortField(), item.getSortOrder())));
