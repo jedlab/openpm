@@ -35,6 +35,7 @@ import com.jedlab.framework.spring.web.ParamOperator;
 import com.jedlab.framework.spring.web.ParameterItem;
 import com.jedlab.framework.spring.web.QParam;
 import com.jedlab.framework.util.CollectionUtil;
+import com.jedlab.framework.util.DateUtil;
 import com.jedlab.framework.util.StringUtil;
 
 /**
@@ -410,7 +411,7 @@ public class QueryMapper
                 {
                     if(Date.class.isAssignableFrom(field.getType()))
                     {
-                        predicateList.add(cb.greaterThan(root.<Date> get(property), (Date)value));
+                        predicateList.add(cb.greaterThan(root.<Date> get(property),  DateUtil.toDate(value)));
                     }
                     else if(Number.class.isAssignableFrom(field.getType()))
                     {
@@ -423,7 +424,7 @@ public class QueryMapper
                     if(Date.class.isAssignableFrom(field.getType()))
                     {
 
-                        predicateList.add(cb.greaterThanOrEqualTo(root.<Date> get(property), (Date)value ));
+                        predicateList.add(cb.greaterThanOrEqualTo(root.<Date> get(property),  DateUtil.toDate(value)));
                     }
                     else if(Number.class.isAssignableFrom(field.getType()))
                     {
@@ -436,7 +437,7 @@ public class QueryMapper
                     if(Date.class.isAssignableFrom(field.getType()))
                     {
 
-                        predicateList.add(cb.lessThan(root.<Date> get(property), (Date) value));
+                        predicateList.add(cb.lessThan(root.<Date> get(property),  DateUtil.toDate(value)));
                     }
                     else if(Number.class.isAssignableFrom(field.getType()))
                     {
@@ -449,7 +450,7 @@ public class QueryMapper
                     if(Date.class.isAssignableFrom(field.getType()))
                     {
 
-                        predicateList.add(cb.lessThanOrEqualTo(root.<Date> get(property), (Date) value));
+                        predicateList.add(cb.lessThanOrEqualTo(root.<Date> get(property),  DateUtil.toDate(value)));
                     }
                     else if(Number.class.isAssignableFrom(field.getType()))
                     {
