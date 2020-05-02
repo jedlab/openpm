@@ -5,12 +5,15 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Collections;
+import java.util.Objects;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpInputMessage;
@@ -27,20 +30,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author omidp
- * <pre>
- *  @Override
-    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers)
-    {
-        ObjectMapper objectMapper = Jackson2ObjectMapperBuilder.json().applicationContext(this.applicationContext).build();
-        argumentResolvers.add(new DTOModelMapper(objectMapper, entityManager, modelMapper()));
-    }
- * </pre>
  * 
- * <p><b>How to use :</b> insteead of RequestBody Annotation write</p>
+ *         <pre>
+ *         &#64;Override
+ *         public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers)
+ *         {
+ *             ObjectMapper objectMapper = Jackson2ObjectMapperBuilder.json().applicationContext(this.applicationContext).build();
+ *             argumentResolvers.add(new DTOModelMapper(objectMapper, entityManager, modelMapper()));
+ *         }
+ *         </pre>
  * 
- * <pre>
- * DTO(value = YOURDTO.class, mapper = YOURENTITYMAPPER.class)
- * </pre>
+ *         <p>
+ *         <b>How to use :</b> insteead of RequestBody Annotation write
+ *         </p>
+ * 
+ *         <pre>
+ *         DTO(value = YOURDTO.class, mapper = YOURENTITYMAPPER.class)
+ *         </pre>
  */
 public class DTOModelMapper extends RequestResponseBodyMethodProcessor
 {
@@ -49,11 +55,21 @@ public class DTOModelMapper extends RequestResponseBodyMethodProcessor
 
     private ModelMapper modelMapper;
 
+    private ApplicationContext context;
+
     public DTOModelMapper(ObjectMapper objectMapper, EntityManager entityManager, ModelMapper modelMapper)
     {
         super(Collections.singletonList(new MappingJackson2HttpMessageConverter(objectMapper)));
         this.entityManager = entityManager;
         this.modelMapper = modelMapper;
+    }
+
+    public DTOModelMapper(ObjectMapper objectMapper, EntityManager entityManager, ModelMapper modelMapper, ApplicationContext context)
+    {
+        super(Collections.singletonList(new MappingJackson2HttpMessageConverter(objectMapper)));
+        this.entityManager = entityManager;
+        this.modelMapper = modelMapper;
+        this.context = context;
     }
 
     @Override
@@ -83,19 +99,49 @@ public class DTOModelMapper extends RequestResponseBodyMethodProcessor
         }
         if (id == null)
         {
-            if(propertyMap == null)
+            if (propertyMap == null)
                 return modelMapper.map(dto, parameter.getParameterType());
-            return modelMapper.addMappings(propertyMap.newInstance()).map(dto);
+            DTOPropertyMapper mapperBean = null;
+            if(dtoType.springEnabled())
+            {
+                 mapperBean = context.getBean(propertyMap);
+            }else
+            {
+                mapperBean = propertyMap.newInstance();
+            }
+            return getMapping(mapperBean).map(dto);
         }
         else
         {
             Object persistedObject = entityManager.find(parameter.getParameterType(), id);
-            if(propertyMap == null)
+            if (propertyMap == null)
                 modelMapper.map(dto, persistedObject);
             else
-                modelMapper.addMappings(propertyMap.newInstance()).map(dto);
+            {
+                DTOPropertyMapper mapperBean = null;
+                if(dtoType.springEnabled())
+                {
+                     mapperBean = context.getBean(propertyMap);
+                }else
+                {
+                    mapperBean = propertyMap.newInstance();
+                }
+                getMapping(mapperBean).map(dto, persistedObject);
+            }
             return persistedObject;
         }
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private TypeMap getMapping(DTOPropertyMapper dtoMapper) throws InstantiationException, IllegalAccessException
+    {
+        TypeMap typeMap = modelMapper.getTypeMap(dtoMapper.getSourceType(), dtoMapper.getDestinationType());
+        if (typeMap == null)
+        { 
+            modelMapper.addMappings(dtoMapper);
+            typeMap = modelMapper.getTypeMap(dtoMapper.getSourceType(), dtoMapper.getDestinationType());
+        }
+        return typeMap;
     }
 
     @Override

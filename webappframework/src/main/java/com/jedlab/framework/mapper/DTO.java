@@ -8,7 +8,11 @@ import java.lang.annotation.Target;
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DTO {
+
     Class<? extends DTOPropertyMapper> mapper();
 
     Class<?> value();
+
+    boolean springEnabled() default false;
+
 }
