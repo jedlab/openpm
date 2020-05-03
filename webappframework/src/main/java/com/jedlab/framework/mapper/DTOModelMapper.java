@@ -5,14 +5,11 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Collections;
-import java.util.Objects;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -99,13 +96,12 @@ public class DTOModelMapper extends RequestResponseBodyMethodProcessor
         }
         if (id == null)
         {
-            if (propertyMap == null)
-                return modelMapper.map(dto, parameter.getParameterType());
             DTOPropertyMapper mapperBean = null;
-            if(dtoType.springEnabled())
+            if (dtoType.springEnabled())
             {
-                 mapperBean = context.getBean(propertyMap);
-            }else
+                mapperBean = context.getBean(propertyMap);
+            }
+            else
             {
                 mapperBean = propertyMap.newInstance();
             }
@@ -114,30 +110,26 @@ public class DTOModelMapper extends RequestResponseBodyMethodProcessor
         else
         {
             Object persistedObject = entityManager.find(parameter.getParameterType(), id);
-            if (propertyMap == null)
-                modelMapper.map(dto, persistedObject);
+            DTOPropertyMapper mapperBean = null;
+            if (dtoType.springEnabled())
+            {
+                mapperBean = context.getBean(propertyMap);
+            }
             else
             {
-                DTOPropertyMapper mapperBean = null;
-                if(dtoType.springEnabled())
-                {
-                     mapperBean = context.getBean(propertyMap);
-                }else
-                {
-                    mapperBean = propertyMap.newInstance();
-                }
-                getMapping(mapperBean).map(dto, persistedObject);
+                mapperBean = propertyMap.newInstance();
             }
+            getMapping(mapperBean).map(dto, persistedObject);
             return persistedObject;
         }
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private TypeMap getMapping(DTOPropertyMapper dtoMapper) throws InstantiationException, IllegalAccessException
+    private <S, D> PropertyMap<S, D> getMapping(DTOPropertyMapper dtoMapper) throws InstantiationException, IllegalAccessException
     {
-        TypeMap typeMap = modelMapper.getTypeMap(dtoMapper.getSourceType(), dtoMapper.getDestinationType());
+        PropertyMap typeMap = modelMapper.getTypeMap(dtoMapper.getSourceType(), dtoMapper.getDestinationType());
         if (typeMap == null)
-        { 
+        {
             modelMapper.addMappings(dtoMapper);
             typeMap = modelMapper.getTypeMap(dtoMapper.getSourceType(), dtoMapper.getDestinationType());
         }

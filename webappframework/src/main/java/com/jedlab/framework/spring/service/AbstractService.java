@@ -1,8 +1,11 @@
 package com.jedlab.framework.spring.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -29,6 +32,7 @@ import org.springframework.data.repository.support.PageableExecutionUtils;
 import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jedlab.framework.exceptions.ServiceException;
 import com.jedlab.framework.spring.dao.AbstractDAO;
 import com.jedlab.framework.util.CollectionUtil;
@@ -44,6 +48,10 @@ public abstract class AbstractService<E>
 
     @PersistenceContext(unitName = "entityManagerFactory")
     protected EntityManager entityManager;
+    
+    public static final ObjectMapper mapper = new ObjectMapper();
+    
+    private static final Logger logger = Logger.getLogger(AbstractService.class.getName());
 
     public abstract AbstractDAO<E> getDao();
 
@@ -327,6 +335,23 @@ public abstract class AbstractService<E>
 
         result = createQuery.getResultList();
         return result;
+    }
+    
+    public E readForUpdate(Class<E> clz, Long id, String jsonContent)
+    {
+            E entityOp = findById(clz, id);
+            if (entityOp == null)
+                throw new ServiceException("EntityNotFound");
+            E entity = entityOp;
+            try
+            {
+                mapper.readerForUpdating(entity).readValue(jsonContent);
+            }
+            catch (IOException e)
+            {
+                logger.info(e.getMessage());
+            }
+            return entity;
     }
 
 }
