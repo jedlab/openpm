@@ -137,6 +137,8 @@ public class MappingAxon2HttpMessageConverter extends AbstractGenericHttpMessage
             {
                 rawClass = javaType.getRawClass();
             }
+            if(rawClass.equals(String.class))
+                return jsonContent.replaceAll("\t", "").replaceAll("\n", "");
             Object instance = rawClass.newInstance();
             if (StringUtil.isEmpty(jsonContent))
                 return instance;
