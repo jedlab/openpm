@@ -14,7 +14,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.compiler.version>1.8</java.compiler.version>
-		<commonsio.version>2.4</commonsio.version>
+		<commonsio.version>2.7</commonsio.version>
 		<jasper.version>6.1.0</jasper.version>
 		<spring.version>5.0.3.RELEASE</spring.version>
 		<spring-data-jpa.version>2.0.5.RELEASE</spring-data-jpa.version>
