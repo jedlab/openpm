@@ -87,6 +87,10 @@ public class MappingAxon2HttpMessageConverter extends AbstractGenericHttpMessage
     {
         if (mediaType == null || mediaType.isCompatibleWith(MediaType.APPLICATION_JSON))
         {
+        	if(String.class.equals(clazz))
+        	{
+        		return true;
+        	}
             return clazz.isAnnotationPresent(org.omidbiz.core.axon.internal.Axon.class);
         }
 
@@ -198,7 +202,15 @@ public class MappingAxon2HttpMessageConverter extends AbstractGenericHttpMessage
                 }
             }
         }
-        String json = axonBuilder.serializeNulls("true".equals(serializeNull)).create().toJson(t);
+        String json = "";
+        if(String.class.equals(type))
+    	{
+        	json = (String)t;
+    	}
+        else
+        {
+        	json = axonBuilder.serializeNulls("true".equals(serializeNull)).create().toJson(t);
+        }
         body.write(json.getBytes("UTF-8"));
         body.flush();
         IOUtils.closeQuietly(body);
