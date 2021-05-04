@@ -13,7 +13,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<java.compiler.version>1.8</java.compiler.version>
+		<java.compiler.version>11</java.compiler.version>
 		<commonsio.version>2.4</commonsio.version>
 		<jasper.version>6.1.0</jasper.version>
 		<spring.version>5.0.3.RELEASE</spring.version>
@@ -128,6 +128,16 @@
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
 			<version>${poi.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>xml-apis</groupId>
+					<artifactId>xml-apis</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.xmlbeans</groupId>
+					<artifactId>xmlbeans</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.poi</groupId>
@@ -185,6 +195,10 @@
 				<exclusion>
 					<groupId>com.fasterxml.jackson.core</groupId>
 					<artifactId>jackson-annotations</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>xml-apis</groupId>
+					<artifactId>xml-apis</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -315,52 +329,17 @@
 		<finalName>${project.artifactId}</finalName>
 		<pluginManagement>
 			<plugins>
-				<plugin>
-					<artifactId>maven-assembly-plugin</artifactId>
-					<version>2.2</version>
-				</plugin>
 
-				<!-- Building -->
-				<plugin>
-					<artifactId>maven-clean-plugin</artifactId>
-					<version>2.4.1</version>
-				</plugin>
 
 				<plugin>
-					<artifactId>maven-resources-plugin</artifactId>
-    				<version>3.2.0</version>
-				</plugin>
-
-				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>2.3.2</version>
+					<version>3.8.0</version>
 					<configuration>
-						<source>${java.compiler.version}</source>
-						<target>${java.compiler.version}</target>
-						<optimize>true</optimize>
-						<!-- javac doesn't compile all package-info.java, therefore use eclipse 
-							compiler <compilerId>eclipse</compilerId> -->
+						<release>11</release>
 					</configuration>
-					<dependencies>
-						<dependency>
-							<groupId>org.codehaus.plexus</groupId>
-							<artifactId>plexus-compiler-eclipse</artifactId>
-							<version>1.8.1</version>
-							<scope>runtime</scope>
-						</dependency>
-					</dependencies>
-
 				</plugin>
-
-				<plugin>
-					<artifactId>maven-surefire-report-plugin</artifactId>
-					<version>2.6</version>
-				</plugin>
-
-				<plugin>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.6</version>
-				</plugin>
+				
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-source-plugin</artifactId>
