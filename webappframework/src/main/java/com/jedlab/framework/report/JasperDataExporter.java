@@ -161,8 +161,12 @@ public abstract class JasperDataExporter<E> implements Serializable
         DynamicReport build = frb.build();
         JasperPrint jasperPrint = DynamicJasperHelper.generateJasperPrint(build, new ClassicLayoutManager(), ds, parameters);
         
-        FacesContext context = FacesContext.getCurrentInstance();        
-        OutputStream os = outputstream(e, context);
+        FacesContext context = FacesContext.getCurrentInstance();
+        OutputStream os  = null;
+        if(context != null)
+            os = outputstream(e, context);
+        else
+            os = outputstream(e);
         JRPropertiesUtil.getInstance(DefaultJasperReportsContext.getInstance());
         exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
         exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, os);
@@ -180,6 +184,34 @@ public abstract class JasperDataExporter<E> implements Serializable
         response.setCharacterEncoding("UTF-8");
         //
         HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        if (isInternetExplorer(request)) response.setHeader("Content-Disposition",
+                e.getContentDisposition() + "; filename=\"" + URLEncoder.encode(e.getFileName(), "utf-8") + "\"");
+        else response.setHeader("Content-Disposition",
+                e.getContentDisposition() + "; filename=\"" + MimeUtility.encodeWord(e.getFileName(), "UTF-8", "Q") + "\"");
+        //
+        OutputStream os = response.getOutputStream();
+        return os;
+    }
+    
+    protected HttpServletRequest request()
+    {
+        return null;
+    }
+    
+    protected HttpServletResponse response()
+    {
+        return null;
+    }
+    
+    protected OutputStream outputstream(Exporter e) throws IOException
+    {
+//        HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
+        HttpServletResponse response = response();
+        response.setContentType(e.getContentType());
+        response.setCharacterEncoding("UTF-8");
+        //
+//        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        HttpServletRequest request = request();
         if (isInternetExplorer(request)) response.setHeader("Content-Disposition",
                 e.getContentDisposition() + "; filename=\"" + URLEncoder.encode(e.getFileName(), "utf-8") + "\"");
         else response.setHeader("Content-Disposition",
