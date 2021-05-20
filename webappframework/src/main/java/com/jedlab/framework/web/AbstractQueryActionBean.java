@@ -236,15 +236,7 @@ public abstract class AbstractQueryActionBean<E extends EntityModel> extends Abs
 
     }
 
-    public interface ReportSection
-    {
-
-        public void beforeFormGenerateReport(FastReportBuilder frb);
-
-        public ReportHeader getFormReportHeader();
-
-        public Map<String, Object> getParameters();
-    }
+    
 
     protected ReportSection getReportSection()
     {

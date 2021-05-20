@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.context.MessageSource;
+import org.springframework.util.ClassUtils;
 
 import com.jedlab.framework.reflections.ReflectionUtil;
 import com.jedlab.framework.spring.SpringUtil;
@@ -72,6 +73,14 @@ public abstract class JasperDataExporter<E> implements Serializable
     private Class<E> entityClass;
 
     private Map<String, Object> reportPramaeters = new HashMap<String, Object>();
+    
+    private static final boolean jsfPresent;
+    static
+    {
+        ClassLoader classLoader = JasperDataExporter.class.getClassLoader();
+        jsfPresent = ClassUtils.isPresent("javax.faces.context.FacesContext",
+                classLoader);
+    }
 
     public enum ExportType {
         XLS, PDF, INLINEPDF;
@@ -160,11 +169,13 @@ public abstract class JasperDataExporter<E> implements Serializable
         parameters.putAll(reportPramaeters);
         DynamicReport build = frb.build();
         JasperPrint jasperPrint = DynamicJasperHelper.generateJasperPrint(build, new ClassicLayoutManager(), ds, parameters);
-        
-        FacesContext context = FacesContext.getCurrentInstance();
         OutputStream os  = null;
-        if(context != null)
-            os = outputstream(e, context);
+        if(jsfPresent)
+        {
+            FacesContext context = FacesContext.getCurrentInstance();
+            if(context != null)
+                os = outputstream(e, context);
+        }
         else
             os = outputstream(e);
         JRPropertiesUtil.getInstance(DefaultJasperReportsContext.getInstance());
@@ -173,8 +184,12 @@ public abstract class JasperDataExporter<E> implements Serializable
         exporter.exportReport();
         os.flush();
         os.close();
-        if(context != null)
-            context.responseComplete();
+        if(jsfPresent)
+        {
+            FacesContext context = FacesContext.getCurrentInstance();
+            if(context != null)
+                context.responseComplete();
+        }
     }
     
     protected OutputStream outputstream(Exporter e, FacesContext context) throws IOException
